@@ -2,8 +2,6 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pandas as pd
-import pyttsx3
-import threading
 
 # Page Config
 st.set_page_config(
@@ -13,10 +11,7 @@ st.set_page_config(
 )
 
 # Initialize TTS engine
-engine = pyttsx3.init()
 
-def speak_text(text):
-    def _speak():
         engine.say(text)
         engine.runAndWait()
     threading.Thread(target=_speak).start()
