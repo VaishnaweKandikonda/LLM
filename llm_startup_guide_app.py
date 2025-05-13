@@ -330,7 +330,6 @@ elif current_page == "API Cost Optimization":
         - 100 GPT-4 calls = ~$3  
         - 100 GPT-3.5 calls = ~$0.20
         """)
-
 elif selected == "Ethics & Bias":
     st.header("⚖️ Responsible AI Use for Startups")
     show_expand_collapse_buttons()
@@ -350,7 +349,6 @@ elif selected == "Ethics & Bias":
         - Check outputs for bias
         - Document usage policy
         """)
-
 elif selected == "FAQs":
     st.header("❓ Frequently Asked Questions")
     show_expand_collapse_buttons()
@@ -442,6 +440,7 @@ elif selected == "Feedback":
                 df = df.drop(columns=['S.No'])
             df.index = df.index + 1  # Show index starting from 1
             st.dataframe(df, use_container_width=True)
+
 # --- Page Navigation ---
 nav_prev, _, nav_next = st.columns([2, 6, 2])
 with nav_prev:
