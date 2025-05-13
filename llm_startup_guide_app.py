@@ -312,7 +312,138 @@ elif current_page == "Temperature & Sampling":
             st.info("⚖️ Best with: Medium Temperature (0.4 - 0.6)")
 
     st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
+elif selected == "API Cost Optimization":
+    st.header("💸 Saving Money with LLM APIs")
+    show_expand_collapse_buttons()
 
+    with custom_expander("📉 Why It Matters"):
+        st.markdown("LLM API calls cost money. Reduce usage where possible.")
+
+    with custom_expander("💰 Strategies to Reduce Cost"):
+        st.markdown("""
+        - Use GPT-3.5 when possible
+        - Keep prompts short
+        - Batch tasks
+        - Use caching
+        """)
+
+    with custom_expander("📊 Cost Example"):
+        st.markdown("""
+        - 100 GPT-4 calls = ~$3  
+        - 100 GPT-3.5 calls = ~$0.20
+        """)
+
+elif selected == "Ethics & Bias":
+    st.header("⚖️ Responsible AI Use for Startups")
+    show_expand_collapse_buttons()
+
+    with custom_expander("⚠️ What’s the Risk?"):
+        st.markdown("LLMs can reflect or amplify **biases** in their training data.")
+
+    with custom_expander("🧪 Example"):
+        st.markdown("""
+        **Prompt:** "Describe a CEO."  
+        **Output:** "He is a confident leader..." ❌ _(gender bias)_
+        """)
+
+    with custom_expander("🛡 How to Mitigate"):
+        st.markdown("""
+        - Use inclusive language
+        - Check outputs for bias
+        - Document usage policy
+        """)
+
+elif selected == "FAQs":
+    st.header("❓ Frequently Asked Questions")
+    show_expand_collapse_buttons()
+
+    with custom_expander("What is a language model?"):
+        st.write("An AI trained to understand/generate human language.")
+    with custom_expander("What is a token?"):
+        st.write("A small unit of text. Token count affects API cost.")
+    with custom_expander("Can I trust the output?"):
+        st.write("Not always. Use human verification.")
+    with custom_expander("Is GPT-3.5 enough for my startup?"):
+        st.write("Often, yes! It’s cheaper and works for most tasks.")
+
+elif selected == "Glossary":
+    st.header("📖 Glossary of Common Terms")
+    show_expand_collapse_buttons()
+    terms = {
+        "LLM": "Large Language Model",
+        "Token": "Unit of input text processed by the model",
+        "Prompt": "Instruction given to an AI",
+        "Temperature": "Controls output creativity",
+        "Hallucination": "False output from LLM",
+        "Bias": "Systemic unfairness in output"
+    }
+    for term, definition in terms.items():
+        st.markdown(f"**{term}** — {definition}")
+
+elif selected == "Interactive Use Cases":
+    st.header("🧪 AI Use Case Simulator")
+    show_expand_collapse_buttons()
+    use_case = st.selectbox("Choose a scenario:", ["Product Description", "Customer Support Reply", "Marketing Email"])
+
+    if use_case == "Product Description":
+        product = st.text_input("Describe your product:", "Eco-friendly water bottle with temperature sensor")
+        if product:
+            st.success(f"Meet your new hydration hero – {product}.")
+
+    elif use_case == "Customer Support Reply":
+        issue = st.text_area("Enter the customer issue:", "The app is not tracking my sleep correctly.")
+        if issue:
+            st.success(f"Response: Sorry to hear that! Try reinstalling. We're on it: '{issue}'.")
+
+    elif use_case == "Marketing Email":
+        offer = st.text_input("What's your campaign about?", "10% off all subscriptions this month")
+        if offer:
+            st.success(f"Email: Unlock your {offer}! Tools that work for you. Limited time!")
+
+elif selected == "Download Toolkit":
+    st.header("📦 Downloadable Toolkit")
+    show_expand_collapse_buttons()
+    toolkit = """LLM Guide for Startups - Toolkit\n\nPROMPTING: Be specific, assign a role, define format\nTEMPERATURE: 0 = factual, 1 = creative\nHALLUCINATIONS: Always verify info\nCOST: Use GPT-3.5, keep prompts short\nETHICS: Use inclusive language, test bias"""
+    st.download_button("📥 Download Toolkit as TXT", data=toolkit, file_name="llm_startup_toolkit.txt")
+
+elif selected == "Feedback":
+    st.header("💬 We Value Your Feedback")
+    show_expand_collapse_buttons()
+
+    st.markdown("Please share your thoughts on this guide.")
+
+    name = st.text_input("Your name *")
+    email = st.text_input("Your email (optional)")
+    rating = st.slider("How helpful was this guide?", 1, 5, 3)
+    feedback = st.text_area("Your thoughts (optional)")
+    suggestion = st.selectbox("What would you like to see next?", ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
+    attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
+
+    required_filled = bool(name.strip())
+    email_valid = True if not email.strip() else is_valid_email(email.strip())
+    form_valid = required_filled and email_valid
+
+    if st.button("Submit Feedback", disabled=not form_valid):
+        entry = {
+            "S.No": len(st.session_state['feedback']) + 1,
+            "Name": name.strip(),
+            "Email": email.strip(),
+            "Rating": rating,
+            "Feedback": feedback.strip(),
+            "Suggested topic": None if suggestion == "None" else suggestion,
+            "Attachment name": attachment.name if attachment else None
+        }
+        st.session_state['feedback'].append(entry)
+        save_feedback_to_csv(entry)
+        st.success(f"Thanks {name.strip()} for your feedback!")
+
+    if st.session_state['feedback']:
+        if st.checkbox("Show All Feedback"):
+            df = pd.DataFrame(st.session_state['feedback'])
+            if 'S.No' in df.columns:
+                df = df.drop(columns=['S.No'])
+            df.index = df.index + 1  # Show index starting from 1
+            st.dataframe(df, use_container_width=True)
 # --- Page Navigation ---
 nav_prev, _, nav_next = st.columns([2, 6, 2])
 with nav_prev:
