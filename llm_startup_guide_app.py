@@ -5,6 +5,7 @@ import pandas as pd
 import re
 import os
 import random
+import openai
 
 # --- App Config ---
 st.set_page_config(page_title="LLM Guide for Startups", page_icon="🤖", layout="wide")
@@ -13,6 +14,9 @@ st.set_page_config(page_title="LLM Guide for Startups", page_icon="🤖", layout
 if os.path.exists("WebAppstyling.css"):
     with open("WebAppstyling.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# --- OpenAI API Key ---
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # --- Session State ---
 if 'feedback_entries' not in st.session_state:
@@ -55,6 +59,20 @@ def store_feedback(entry, path="feedback.csv"):
         existing_df = pd.read_csv(path)
         new_entry_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
     new_entry_df.to_csv(path, index=False)
+
+def get_llm_response(prompt):
+    if not openai.api_key:
+        return None, "Missing OpenAI API key"
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # or "gpt-3.5-turbo"
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=200
+        )
+        return response.choices[0].message["content"].strip(), None
+    except Exception as e:
+        return None, str(e)
 
 # --- Sidebar Navigation ---
 page_titles = [
@@ -153,9 +171,25 @@ elif current_page == "Prompt Engineering":
 
     if subtopic in ("All", "Try it Yourself"):
         with expander_section("4. ✍️ Try it Yourself"):
+            st.markdown("Write a real prompt you'd like to test. We'll generate a response using OpenAI.")
             user_prompt = st.text_area("Enter your business prompt:")
+
             if user_prompt:
-                st.success(f"“Here’s what a language model might say: {user_prompt.lower()} — designed for modern users.”")
+                with st.spinner("Generating response..."):
+                    response, error = get_llm_response(user_prompt)
+
+                    if response:
+                        st.success(response)
+                    else:
+                        st.warning("⚠️ Unable to connect to OpenAI. Here's a simulated response instead.")
+                        fake_responses = [
+                            "Sure! Here's a quick draft for you:",
+                            "Absolutely, try this:",
+                            "Here's how you could phrase it:",
+                            "Of course! This could work:"
+                        ]
+                        simulated_output = f"{random.choice(fake_responses)}\n\n\"{user_prompt.strip().capitalize()} — tailored for impact.\""
+                        st.info(simulated_output)
 
     if subtopic in ("All", "Prompt Use Cases"):
         with expander_section("5. What are you using the prompt for?"):
