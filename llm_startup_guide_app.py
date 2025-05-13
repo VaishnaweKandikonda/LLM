@@ -232,35 +232,41 @@ elif current_page == "Prompt Engineering":
             st.markdown("- [x] Be specific\n- [x] Set a role\n- [x] Define output format")
             
     if subtopic in ("All", "Quiz"):
-        with expander_section("8. 🧠 Test Your Knowledge"):
-            q1 = st.radio("1. What makes a good prompt?", [
-                "Something short like 'Write something'",
-                "Clear instructions with role, format, and topic",
-                "Anything, the AI will figure it out"
-            ])
-            if q1:
-                if q1 == "Clear instructions with role, format, and topic":
-                    st.success("✅ Correct!")
-                else:
-                    st.error("❌ Try again.")
-    
-            q2 = st.radio("2. Which is a strong ad prompt?", [
-                "Write an ad",
-                "Write a 2-line ad copy for a wearable fitness tracker targeting new moms in a friendly tone",
-                "Make something catchy"
-            ])
-            if q2:
-                if "fitness tracker" in q2:
-                    st.success("✅ Spot on!")
-                else:
-                    st.error("❌ Try again.")
-    
-            q3 = st.radio("3. True or False: AI always knows your intent.", ["True", "False"])
-            if q3:
-                if q3 == "False":
-                    st.success("✅ Correct!")
-                else:
-                    st.error("❌ Incorrect.")
+    with expander_section("8. 🧠 Test Your Knowledge"):
+        q1 = st.radio("1. What makes a good prompt?", [
+            "-- Select an answer --",
+            "Something short like 'Write something'",
+            "Clear instructions with role, format, and topic",
+            "Anything, the AI will figure it out"
+        ])
+        if q1 != "-- Select an answer --":
+            if q1 == "Clear instructions with role, format, and topic":
+                st.success("✅ Correct!")
+            else:
+                st.error("❌ Try again.")
+
+        q2 = st.radio("2. Which is a strong ad prompt?", [
+            "-- Select an answer --",
+            "Write an ad",
+            "Write a 2-line ad copy for a wearable fitness tracker targeting new moms in a friendly tone",
+            "Make something catchy"
+        ])
+        if q2 != "-- Select an answer --":
+            if "fitness tracker" in q2:
+                st.success("✅ Spot on!")
+            else:
+                st.error("❌ Try again.")
+
+        q3 = st.radio("3. True or False: AI always knows your intent.", [
+            "-- Select an answer --",
+            "True",
+            "False"
+        ])
+        if q3 != "-- Select an answer --":
+            if q3 == "False":
+                st.success("✅ Correct!")
+            else:
+                st.error("❌ Incorrect.")
 
 elif current_page == "Temperature & Sampling":
     st.title("🎛️ Temperature & Sampling")
