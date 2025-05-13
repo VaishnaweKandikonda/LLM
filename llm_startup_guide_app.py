@@ -294,7 +294,10 @@ elif selected == "Feedback":
     if st.session_state['feedback']:
         if st.checkbox("Show All Feedback"):
             df = pd.DataFrame(st.session_state['feedback'])
-            st.dataframe(df.reset_index(drop=True), use_container_width=True)
+            if 'S.No' in df.columns:
+                df = df.drop(columns=['S.No'])
+            df.index = df.index + 1  # Show index starting from 1
+            st.dataframe(df, use_container_width=True)
 
 # --- Navigation Buttons ---
 st.markdown("---")
