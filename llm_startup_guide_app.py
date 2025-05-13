@@ -157,7 +157,7 @@ if current_page == "Home":
 
 # --- Prompt Engineering Page ---
 elif current_page == "Prompt Engineering":
-    st.title("🧠 Prompt Like a Pro")
+    st.title("Prompt Like a Pro")
     display_expand_collapse_controls()
 
     st.markdown("### Choose a sub-topic to explore:")
@@ -178,7 +178,7 @@ elif current_page == "Prompt Engineering":
         with expander_section("2. Best Practices"):
             st.markdown("- Be Specific\n- Set a Role\n- Define Output Format")
             st.success("""
-            🎯 Example Prompt:\n
+            Example Prompt:\n
             \"Act as a SaaS growth marketer. Write a 2-line social media post in a friendly tone promoting our new AI-based customer onboarding tool.\"
             """)
 
@@ -186,14 +186,14 @@ elif current_page == "Prompt Engineering":
         with expander_section("3. Vague vs. Clear Prompt Examples"):
             col1, col2 = st.columns(2)
             with col1:
-                st.error("❌ Vague Prompt")
+                st.error("Vague Prompt")
                 st.markdown("- Describe our app\n- Write something about our new feature")
             with col2:
-                st.success("✅ Clear Prompt")
+                st.success(" Clear Prompt")
                 st.markdown("- Write a 3-sentence product description...\n- Write a 2-sentence announcement...")
 
     if subtopic in ("All", "Try it Yourself"):
-        with expander_section("4. ✍️ Try it Yourself"):
+        with expander_section("4.Try it Yourself"):
             st.markdown("Write a real prompt you'd like to test. We'll generate a response using FLAN-T5.")
             user_prompt = st.text_area("Enter your business prompt:")
             if st.button("Run Prompt") and user_prompt:
@@ -214,25 +214,25 @@ elif current_page == "Prompt Engineering":
                 "Product": "Summarize a product spec in under 50 words.",
                 "Sales": "Write a follow-up email to a lead who downloaded our whitepaper."
             }
-            st.info(f"💡 Try: '{suggestions[use_case]}'")
+            st.info(f"Try: '{suggestions[use_case]}'")
 
     if subtopic in ("All", "Prompt Generator"):
-        with expander_section("6. 🎲 Prompt Generator"):
+        with expander_section("6. Prompt Generator"):
             samples = [
                 "Write a product update email for a budgeting app.",
                 "Draft a refund message that is professional.",
                 "Create an onboarding message for beta users.",
                 "Write an app store description for a sleep tracking app."
             ]
-            if st.button("🎲 Give me a random prompt"):
+            if st.button("Give me a random prompt"):
                 st.write(random.choice(samples))
 
     if subtopic in ("All", "Prompt Checklist"):
-        with expander_section("7. ✅ Prompt Checklist"):
+        with expander_section("7. Prompt Checklist"):
             st.markdown("- [x] Be specific\n- [x] Set a role\n- [x] Define output format")
             
     if subtopic in ("All", "Quiz"):
-        with expander_section("8. 🧠 Test Your Knowledge"):
+        with expander_section("8.Test Your Knowledge"):
             q1 = st.radio("1. What makes a good prompt?", [
                 "-- Select an answer --",
                 "Something short like 'Write something'",
@@ -241,9 +241,9 @@ elif current_page == "Prompt Engineering":
             ])
             if q1 != "-- Select an answer --":
                 if q1 == "Clear instructions with role, format, and topic":
-                    st.success("✅ Correct!")
+                    st.success("Correct!")
                 else:
-                    st.error("❌ Try again.")
+                    st.error("Try again.")
     
             q2 = st.radio("2. Which is a strong ad prompt?", [
                 "-- Select an answer --",
@@ -253,9 +253,9 @@ elif current_page == "Prompt Engineering":
             ])
             if q2 != "-- Select an answer --":
                 if "fitness tracker" in q2:
-                    st.success("✅ Spot on!")
+                    st.success("Spot on!")
                 else:
-                    st.error("❌ Try again.")
+                    st.error("Try again.")
     
             q3 = st.radio("3. True or False: AI always knows your intent.", [
                 "-- Select an answer --",
@@ -264,15 +264,15 @@ elif current_page == "Prompt Engineering":
             ])
             if q3 != "-- Select an answer --":
                 if q3 == "False":
-                    st.success("✅ Correct!")
+                    st.success("Correct!")
                 else:
-                    st.error("❌ Incorrect.")
+                    st.error("Incorrect.")
 
 elif current_page == "Temperature & Sampling":
-    st.title("🎛️ Temperature & Sampling")
+    st.title("Temperature & Sampling")
     display_expand_collapse_controls()
 
-    with expander_section("🔥 What is Temperature in Language Models?"):
+    with expander_section("What is Temperature in Language Models?"):
         st.write("""
         **Temperature** controls how predictable or creative the AI's output is.
 
@@ -281,24 +281,24 @@ elif current_page == "Temperature & Sampling":
         - A **high temperature** (e.g., 0.9) makes it **creative, surprising, and more risky**.
 
         Think of it like this:
-        > 🔧 0.1 = robotic, safe replies  
-        > 🎨 0.9 = playful, unexpected ideas
+        > 0.1 = robotic, safe replies  
+        > 0.9 = playful, unexpected ideas
         """)
-        st.info("💡 Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
+        st.info("Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
 
-    with expander_section("🎯 Adjust the Temperature and See the Difference"):
+    with expander_section("Adjust the Temperature and See the Difference"):
         temperature = st.slider("Select Temperature Level", 0.1, 1.0, 0.7)
         if temperature < 0.3:
             st.success("🧊 Low Temperature (Factual & Consistent)")
             st.markdown("Example: “Our app helps freelancers manage budgets. It's secure and simple.”")
         elif temperature < 0.7:
-            st.info("⚖️ Medium Temperature (Balanced)")
+            st.info("Medium Temperature (Balanced)")
             st.markdown("Example: “Meet the financial sidekick for freelancers — smart, helpful, and always on call.”")
         else:
-            st.warning("🔥 High Temperature (Creative & Risky)")
+            st.warning("High Temperature (Creative & Risky)")
             st.markdown("Example: “Money? Managed. Chaos? Cancelled. Our app is your financial freedom button.”")
 
-    with expander_section("📊 Temperature Summary Table"):
+    with expander_section("Temperature Summary Table"):
         st.markdown("""
         | Temperature | Behavior                  | Best For                      |
         |-------------|---------------------------|-------------------------------|
@@ -307,7 +307,7 @@ elif current_page == "Temperature & Sampling":
         | 0.8 - 1.0   | Creative, surprising      | Brainstorms, social content   |
         """)
 
-    with expander_section("🎲 What Is Sampling in LLMs?"):
+    with expander_section("What Is Sampling in LLMs?"):
         st.write("""
         **Sampling** is how the model decides **which word to say next**. It picks from a range of likely options, not just the top one.
 
@@ -318,24 +318,24 @@ elif current_page == "Temperature & Sampling":
         This helps avoid repetition and create variation — useful for startups generating product copy, blog posts, or email variations.
         """)
 
-    with expander_section("🧠 Match Temperature to a Task"):
+    with expander_section("Match Temperature to a Task"):
         use_case = st.radio("Select your use case:", 
                             ["Summarizing a feature list", "Generating Instagram ad copy", "Writing a refund response email"])
         if use_case == "Summarizing a feature list":
-            st.success("✅ Best with: Low Temperature (0.1 - 0.3)")
+            st.success("Best with: Low Temperature (0.1 - 0.3)")
         elif use_case == "Generating Instagram ad copy":
-            st.warning("🔥 Best with: High Temperature (0.8 - 1.0)")
+            st.warning("Best with: High Temperature (0.8 - 1.0)")
         elif use_case == "Writing a refund response email":
-            st.info("⚖️ Best with: Medium Temperature (0.4 - 0.6)")
+            st.info("Best with: Medium Temperature (0.4 - 0.6)")
 
-    st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
+    st.markdown("Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
 
 elif current_page == "Hallucinations":
     st.title("🚫 Hallucinations in Language Models")
     display_expand_collapse_controls()
 
     # Intro explanation
-    with expander_section("❗ What Are Hallucinations?"):
+    with expander_section("What Are Hallucinations?"):
         st.write("""
         Hallucinations are **confident but incorrect responses** generated by a language model.
 
@@ -343,14 +343,14 @@ elif current_page == "Hallucinations":
         """)
 
     # Real-world startup example
-    with expander_section("🧪 Example: Product Fact Gone Wrong"):
+    with expander_section("Example: Product Fact Gone Wrong"):
         st.write("**Prompt:** “When was Stripe founded?”")
-        st.error("**LLM Output:** “Stripe was founded in 2015 in Toronto.” ❌ (Incorrect)")
+        st.error("**LLM Output:** “Stripe was founded in 2015 in Toronto.” (Incorrect)")
         st.success("**Correct Answer:** Stripe was founded in 2010 in San Francisco.")
-        st.warning("⚠️ For startups, hallucinations can lead to misinforming users, misrepresenting data in pitch decks, or publishing inaccurate content.")
+        st.warning("For startups, hallucinations can lead to misinforming users, misrepresenting data in pitch decks, or publishing inaccurate content.")
 
     # Why hallucinations happen
-    with expander_section("🧠 Why Do LLMs Hallucinate?"):
+    with expander_section("Why Do LLMs Hallucinate?"):
         st.write("""
         - LLMs generate language based on **patterns in training data**, not real-time internet access.
         - They don’t “know” facts — they **predict** the next likely word based on the prompt.
@@ -358,16 +358,16 @@ elif current_page == "Hallucinations":
         """)
 
     # Tips to reduce hallucinations
-    with expander_section("✅ How to Minimize Hallucinations"):
+    with expander_section("How to Minimize Hallucinations"):
         st.markdown("""
-        - 🔎 **Be specific with prompts**: Provide enough context.
-        - 📚 **Use retrieval-based methods (like RAG)** for factual accuracy.
-        - 🧑‍💻 **Manually review** outputs before publishing externally.
-        - 🔗 Ask the model to **cite sources** or say “I’m not sure” when unsure.
+        - **Be specific with prompts**: Provide enough context.
+        - **Use retrieval-based methods (like RAG)** for factual accuracy.
+        - **Manually review** outputs before publishing externally.
+        - Ask the model to **cite sources** or say “I’m not sure” when unsure.
         """)
 
     # Quiz interaction
-    with expander_section("🧠 Quick Check: Can You Spot the Hallucination?"):
+    with expander_section("Quick Check: Can You Spot the Hallucination?"):
         q1 = st.radio("Which of the following is most likely a hallucination?",
                     ["-- Select an answer --","Google was founded in 1998.", 
                     "Python was invented by Guido van Rossum.", 
@@ -375,45 +375,45 @@ elif current_page == "Hallucinations":
                     key="hallucination_q1")
         if q1 != "-- Select an answer --":
             if q1 == "OpenAI was acquired by Netflix in 2021.":
-                st.success("✅ Correct! That never happened — it’s a confident hallucination.")
+                st.success("Correct! That never happened — it’s a confident hallucination.")
             else:
-                st.error("❌ Not quite — both other statements are factual.")
+                st.error("Not quite — both other statements are factual.")
 
-    st.markdown("💡 Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
+    st.markdown("Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
 
 elif current_page == "API Cost Optimization":
-    st.title("💸 API Cost Optimization")
+    st.title("API Cost Optimization")
     display_expand_collapse_controls()
 
-    with expander_section("📊 Why API Costs Matter for Startups"):
+    with expander_section("Why API Costs Matter for Startups"):
         st.write("""
         Using language models like GPT-4 can get expensive — especially when handling lots of requests, long prompts, or frequent usage.
 
         Startups must be **smart and efficient** when building with LLMs, balancing quality with cost.
         """)
 
-    with expander_section("🔍 What Drives API Cost?"):
+    with expander_section("What Drives API Cost?"):
         st.markdown("""
-        - 🧾 **Token usage** – You pay per word (input + output tokens).  
-        - ⚙️ **Model selection** – GPT-4 is powerful but much costlier than GPT-3.5.  
-        - 🔁 **Request frequency** – More requests = more expense.  
-        - 🧩 **Advanced features** – Streaming, tool use, and chaining can add overhead.  
+        - **Token usage** – You pay per word (input + output tokens).  
+        - **Model selection** – GPT-4 is powerful but much costlier than GPT-3.5.  
+        - **Request frequency** – More requests = more expense.  
+        - **Advanced features** – Streaming, tool use, and chaining can add overhead.  
         """)
 
-    with expander_section("✅ Optimization Strategies for Founders"):
+    with expander_section("Optimization Strategies for Founders"):
         st.markdown("""
-        1. ✂️ **Shorten prompts**: Remove unnecessary words and boilerplate.  
-        2. 💾 **Cache outputs**: Reuse responses for repeated or similar queries.  
-        3. ⚖️ **Use cheaper models for simpler tasks**:  
+        1. **Shorten prompts**: Remove unnecessary words and boilerplate.  
+        2. **Cache outputs**: Reuse responses for repeated or similar queries.  
+        3. **Use cheaper models for simpler tasks**:  
             - GPT-3.5 for summarization, formatting, and basic Q&A.  
             - GPT-4 for critical reasoning and edge-case handling.  
-        4. 📦 **Batch your inputs**: Send multiple queries in a single call when possible.  
-        5. 🧠 **Think like a product manager**:  
+        4.**Batch your inputs**: Send multiple queries in a single call when possible.  
+        5.**Think like a product manager**:  
             - Only use AI where it **adds value**.  
             - Avoid using LLMs as your database or source of truth.  
         """)
 
-    with expander_section("💰 Estimate Token Cost"):
+    with expander_section("Estimate Token Cost"):
         tokens = st.slider("How many tokens per request?", min_value=100, max_value=2000, step=100, value=500)
         requests = st.slider("How many requests per day?", min_value=1, max_value=5000, step=50, value=1000)
         model = st.radio("Select model:", ["GPT-3.5 ($0.002 / 1K tokens)", "GPT-4 ($0.06 / 1K tokens)"])
@@ -422,13 +422,13 @@ elif current_page == "API Cost Optimization":
         daily_cost = (tokens * requests / 1000) * cost_per_1k
         monthly_cost = daily_cost * 30
 
-        st.success(f"📅 Estimated Monthly Cost: **${monthly_cost:,.2f}**")
+        st.success(f"Estimated Monthly Cost: **${monthly_cost:,.2f}**")
 
-    with expander_section("💡 Final Note"):
+    with expander_section("Final Note"):
         st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
 
 elif current_page == "Feedback":
-    st.header("💬 We Value Your Feedback")
+    st.header("We Value Your Feedback")
     display_expand_collapse_controls()
 
     st.markdown("Please share your thoughts on this guide.")
