@@ -108,7 +108,6 @@ if current_page == "Home":
     }
 
     for title, content in home_sections.items():
-        st.markdown("<div class='custom-box'>", unsafe_allow_html=True)
         with expander_section(title):
             st.markdown(content)
         st.markdown("</div>", unsafe_allow_html=True)
