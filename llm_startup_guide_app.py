@@ -417,18 +417,18 @@ elif current_page == "Feedback":
 
 # --- Navigation Buttons ---
 st.markdown("---")
-# # --- Page Navigation ---
-# nav_prev, _, nav_next = st.columns([2, 6, 2])
-# with nav_prev:
-#     if st.session_state['current_page_index'] > 0:
-#         if st.button("⬅️ Previous"):
-#             st.session_state['current_page_index'] -= 1
-#             st.rerun()
-# with nav_next:
-#     if st.session_state['current_page_index'] < len(page_titles) - 1:
-#         if st.button("Next ➡️"):
-#             st.session_state['current_page_index'] += 1
-#             st.rerun()
+# --- Page Navigation ---
+nav_prev, _, nav_next = st.columns([2, 6, 2])
+with nav_prev:
+    if st.session_state['current_page_index'] > 0:
+        if st.button("⬅️ Previous"):
+            st.session_state['current_page_index'] -= 1
+            st.rerun()
+with nav_next:
+    if st.session_state['current_page_index'] < len(page_titles) - 1:
+        if st.button("Next ➡️"):
+            st.session_state['current_page_index'] += 1
+            st.rerun()
 
 # --- Footer ---
 st.markdown("---")
