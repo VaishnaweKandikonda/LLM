@@ -1,68 +1,64 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-import option_menu
 from datetime import datetime
 import pandas as pd
 import pyttsx3
 import threading
 
-# Page Configuration
+# Page Config
 st.set_page_config(
     page_title="LLM Guide for Startups",
     page_icon="🤖",
     layout="wide"
 )
 
-# Initialize Text-to-Speech engine
-tts_engine = pyttsx3.init()
+# Initialize TTS engine
+engine = pyttsx3.init()
 
 def speak_text(text):
-    def run_speech():
-        tts_engine.say(text)
-        tts_engine.runAndWait()
-    threading.Thread(target=run_speech).start()
+    def _speak():
+        engine.say(text)
+        engine.runAndWait()
+    threading.Thread(target=_speak).start()
 
-# Initialize session state
-if 'feedback_data' not in st.session_state:
-    st.session_state['feedback_data'] = []
-if 'current_section_index' not in st.session_state:
-    st.session_state['current_section_index'] = 0
+# Session State Initialization
+if 'feedback' not in st.session_state:
+    st.session_state['feedback'] = []
+if 'page_index' not in st.session_state:
+    st.session_state['page_index'] = 0
 
-# Navigation sections
-sections = [
+# All Sections List
+all_sections = [
     "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
     "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary",
     "Interactive Use Cases", "Download Toolkit", "Feedback"
 ]
 
-# Sidebar Navigation
+# Sidebar Menu
 with st.sidebar:
-    selected_section = option_menu(
+    selected = option_menu(
         menu_title="Main Menu",
-        options=sections,
+        options=all_sections,
         icons=[
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
             "question-circle", "book", "tools", "download", "chat-dots"
         ],
         menu_icon="cast",
-        default_index=st.session_state['current_section_index']
+        default_index=st.session_state['page_index']
     )
-    st.session_state['current_section_index'] = sections.index(selected_section)
+    st.session_state['page_index'] = all_sections.index(selected)
 
-# Read-aloud functionality
-def speak_button(text_content):
+# Read-aloud button
+def speak_section(content):
     if st.button("🔊 Read Aloud"):
-        speak_text(text_content)
+        speak_text(content)
 
 # Section Routing
-if selected_section == "Home":
+if selected == "Home":
     st.title("Smart Startups, Smarter AI")
-    intro_text = (
-        "Welcome, founders and entrepreneurs! This guide is designed to help you understand and use "
-        "large language models effectively, responsibly, and efficiently in your startup."
-    )
-    st.markdown(intro_text)
-    speak_button(intro_text)
+    intro = "Welcome, founders and entrepreneurs! This guide is designed to help you understand and use large language models effectively, responsibly, and efficiently in your startup."
+    st.markdown(intro)
+    speak_section(intro)
 
     with st.expander("🤖 What are Language Models?"):
         st.markdown("Language models are AI tools trained to understand and generate human-like text. Tools like ChatGPT, Claude, and Gemini are based on LLMs.")
@@ -89,21 +85,221 @@ if selected_section == "Home":
         Use the **menu on the left** to explore each topic.
         """)
 
-# Additional sections handled in original app...
-# You can append the rest of the logic from your original script here in the same format.
+elif selected == "Prompt Engineering":
+    st.header("🧠 Prompt Like a Pro")
+    sub = st.selectbox("Choose a sub-topic:", ["All", "What is a Prompt?", "Best Practices", "Try It Yourself"])
 
-# Navigation Controls
+    if sub == "All" or sub == "What is a Prompt?":
+        with st.expander("🔍 What is a Prompt?"):
+            st.markdown("A **prompt** is the text you give to an AI model to guide its response. The clearer your prompt, the better the output.")
+
+    if sub == "All" or sub == "Best Practices":
+        with st.expander("🛠️ Best Practices"):
+            st.markdown("""
+            - Be **specific**: "Write a 2-sentence product description for a pet food startup."
+            - Set a **role**: "You are a copywriter for eco-brands..."
+            - Define the **output format**: "Return as bullet points."
+            """)
+
+    if sub == "All" or sub == "Try It Yourself":
+        with st.expander("✍️ Try it Yourself"):
+            user_prompt = st.text_area("Enter a prompt you'd use for your business:", "Write a catchy product description for a new app that tracks sleep patterns.")
+            if user_prompt:
+                st.markdown(f"_Example result (simulated):_\n\n> \"{user_prompt.replace('Write a', 'Introducing our new tool that helps you')}\"")
+
+elif selected == "Temperature & Sampling":
+    st.header("🎛️ Controlling AI Creativity")
+    sub = st.selectbox("Choose a sub-topic:", ["All", "What is Temperature?", "Live Example"])
+
+    if sub == "All" or sub == "What is Temperature?":
+        with st.expander("🔥 What is Temperature?"):
+            st.markdown("""
+            Temperature controls how **random** or **creative** the AI’s response will be:
+            - `0.0` = Very precise and repetitive (good for factual answers)
+            - `0.7` = Balanced creativity (good for writing copy)
+            - `1.0` = Very creative and varied (good for brainstorming)
+            """)
+
+    if sub == "All" or sub == "Live Example":
+        with st.expander("🤖 Try adjusting the temperature"):
+            temp = st.slider("Choose a temperature:", 0.0, 1.0, 0.7, 0.1)
+            sample_prompt = "Describe a smart water bottle in one sentence."
+            if temp < 0.3:
+                result = "A smart water bottle that reminds you to drink water every hour."
+            elif temp < 0.7:
+                result = "A smart water bottle that tracks your hydration and connects to your phone."
+            else:
+                result = "Imagine a sleek bottle that whispers hydration tips and syncs with your wellness dreams."
+            st.write(f"**Prompt:** {sample_prompt}")
+            st.success(f"Output: {result}")
+
+elif selected == "Hallucinations":
+    st.header("🚨 Avoiding AI Hallucinations")
+    st.markdown("Sometimes, LLMs make up facts or details. This is called a **hallucination**.")
+
+    with st.expander("🧠 Why It Happens"):
+        st.markdown("LLMs predict text based on patterns in data. They do not \"know\" truth — they generate what sounds plausible.")
+
+    with st.expander("🚫 Example"):
+        st.markdown("""
+        **Prompt:** "What’s the latest GDPR certification for startups?"
+
+        **LLM Output:** "The 2024 GDPR-AI Gold Standard certification…" ❌ _(this does not exist)_
+        """)
+
+    with st.expander("✅ Best Practices"):
+        st.markdown("""
+        - Cross-check AI outputs with trusted sources
+        - Use LLMs for drafting, not verifying
+        - Add human review for published content
+        - Avoid using LLMs to generate legal or financial advice
+        """)
+
+elif selected == "API Cost Optimization":
+    st.header("💸 Saving Money with LLM APIs")
+    with st.expander("📉 Why It Matters"):
+        st.markdown("""
+        - GPT-4 is powerful but expensive
+        - Longer prompts and outputs = more tokens
+        - Every API call has a cost
+        """)
+
+    with st.expander("💰 Strategies to Reduce Cost"):
+        st.markdown("""
+        - Use **GPT-3.5** for non-critical tasks
+        - Keep prompts **short and efficient**
+        - **Batch** multiple tasks into one call
+        - Use **caching** for repeated requests
+        """)
+
+    with st.expander("📊 Cost Example"):
+        st.markdown("""
+        - 100 calls to GPT-4 at 500 tokens each = ~$3
+        - 100 calls to GPT-3.5 = ~$0.20
+        """)
+
+elif selected == "Ethics & Bias":
+    st.header("⚖️ Responsible AI Use for Startups")
+    with st.expander("⚠️ What’s the Risk?"):
+        st.markdown("""
+        - LLMs can reflect or amplify **biases** in their training data
+        - Outputs can reinforce **stereotypes** or generate **harmful assumptions**
+        """)
+
+    with st.expander("🧪 Example"):
+        st.markdown("""
+        **Prompt:** "Describe a CEO."
+
+        **Output:** "He is a confident leader..." ❌ _(gender bias)_
+        """)
+
+    with st.expander("🛡 How to Mitigate"):
+        st.markdown("""
+        - Use **inclusive language** in your prompts
+        - **Test outputs** for bias before publishing
+        - Document your AI usage policies
+        - Understand your **legal obligations** (GDPR, AI Act)
+        """)
+
+elif selected == "FAQs":
+    st.header("❓ Frequently Asked Questions")
+    with st.expander("What is a language model?"):
+        st.write("An LLM is an AI system trained to understand and generate human-like text.")
+    with st.expander("What is a token?"):
+        st.write("A token is a chunk of text (word or part-word) used in LLMs. Cost is often based on token count.")
+    with st.expander("Can I trust the output?"):
+        st.write("LLMs are not always accurate. Always verify important information.")
+    with st.expander("Is GPT-3.5 enough for my startup?"):
+        st.write("Usually yes! It’s cheaper and performs well for most use cases.")
+
+elif selected == "Glossary":
+    st.header("📖 Glossary of Common Terms")
+    terms = {
+        "LLM": "Large Language Model",
+        "Token": "Smallest unit of input text processed by an AI model",
+        "Prompt": "Instruction or input text given to an AI",
+        "Temperature": "Controls randomness in AI output",
+        "Hallucination": "AI-generated false or fabricated information",
+        "Bias": "Systematic unfairness in output based on training data"
+    }
+    for term, definition in terms.items():
+        st.markdown(f"**{term}** — {definition}")
+
+elif selected == "Interactive Use Cases":
+    st.header("🧪 AI Use Case Simulator")
+    use_case = st.selectbox("Choose a scenario:", ["Product Description", "Customer Support Reply", "Marketing Email"])
+
+    if use_case == "Product Description":
+        product = st.text_input("Describe your product:", "Eco-friendly water bottle with temperature sensor")
+        if product:
+            st.success(f"Example Output: Meet your new hydration hero – {product}, built to keep you cool and sustainable.")
+
+    elif use_case == "Customer Support Reply":
+        issue = st.text_area("Enter the customer issue:", "The app is not tracking my sleep correctly.")
+        if issue:
+            st.success(f"Example Response: We're sorry to hear that! Our team is looking into this issue: '{issue}'. Please try reinstalling and contact us if it persists.")
+
+    elif use_case == "Marketing Email":
+        offer = st.text_input("What's your campaign about?", "10% off all subscriptions this month")
+        if offer:
+            st.success(f"Example Email: Unlock your {offer}! Our smart tools are now even more affordable. Don't miss out – offer ends soon!")
+
+elif selected == "Download Toolkit":
+    st.header("📦 Downloadable Toolkit")
+    toolkit = """
+    LLM Guide for Startups - Quick Toolkit
+
+    PROMPT ENGINEERING:
+    - Be specific
+    - Assign a role
+    - Ask for a format
+
+    TEMPERATURE:
+    - 0.0 = factual, 1.0 = creative
+
+    HALLUCINATIONS:
+    - Cross-check outputs
+    - Don’t rely for legal/medical info
+
+    COST TIPS:
+    - Use GPT-3.5 when possible
+    - Keep prompts short
+    - Batch and cache
+
+    ETHICS:
+    - Use inclusive language
+    - Test for bias
+    - Know your legal obligations
+    """
+    st.download_button("📥 Download Toolkit as TXT", data=toolkit, file_name="llm_startup_toolkit.txt")
+
+elif selected == "Feedback":
+    st.header("💬 We Value Your Feedback")
+    name = st.text_input("Your Name (optional):")
+    rating = st.slider("How helpful was this guide?", 1, 5, 3)
+    feedback = st.text_area("Your thoughts:")
+    if st.button("Submit Feedback"):
+        st.session_state['feedback'].append({"name": name, "rating": rating, "feedback": feedback})
+        st.success("Thanks! Your feedback has been saved.")
+
+    if st.checkbox("Show All Feedback"):
+        df = pd.DataFrame(st.session_state['feedback'])
+        st.dataframe(df)
+
+# --- Responsive Navigation Buttons ---
 st.markdown("---")
-nav_col1, _, nav_col2 = st.columns([2, 4, 2])
+nav_col1, nav_col2, nav_col3 = st.columns([2, 4, 2])
+
 with nav_col1:
-    if st.session_state['current_section_index'] > 0:
+    if st.session_state['page_index'] > 0:
         if st.button("⬅️ Previous"):
-            st.session_state['current_section_index'] -= 1
+            st.session_state['page_index'] -= 1
             st.rerun()
-with nav_col2:
-    if st.session_state['current_section_index'] < len(sections) - 1:
+
+with nav_col3:
+    if st.session_state['page_index'] < len(all_sections) - 1:
         if st.button("Next ➡️"):
-            st.session_state['current_section_index'] += 1
+            st.session_state['page_index'] += 1
             st.rerun()
 
 # Footer
