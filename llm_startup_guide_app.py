@@ -4,7 +4,6 @@ from datetime import datetime
 import pandas as pd
 import re
 import os
-import openai
 
 # --- Page Config ---
 st.set_page_config(
@@ -12,9 +11,6 @@ st.set_page_config(
     page_icon="🤖",
     layout="wide"
 )
-
-# --- Load OpenAI API Key ---
-openai.api_key = st.secrets["openai"]["api_key"]
 
 # --- Session State Initialization ---
 if 'feedback' not in st.session_state:
@@ -27,8 +23,6 @@ if 'page_index' not in st.session_state:
     st.session_state['page_index'] = 0
 if 'expand_all' not in st.session_state:
     st.session_state['expand_all'] = None
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
 
 # --- Helper Functions ---
 def custom_expander(label):
@@ -138,37 +132,7 @@ if selected == "Home":
             st.markdown(content)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- Chatbot ---
-    st.markdown("---")
-    st.subheader("🤖 Ask Our AI Assistant")
-
-    user_input = st.chat_input("Ask something about LLMs or startups...")
-    if user_input:
-        st.session_state.chat_history.append({"role": "user", "content": user_input})
-
-        with st.spinner("Thinking..."):
-            try:
-                response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content": "You are a helpful assistant for startup founders using AI."}
-                    ] + st.session_state.chat_history
-                )
-                ai_reply = response.choices[0].message["content"]
-                st.session_state.chat_history.append({"role": "assistant", "content": ai_reply})
-            except Exception as e:
-                ai_reply = f"⚠️ Error: {e}"
-                st.session_state.chat_history.append({"role": "assistant", "content": ai_reply})
-
-    if st.button("Reset Chat"):
-        st.session_state.chat_history = []
-        st.experimental_rerun()
-
-    for message in st.session_state.chat_history:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-# --- Placeholder for other pages ---
+# --- Feedback Page ---
 elif selected == "Feedback":
     st.header("💬 We Value Your Feedback")
     show_expand_collapse_buttons()
