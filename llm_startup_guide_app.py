@@ -270,15 +270,50 @@ elif selected == "Download Toolkit":
 
 elif selected == "Feedback":
     st.header("💬 We Value Your Feedback")
+
+    st.markdown("""
+    **Thanks for exploring our guide on *Smart Startups, Smarter AI*!**  
+    We'd love to know how useful you found it — give us a rating from **1 (Not useful)** to **5 (Extremely useful)**.  
+    Your feedback helps us refine and expand this resource for fellow entrepreneurs.  
+    """)
+
     name = st.text_input("Your Name (optional):")
+    email = st.text_input("Want a follow-up? Enter your email (optional):")
     rating = st.slider("How helpful was this guide?", 1, 5, 3)
     feedback = st.text_area("Your thoughts:")
+    suggestion = st.selectbox(
+        "What would you like to see next from us?",
+        [
+            "LLM APIs for Startups",
+            "Cost Optimization",
+            "Using LLMs in Customer Support",
+            "Startup AI Tools Comparison",
+            "No-code LLM Prototyping"
+        ]
+    )
+    attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
+
     if st.button("Submit Feedback"):
-        st.session_state['feedback'].append({"name": name, "rating": rating, "feedback": feedback})
-        st.success("Thanks! Your feedback has been saved.")
+        entry = {
+            "S.No": len(st.session_state['feedback']) + 1,
+            "Name": name,
+            "Email": email,
+            "Rating": rating,
+            "Feedback": feedback,
+            "Suggested topic": suggestion,
+            "Attachment name": attachment.name if attachment else None
+        }
+        st.session_state['feedback'].append(entry)
+        if name:
+            st.success(f"Thanks {name} for your feedback! We’ll use your input to improve the experience.")
+        else:
+            st.success("Thanks for your feedback! We’ll use your input to improve the experience.")
 
     if st.checkbox("Show All Feedback"):
         df = pd.DataFrame(st.session_state['feedback'])
+
+        # Format headers to sentence case
+        df.columns = [col.capitalize() for col in df.columns]
         st.dataframe(df)
 
 # --- Navigation Buttons ---
