@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pandas as pd
+import re
 
 # Page Config
 st.set_page_config(
@@ -269,7 +270,7 @@ elif selected == "Download Toolkit":
     st.download_button("📥 Download Toolkit as TXT", data=toolkit, file_name="llm_startup_toolkit.txt")
 
 elif selected == "Feedback":
-    st.header("💬 We Value Your Feedback")
+    st.header("Feedback")
 
     st.markdown("""
     **Thanks for exploring our guide on *Smart Startups, Smarter AI*!**  
@@ -277,13 +278,16 @@ elif selected == "Feedback":
     Your feedback helps us refine and expand this resource for fellow entrepreneurs.  
     """)
 
+    # Input Fields
     name = st.text_input("Your name *")
     email = st.text_input("Want a follow-up? Enter your email (optional):")
     rating = st.slider("How helpful was this guide?", 1, 5, 3)
     feedback = st.text_area("Your thoughts *")
+
     suggestion = st.selectbox(
-        "What would you like to see next from us?",
+        "What would you like to see next from us? (optional)",
         [
+            "None",
             "LLM APIs for Startups",
             "Cost Optimization",
             "Using LLMs in Customer Support",
@@ -291,29 +295,46 @@ elif selected == "Feedback":
             "No-code LLM Prototyping"
         ]
     )
+
     attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
 
-    submit_disabled = not name.strip() or not feedback.strip()
-    if st.button("Submit Feedback", disabled=submit_disabled):
-        entry = {
-            "S.No": len(st.session_state['feedback']) + 1,
-            "Name": name.strip(),
-            "Email": email.strip(),
-            "Rating": rating,
-            "Feedback": feedback.strip(),
-            "Suggested topic": suggestion,
-            "Attachment name": attachment.name if attachment else None
-        }
-        st.session_state['feedback'].append(entry)
-        st.success(f"Thanks {name.strip()} for your feedback! We’ll use your input to improve the experience.")
+    # Email Validation Function
+    def is_valid_email(email_str):
+        pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+        return re.match(pattern, email_str)
 
-    # Show "Show All Feedback" only if feedback exists
+    # Determine if form is valid
+    required_filled = name.strip() and feedback.strip()
+    email_valid = True if not email.strip() else is_valid_email(email.strip())
+    form_valid = required_filled and email_valid
+
+    if st.button("Submit Feedback", disabled=not form_valid):
+        if not form_valid:
+            if not name.strip():
+                st.error("Name is required.")
+            if not feedback.strip():
+                st.error("Feedback is required.")
+            if email.strip() and not email_valid:
+                st.error("Please enter a valid email address.")
+        else:
+            entry = {
+                "S.No": len(st.session_state['feedback']) + 1,
+                "Name": name.strip(),
+                "Email": email.strip(),
+                "Rating": rating,
+                "Feedback": feedback.strip(),
+                "Suggested topic": None if suggestion == "None" else suggestion,
+                "Attachment name": attachment.name if attachment else None
+            }
+            st.session_state['feedback'].append(entry)
+            st.success(f"Thanks {name.strip()} for your feedback! We’ll use your input to improve the experience.")
+
+    # Show All Feedback (only if entries exist)
     if st.session_state['feedback']:
         if st.checkbox("Show All Feedback"):
             df = pd.DataFrame(st.session_state['feedback'])
             df.columns = [col.capitalize() for col in df.columns]  # Sentence case headers
-            st.dataframe(df)
-
+            st.dataframe(df.style.hide(axis="index"))
 
 # --- Navigation Buttons ---
 st.markdown("---")
