@@ -61,22 +61,14 @@ def store_feedback(entry, path="feedback.csv"):
     new_entry_df.to_csv(path, index=False)
 
 def get_llm_response(prompt):
-    import streamlit as st
-    import requests
-
-    HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
-
     try:
         headers = {
             "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
         }
         payload = {
-            "inputs": prompt,
-            "parameters": {
-                "temperature": 0.7,
-                "max_new_tokens": 200
-            }
+            "inputs": prompt
         }
+
         response = requests.post(
             "https://api-inference.huggingface.co/models/google/flan-t5-large",
             headers=headers,
@@ -85,13 +77,16 @@ def get_llm_response(prompt):
 
         if response.status_code == 200:
             result = response.json()
-            return result[0]["generated_text"], None
+            if isinstance(result, list) and len(result) > 0 and "generated_text" in result[0]:
+                return result[0]["generated_text"], None
+            else:
+                # Some models (like FLAN) may just return text in another format
+                return str(result), None
         else:
             return None, f"❌ HF API Error {response.status_code}: {response.text}"
 
     except Exception as e:
         return None, f"❌ Exception: {str(e)}"
-
 
 # --- Sidebar Navigation ---
 page_titles = [
@@ -190,7 +185,7 @@ elif current_page == "Prompt Engineering":
 
     if subtopic in ("All", "Try it Yourself"):
         with expander_section("4. ✍️ Try it Yourself"):
-            st.markdown("Write a real prompt you'd like to test. We'll generate a response using Mistral-7B (Hugging Face).")
+            st.markdown("Write a real prompt you'd like to test. We'll generate a response using FLAN-T5.")
             user_prompt = st.text_area("Enter your business prompt:")
 
             if user_prompt:
@@ -200,15 +195,7 @@ elif current_page == "Prompt Engineering":
                     if response:
                         st.success(response)
                     else:
-                        st.warning("⚠️ Unable to connect to Hugging Face. Here's a simulated response instead.")
-                        fake_responses = [
-                            "Sure! Here's a quick draft for you:",
-                            "Absolutely, try this:",
-                            "Here's how you could phrase it:",
-                            "Of course! This could work:"
-                        ]
-                        simulated_output = f"{random.choice(fake_responses)}\n\n\"{user_prompt.strip().capitalize()} — tailored for impact.\""
-                        st.info(simulated_output)
+                        st.error(error)
 
     if subtopic in ("All", "Prompt Use Cases"):
         with expander_section("5. What are you using the prompt for?"):
