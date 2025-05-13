@@ -8,7 +8,7 @@ import random
 import requests
 
 # --- App Config ---
-st.set_page_config(page_title="LLM Guide for Startups", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="LLM Guide for Startups", layout="wide")
 
 # --- Load CSS ---
 if os.path.exists("WebAppstyling.css"):
@@ -93,10 +93,10 @@ def get_llm_response(prompt):
             else:
                 return str(result), None  # fallback
         else:
-            return None, f"❌ HF API Error {response.status_code}: {response.text}"
+            return None, f"HF API Error {response.status_code}: {response.text}"
 
     except Exception as e:
-        return None, f"❌ Exception: {str(e)}"
+        return None, f"Exception: {str(e)}"
 
 
 # --- Sidebar Navigation ---
@@ -108,7 +108,7 @@ page_titles = [
 
 with st.sidebar:
     current_page = option_menu(
-        menu_title="📘 Guide Sections",
+        menu_title="Sections",
         options=page_titles,
         icons=[
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
@@ -123,27 +123,27 @@ if current_page == "Home":
     display_expand_collapse_controls()
 
     home_sections = {
-        "🤖 Introduction to Large Language Models": (
+        "Introduction to Large Language Models": (
             "Large Language Models (LLMs) are advanced AI systems trained to understand and generate human-like text. "
             "Popular platforms like ChatGPT, Claude, and Gemini use LLMs to assist users with content generation, problem-solving, and more."
         ),
-        "💡 Why LLMs Matter for Startups": (
+        "Why LLMs Matter for Startups": (
             "- Automate customer support and FAQs\n"
             "- Generate pitch decks, emails, blogs, and product content\n"
             "- Build intelligent prototypes and chatbots\n"
             "- Accelerate idea validation and MVP development"
         ),
-        "✅ Let's Get Started!": (
+        "Let's Get Started!": (
             "Use the left menu to explore sections packed with insights, use cases, and practical tools to build smarter with AI."
         ),
-        "🔍 Best Practices & Ethics": (
+        "Best Practices & Ethics": (
             "- Learn prompt design for better results\n"
             "- Understand model temperature and creativity\n"
             "- Avoid AI-generated misinformation\n"
             "- Optimize API costs\n"
             "- Navigate bias and fairness responsibly"
         ),
-        "👥 Who Should Use This Guide": (
+        "Who Should Use This Guide": (
             "- Startup founders exploring AI\n"
             "- Developers and PMs integrating LLMs\n"
             "- Investors evaluating AI strategies\n"
