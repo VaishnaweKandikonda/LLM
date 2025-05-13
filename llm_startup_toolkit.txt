@@ -1,25 +1,6 @@
-
-    LLM Guide for Startups - Quick Toolkit
-
-    PROMPT ENGINEERING:
-    - Be specific
-    - Assign a role
-    - Ask for a format
-
-    TEMPERATURE:
-    - 0.0 = factual, 1.0 = creative
-
-    HALLUCINATIONS:
-    - Cross-check outputs
-    - Don’t rely for legal/medical info
-
-    COST TIPS:
-    - Use GPT-3.5 when possible
-    - Keep prompts short
-    - Batch and cache
-
-    ETHICS:
-    - Use inclusive language
-    - Test for bias
-    - Know your legal obligations
-    
+streamlit
+streamlit_option_menu
+datetime
+pandas 
+pyttsx3
+threading
