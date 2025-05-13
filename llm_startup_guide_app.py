@@ -61,6 +61,11 @@ def store_feedback(entry, path="feedback.csv"):
     new_entry_df.to_csv(path, index=False)
 
 def get_llm_response(prompt):
+    import streamlit as st
+    import requests
+
+    HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
+
     try:
         headers = {
             "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
@@ -73,17 +78,20 @@ def get_llm_response(prompt):
             }
         }
         response = requests.post(
-            "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1",
+            "https://api-inference.huggingface.co/models/google/flan-t5-large",
             headers=headers,
             json=payload
         )
+
         if response.status_code == 200:
             result = response.json()
             return result[0]["generated_text"], None
         else:
-            return None, f"Error {response.status_code}: {response.text}"
+            return None, f"❌ HF API Error {response.status_code}: {response.text}"
+
     except Exception as e:
-        return None, str(e)
+        return None, f"❌ Exception: {str(e)}"
+
 
 # --- Sidebar Navigation ---
 page_titles = [
