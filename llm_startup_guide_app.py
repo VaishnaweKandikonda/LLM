@@ -110,7 +110,6 @@ if current_page == "Home":
     for title, content in home_sections.items():
         with expander_section(title):
             st.markdown(content)
-        st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Feedback Page ---
 elif current_page == "Feedback":
