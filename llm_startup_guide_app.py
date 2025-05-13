@@ -374,7 +374,6 @@ elif current_page == "Hallucinations":
                 st.error("❌ Not quite — both other statements are factual.")
 
     st.markdown("💡 Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
-    st.markdown("⬅️ Click **Previous** to explore temperature tuning, or **Next ➡️** to learn about managing API costs.")
 
 elif current_page == "Feedback":
     st.header("💬 We Value Your Feedback")
@@ -414,22 +413,7 @@ elif current_page == "Feedback":
                 df = df.drop(columns=['S.No'])
             df.index = df.index + 1  # Show index starting from 1
             st.dataframe(df, use_container_width=True)
-
-# --- Navigation Buttons ---
-st.markdown("---")
-# --- Page Navigation ---
-nav_prev, _, nav_next = st.columns([2, 6, 2])
-with nav_prev:
-    if st.session_state['current_page_index'] > 0:
-        if st.button("⬅️ Previous"):
-            st.session_state['current_page_index'] -= 1
-            st.rerun()
-with nav_next:
-    if st.session_state['current_page_index'] < len(page_titles) - 1:
-        if st.button("Next ➡️"):
-            st.session_state['current_page_index'] += 1
-            st.rerun()
-
+            
 # --- Footer ---
 st.markdown("---")
 st.caption(f"© 2025 LLM Startup Guide • Last updated {datetime.now().strftime('%Y-%m-%d')}")
