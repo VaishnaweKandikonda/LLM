@@ -75,42 +75,42 @@ with st.sidebar:
     )
     st.session_state['page_index'] = all_sections.index(selected)
 
-# --- HOME PAGE ---
+# --- Home Page ---
 if selected == "Home":
     st.markdown("""
         <h1 style='text-align: center; font-size: 3em; color: #333;'>Smart Startups. Smart AI.</h1>
         <style>
-        .stButton>button {
-            transition: 0.3s ease;
-        }
-        .stButton>button:hover {
-            background-color: #00bcd4 !important;
-            color: white !important;
-            transform: scale(1.05);
-        }
-        .custom-card {
-            padding: 1em;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            background-color: white;
-            transition: 0.3s ease;
-            margin-bottom: 1rem;
-        }
-        .custom-card:hover {
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            transform: scale(1.01);
-        }
-        @media screen and (max-width: 768px) {
-            h1 {
-                font-size: 2em !important;
+            .stButton>button {
+                transition: 0.3s ease;
             }
-        }
+            .stButton>button:hover {
+                background-color: #00bcd4 !important;
+                color: white !important;
+                transform: scale(1.05);
+            }
+            .custom-card {
+                padding: 1em;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                background-color: white;
+                transition: 0.3s ease;
+                margin-bottom: 1rem;
+            }
+            .custom-card:hover {
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+                transform: scale(1.01);
+            }
+            @media screen and (max-width: 768px) {
+                h1 {
+                    font-size: 2em !important;
+                }
+            }
         </style>
     """, unsafe_allow_html=True)
 
     show_expand_collapse_buttons()
 
-    for title, content in {
+    home_sections = {
         "🤖 What are Language Models?": "Language models are AI tools trained to understand and generate human-like text. Tools like ChatGPT, Claude, and Gemini are based on LLMs.",
         "💡 Why Should Startups Care?": """
             LLMs can help you:
@@ -120,13 +120,15 @@ if selected == "Home":
             - Prototype conversational agents and tools
         """,
         "🚀 What You’ll Learn in This Guide": """
-            - How to write better prompts
-            - How temperature affects creativity
-            - How to spot and avoid hallucinations
-            - How to save on API costs
+            - How to write better prompts  
+            - How temperature affects creativity  
+            - How to spot and avoid hallucinations  
+            - How to save on API costs  
             - How to use LLMs ethically
         """
-    }.items():
+    }
+
+    for title, content in home_sections.items():
         st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
         with custom_expander(title):
             st.markdown(content)
@@ -136,7 +138,6 @@ if selected == "Home":
 elif selected == "Feedback":
     st.header("💬 We Value Your Feedback")
     show_expand_collapse_buttons()
-
     st.markdown("Please share your thoughts on this guide.")
 
     name = st.text_input("Your name *")
@@ -149,6 +150,11 @@ elif selected == "Feedback":
     required_filled = bool(name.strip())
     email_valid = True if not email.strip() else is_valid_email(email.strip())
     form_valid = required_filled and email_valid
+
+    if not required_filled:
+        st.warning("Name is required.")
+    elif not email_valid:
+        st.warning("Please enter a valid email address.")
 
     if st.button("Submit Feedback", disabled=not form_valid):
         entry = {
