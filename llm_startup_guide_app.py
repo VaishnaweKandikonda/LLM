@@ -312,7 +312,47 @@ elif current_page == "Temperature & Sampling":
             st.info("⚖️ Best with: Medium Temperature (0.4 - 0.6)")
 
     st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
+elif selected == "Feedback":
+    st.header("💬 We Value Your Feedback")
+    show_expand_collapse_buttons()
 
+    st.markdown("Please share your thoughts on this guide.")
+
+    name = st.text_input("Your name *")
+    email = st.text_input("Your email (optional)")
+    rating = st.slider("How helpful was this guide?", 1, 5, 3)
+    feedback = st.text_area("Your thoughts (optional)")
+    suggestion = st.selectbox("What would you like to see next?", ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
+    attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
+
+    required_filled = bool(name.strip())
+    email_valid = True if not email.strip() else is_valid_email(email.strip())
+    form_valid = required_filled and email_valid
+
+    if st.button("Submit Feedback", disabled=not form_valid):
+        entry = {
+            "S.No": len(st.session_state['feedback']) + 1,
+            "Name": name.strip(),
+            "Email": email.strip(),
+            "Rating": rating,
+            "Feedback": feedback.strip(),
+            "Suggested topic": None if suggestion == "None" else suggestion,
+            "Attachment name": attachment.name if attachment else None
+        }
+        st.session_state['feedback'].append(entry)
+        save_feedback_to_csv(entry)
+        st.success(f"Thanks {name.strip()} for your feedback!")
+
+    if st.session_state['feedback']:
+        if st.checkbox("Show All Feedback"):
+            df = pd.DataFrame(st.session_state['feedback'])
+            if 'S.No' in df.columns:
+                df = df.drop(columns=['S.No'])
+            df.index = df.index + 1  # Show index starting from 1
+            st.dataframe(df, use_container_width=True)
+
+# --- Navigation Buttons ---
+st.markdown("---")
 # --- Page Navigation ---
 nav_prev, _, nav_next = st.columns([2, 6, 2])
 with nav_prev:
