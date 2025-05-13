@@ -1,6 +1,0 @@
-streamlit
-streamlit-option-menu
-datetime
-pandas 
-pyttsx3
-threading
