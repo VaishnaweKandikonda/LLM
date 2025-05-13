@@ -5,14 +5,14 @@ import pandas as pd
 import re
 import os
 
-# --- App Configuration ---
-st.set_page_config(
-    page_title="LLM Guide for Startups",
-    page_icon="🤖",
-    layout="wide"
-)
+# --- App Config ---
+st.set_page_config(page_title="LLM Guide for Startups", page_icon="🤖", layout="wide")
 
-# --- Initialize Session State ---
+# --- Load CSS ---
+with open("style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# --- Session State ---
 if 'feedback_entries' not in st.session_state:
     if os.path.exists("feedback.csv"):
         st.session_state['feedback_entries'] = pd.read_csv("feedback.csv").to_dict("records")
@@ -73,39 +73,9 @@ with st.sidebar:
     )
     st.session_state['current_page_index'] = page_titles.index(current_page)
 
-# --- Home Page Content ---
+# --- Home Page ---
 if current_page == "Home":
-    st.markdown("""
-        <h1 style='text-align: center; font-size: 2.8em; color: #333;'>Smart Startups. Smart AI.</h1>
-        <style>
-            .stButton > button {
-                transition: all 0.3s ease-in-out;
-            }
-            .stButton > button:hover {
-                background-color: #00bcd4 !important;
-                color: white !important;
-                transform: scale(1.05);
-            }
-            .custom-box {
-                padding: 1.2rem;
-                border-radius: 12px;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-                background-color: #ffffff;
-                transition: 0.3s ease;
-                margin-bottom: 1rem;
-            }
-            .custom-box:hover {
-                box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-                transform: scale(1.01);
-            }
-            @media screen and (max-width: 768px) {
-                h1 {
-                    font-size: 2em !important;
-                }
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
+    st.markdown("<h1>Smart Startups. Smart AI.</h1>", unsafe_allow_html=True)
     display_expand_collapse_controls()
 
     home_sections = {
@@ -114,24 +84,32 @@ if current_page == "Home":
             "Popular platforms like ChatGPT, Claude, and Gemini use LLMs to assist users with content generation, problem-solving, and more."
         ),
         "💡 Why LLMs Matter for Startups": (
-            "Startups can use LLMs to:\n"
             "- Automate customer support and FAQs\n"
             "- Generate pitch decks, emails, blogs, and product content\n"
             "- Build intelligent prototypes and chatbots\n"
             "- Accelerate idea validation and MVP development"
         ),
-        "🚀 What You'll Gain from This Guide": (
+        "✅ Let's Get Started!": (
+            "Use the left menu to explore sections packed with insights, use cases, and practical tools to build smarter with AI."
+        ),
+        "🔍 Best Practices & Ethics": (
             "- Learn prompt design for better results\n"
             "- Understand model temperature and creativity\n"
-            "- Identify and avoid AI-generated misinformation\n"
-            "- Optimize API usage to save costs\n"
-            "- Apply AI responsibly and ethically"
+            "- Avoid AI-generated misinformation\n"
+            "- Optimize API costs\n"
+            "- Navigate bias and fairness responsibly"
+        ),
+        "👥 Who Should Use This Guide": (
+            "- Startup founders exploring AI\n"
+            "- Developers and PMs integrating LLMs\n"
+            "- Investors evaluating AI strategies\n"
+            "- Anyone curious about AI in startups"
         )
     }
 
-    for heading, content in home_sections.items():
+    for title, content in home_sections.items():
         st.markdown("<div class='custom-box'>", unsafe_allow_html=True)
-        with expander_section(heading):
+        with expander_section(title):
             st.markdown(content)
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -178,7 +156,7 @@ elif current_page == "Feedback":
             feedback_df = pd.DataFrame(st.session_state['feedback_entries'])
             st.dataframe(feedback_df.reset_index(drop=True), use_container_width=True)
 
-# --- Navigation Controls ---
+# --- Page Navigation ---
 st.markdown("---")
 nav_prev, _, nav_next = st.columns([2, 6, 2])
 with nav_prev:
