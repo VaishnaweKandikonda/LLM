@@ -4,13 +4,17 @@ from datetime import datetime
 import pandas as pd
 import re
 import os
+import openai
 
-# Page Config
+# --- Page Config ---
 st.set_page_config(
     page_title="LLM Guide for Startups",
     page_icon="🤖",
     layout="wide"
 )
+
+# --- Load OpenAI API Key ---
+openai.api_key = st.secrets["openai"]["api_key"]
 
 # --- Session State Initialization ---
 if 'feedback' not in st.session_state:
@@ -23,6 +27,8 @@ if 'page_index' not in st.session_state:
     st.session_state['page_index'] = 0
 if 'expand_all' not in st.session_state:
     st.session_state['expand_all'] = None
+if 'chat_history' not in st.session_state:
+    st.session_state['chat_history'] = []
 
 # --- Helper Functions ---
 def custom_expander(label):
@@ -30,14 +36,19 @@ def custom_expander(label):
     return st.expander(label, expanded=expanded)
 
 def show_expand_collapse_buttons():
-    # Responsive right-aligned buttons using columns
-    col1, col2, col3 = st.columns([6, 1, 1])
-    with col2:
-        if st.button("➕", help="Expand All Sections"):
-            st.session_state['expand_all'] = True
-    with col3:
-        if st.button("➖", help="Collapse All Sections"):
-            st.session_state['expand_all'] = False
+    current_page = all_sections[st.session_state['page_index']]
+    target_pages = [
+        "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
+        "API Cost Optimization", "Ethics & Bias"
+    ]
+    if current_page in target_pages:
+        col1, col2, col3 = st.columns([6, 1, 1])
+        with col2:
+            if st.button("➕", help="Expand All Sections"):
+                st.session_state['expand_all'] = True
+        with col3:
+            if st.button("➖", help="Collapse All Sections"):
+                st.session_state['expand_all'] = False
 
 def save_feedback_to_csv(entry, path="feedback.csv"):
     df = pd.DataFrame([entry])
@@ -70,195 +81,98 @@ with st.sidebar:
     )
     st.session_state['page_index'] = all_sections.index(selected)
 
-# --- Section Routing ---
+# --- HOME PAGE ---
 if selected == "Home":
-    st.title("Smart Startups, Smarter AI")
-    show_expand_collapse_buttons()
-    st.markdown("Welcome, founders and entrepreneurs! This guide is designed to help you understand and use large language models effectively, responsibly, and efficiently in your startup.")
+    st.markdown("""
+        <h1 style='text-align: center; font-size: 3em; color: #333;'>Smart Startups. Smart AI.</h1>
+        <style>
+        .stButton>button {
+            transition: 0.3s ease;
+        }
+        .stButton>button:hover {
+            background-color: #00bcd4 !important;
+            color: white !important;
+            transform: scale(1.05);
+        }
+        .custom-card {
+            padding: 1em;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: white;
+            transition: 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        .custom-card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transform: scale(1.01);
+        }
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 2em !important;
+            }
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
-    with custom_expander("🤖 What are Language Models?"):
-        st.markdown("Language models are AI tools trained to understand and generate human-like text. Tools like ChatGPT, Claude, and Gemini are based on LLMs.")
-
-    with custom_expander("💡 Why Should Startups Care?"):
-        st.markdown("""
-        LLMs can help you:
-        - Write product descriptions and marketing copy
-        - Automate customer support and FAQ generation
-        - Draft emails, blogs, and pitch decks
-        - Prototype conversational agents and tools
-        """)
-
-    with custom_expander("🚀 What You’ll Learn in This Guide"):
-        st.markdown("""
-        - How to write better prompts
-        - How temperature affects creativity
-        - How to spot and avoid hallucinations
-        - How to save on API costs
-        - How to use LLMs ethically
-        """)
-
-elif selected == "Prompt Engineering":
-    st.header("🧠 Prompt Like a Pro")
-    show_expand_collapse_buttons()
-    sub = st.selectbox("Choose a sub-topic:", ["All", "What is a Prompt?", "Best Practices", "Try It Yourself"])
-
-    if sub in ["All", "What is a Prompt?"]:
-        with custom_expander("🔍 What is a Prompt?"):
-            st.markdown("A **prompt** is the text you give to an AI model to guide its response. The clearer your prompt, the better the output.")
-
-    if sub in ["All", "Best Practices"]:
-        with custom_expander("🛠️ Best Practices"):
-            st.markdown("""
-            - Be **specific**
-            - Set a **role**
-            - Define the **output format**
-            """)
-
-    if sub in ["All", "Try It Yourself"]:
-        with custom_expander("✍️ Try it Yourself"):
-            user_prompt = st.text_area("Enter a prompt you'd use for your business:", "Write a catchy product description for a new app that tracks sleep patterns.")
-            if user_prompt:
-                st.markdown(f"_Example result:_\n\n> \"{user_prompt.replace('Write a', 'Introducing our new tool that helps you')}\"")
-
-elif selected == "Temperature & Sampling":
-    st.header("🎛️ Controlling AI Creativity")
-    show_expand_collapse_buttons()
-    sub = st.selectbox("Choose a sub-topic:", ["All", "What is Temperature?", "Live Example"])
-
-    if sub in ["All", "What is Temperature?"]:
-        with custom_expander("🔥 What is Temperature?"):
-            st.markdown("""
-            Temperature controls how **random** or **creative** the AI’s response will be:
-            - `0.0` = Very precise
-            - `0.7` = Balanced
-            - `1.0` = Very creative
-            """)
-
-    if sub in ["All", "Live Example"]:
-        with custom_expander("🤖 Try adjusting the temperature"):
-            temp = st.slider("Choose a temperature:", 0.0, 1.0, 0.7, 0.1)
-            sample_prompt = "Describe a smart water bottle in one sentence."
-            if temp < 0.3:
-                result = "A smart water bottle that reminds you to drink water every hour."
-            elif temp < 0.7:
-                result = "A smart water bottle that tracks your hydration and connects to your phone."
-            else:
-                result = "Imagine a sleek bottle that whispers hydration tips and syncs with your wellness dreams."
-            st.write(f"**Prompt:** {sample_prompt}")
-            st.success(f"Output: {result}")
-
-elif selected == "Hallucinations":
-    st.header("🚨 Avoiding AI Hallucinations")
     show_expand_collapse_buttons()
 
-    with custom_expander("🧠 Why It Happens"):
-        st.markdown("LLMs predict text based on patterns in data. They do not \"know\" truth.")
+    for title, content in {
+        "🤖 What are Language Models?": "Language models are AI tools trained to understand and generate human-like text. Tools like ChatGPT, Claude, and Gemini are based on LLMs.",
+        "💡 Why Should Startups Care?": """
+            LLMs can help you:
+            - Write product descriptions and marketing copy
+            - Automate customer support and FAQ generation
+            - Draft emails, blogs, and pitch decks
+            - Prototype conversational agents and tools
+        """,
+        "🚀 What You’ll Learn in This Guide": """
+            - How to write better prompts
+            - How temperature affects creativity
+            - How to spot and avoid hallucinations
+            - How to save on API costs
+            - How to use LLMs ethically
+        """
+    }.items():
+        st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
+        with custom_expander(title):
+            st.markdown(content)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    with custom_expander("🚫 Example"):
-        st.markdown("""
-        **Prompt:** "What’s the latest GDPR certification for startups?"  
-        **LLM Output:** "The 2024 GDPR-AI Gold Standard certification…" ❌ _(this does not exist)_
-        """)
+    # --- Chatbot ---
+    st.markdown("---")
+    st.subheader("🤖 Ask Our AI Assistant")
 
-    with custom_expander("✅ Best Practices"):
-        st.markdown("""
-        - Cross-check AI outputs
-        - Don’t use LLMs for critical info
-        - Add human review
-        """)
+    user_input = st.chat_input("Ask something about LLMs or startups...")
+    if user_input:
+        st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-elif selected == "API Cost Optimization":
-    st.header("💸 Saving Money with LLM APIs")
-    show_expand_collapse_buttons()
+        with st.spinner("Thinking..."):
+            try:
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                        {"role": "system", "content": "You are a helpful assistant for startup founders using AI."}
+                    ] + st.session_state.chat_history
+                )
+                ai_reply = response.choices[0].message["content"]
+                st.session_state.chat_history.append({"role": "assistant", "content": ai_reply})
+            except Exception as e:
+                ai_reply = f"⚠️ Error: {e}"
+                st.session_state.chat_history.append({"role": "assistant", "content": ai_reply})
 
-    with custom_expander("📉 Why It Matters"):
-        st.markdown("LLM API calls cost money. Reduce usage where possible.")
+    if st.button("Reset Chat"):
+        st.session_state.chat_history = []
+        st.experimental_rerun()
 
-    with custom_expander("💰 Strategies to Reduce Cost"):
-        st.markdown("""
-        - Use GPT-3.5 when possible
-        - Keep prompts short
-        - Batch tasks
-        - Use caching
-        """)
+    for message in st.session_state.chat_history:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    with custom_expander("📊 Cost Example"):
-        st.markdown("""
-        - 100 GPT-4 calls = ~$3  
-        - 100 GPT-3.5 calls = ~$0.20
-        """)
-
-elif selected == "Ethics & Bias":
-    st.header("⚖️ Responsible AI Use for Startups")
-    show_expand_collapse_buttons()
-
-    with custom_expander("⚠️ What’s the Risk?"):
-        st.markdown("LLMs can reflect or amplify **biases** in their training data.")
-
-    with custom_expander("🧪 Example"):
-        st.markdown("""
-        **Prompt:** "Describe a CEO."  
-        **Output:** "He is a confident leader..." ❌ _(gender bias)_
-        """)
-
-    with custom_expander("🛡 How to Mitigate"):
-        st.markdown("""
-        - Use inclusive language
-        - Check outputs for bias
-        - Document usage policy
-        """)
-
-# Other pages (without expand/collapse)
-elif selected == "FAQs":
-    st.header("❓ Frequently Asked Questions")
-    with st.expander("What is a language model?"):
-        st.write("An AI trained to understand/generate human language.")
-    with st.expander("What is a token?"):
-        st.write("A small unit of text. Token count affects API cost.")
-    with st.expander("Can I trust the output?"):
-        st.write("Not always. Use human verification.")
-    with st.expander("Is GPT-3.5 enough for my startup?"):
-        st.write("Often, yes! It’s cheaper and works for most tasks.")
-
-elif selected == "Glossary":
-    st.header("📖 Glossary of Common Terms")
-    terms = {
-        "LLM": "Large Language Model",
-        "Token": "Unit of input text processed by the model",
-        "Prompt": "Instruction given to an AI",
-        "Temperature": "Controls output creativity",
-        "Hallucination": "False output from LLM",
-        "Bias": "Systemic unfairness in output"
-    }
-    for term, definition in terms.items():
-        st.markdown(f"**{term}** — {definition}")
-
-elif selected == "Interactive Use Cases":
-    st.header("🧪 AI Use Case Simulator")
-    use_case = st.selectbox("Choose a scenario:", ["Product Description", "Customer Support Reply", "Marketing Email"])
-
-    if use_case == "Product Description":
-        product = st.text_input("Describe your product:", "Eco-friendly water bottle with temperature sensor")
-        if product:
-            st.success(f"Meet your new hydration hero – {product}.")
-
-    elif use_case == "Customer Support Reply":
-        issue = st.text_area("Enter the customer issue:", "The app is not tracking my sleep correctly.")
-        if issue:
-            st.success(f"Response: Sorry to hear that! Try reinstalling. We're on it: '{issue}'.")
-
-    elif use_case == "Marketing Email":
-        offer = st.text_input("What's your campaign about?", "10% off all subscriptions this month")
-        if offer:
-            st.success(f"Email: Unlock your {offer}! Tools that work for you. Limited time!")
-
-elif selected == "Download Toolkit":
-    st.header("📦 Downloadable Toolkit")
-    toolkit = """LLM Guide for Startups - Toolkit\n\nPROMPTING: Be specific, assign a role, define format\nTEMPERATURE: 0 = factual, 1 = creative\nHALLUCINATIONS: Always verify info\nCOST: Use GPT-3.5, keep prompts short\nETHICS: Use inclusive language, test bias"""
-    st.download_button("📥 Download Toolkit as TXT", data=toolkit, file_name="llm_startup_toolkit.txt")
-
+# --- Placeholder for other pages ---
 elif selected == "Feedback":
     st.header("💬 We Value Your Feedback")
+    show_expand_collapse_buttons()
+
     st.markdown("Please share your thoughts on this guide.")
 
     name = st.text_input("Your name *")
@@ -289,10 +203,7 @@ elif selected == "Feedback":
     if st.session_state['feedback']:
         if st.checkbox("Show All Feedback"):
             df = pd.DataFrame(st.session_state['feedback'])
-            if 'S.No' in df.columns:
-                df = df.drop(columns=['S.No'])
-            df.index = df.index + 1  # Show index starting from 1
-            st.dataframe(df, use_container_width=True)
+            st.dataframe(df.reset_index(drop=True), use_container_width=True)
 
 # --- Navigation Buttons ---
 st.markdown("---")
