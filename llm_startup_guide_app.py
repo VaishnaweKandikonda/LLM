@@ -382,7 +382,6 @@ elif current_page == "Hallucinations":
     st.markdown("💡 Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
 
 elif current_page == "API Cost Optimization":
-    st.set_page_config(page_title="API Cost Optimization", layout="wide")
     st.title("💸 API Cost Optimization")
     display_expand_collapse_controls()
 
