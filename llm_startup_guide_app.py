@@ -30,12 +30,13 @@ def custom_expander(label):
     return st.expander(label, expanded=expanded)
 
 def show_expand_collapse_buttons():
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("➕ Expand All"):
-            st.session_state['expand_all'] = True
+    # Responsive right-aligned buttons using columns
+    col1, col2, col3 = st.columns([6, 1, 1])
     with col2:
-        if st.button("➖ Collapse All"):
+        if st.button("➕", help="Expand All Sections"):
+            st.session_state['expand_all'] = True
+    with col3:
+        if st.button("➖", help="Collapse All Sections"):
             st.session_state['expand_all'] = False
 
 def save_feedback_to_csv(entry, path="feedback.csv"):
@@ -207,22 +208,20 @@ elif selected == "Ethics & Bias":
         - Document usage policy
         """)
 
+# Other pages (without expand/collapse)
 elif selected == "FAQs":
     st.header("❓ Frequently Asked Questions")
-    show_expand_collapse_buttons()
-
-    with custom_expander("What is a language model?"):
+    with st.expander("What is a language model?"):
         st.write("An AI trained to understand/generate human language.")
-    with custom_expander("What is a token?"):
+    with st.expander("What is a token?"):
         st.write("A small unit of text. Token count affects API cost.")
-    with custom_expander("Can I trust the output?"):
+    with st.expander("Can I trust the output?"):
         st.write("Not always. Use human verification.")
-    with custom_expander("Is GPT-3.5 enough for my startup?"):
+    with st.expander("Is GPT-3.5 enough for my startup?"):
         st.write("Often, yes! It’s cheaper and works for most tasks.")
 
 elif selected == "Glossary":
     st.header("📖 Glossary of Common Terms")
-    show_expand_collapse_buttons()
     terms = {
         "LLM": "Large Language Model",
         "Token": "Unit of input text processed by the model",
@@ -236,7 +235,6 @@ elif selected == "Glossary":
 
 elif selected == "Interactive Use Cases":
     st.header("🧪 AI Use Case Simulator")
-    show_expand_collapse_buttons()
     use_case = st.selectbox("Choose a scenario:", ["Product Description", "Customer Support Reply", "Marketing Email"])
 
     if use_case == "Product Description":
@@ -256,14 +254,11 @@ elif selected == "Interactive Use Cases":
 
 elif selected == "Download Toolkit":
     st.header("📦 Downloadable Toolkit")
-    show_expand_collapse_buttons()
     toolkit = """LLM Guide for Startups - Toolkit\n\nPROMPTING: Be specific, assign a role, define format\nTEMPERATURE: 0 = factual, 1 = creative\nHALLUCINATIONS: Always verify info\nCOST: Use GPT-3.5, keep prompts short\nETHICS: Use inclusive language, test bias"""
     st.download_button("📥 Download Toolkit as TXT", data=toolkit, file_name="llm_startup_toolkit.txt")
 
 elif selected == "Feedback":
     st.header("💬 We Value Your Feedback")
-    show_expand_collapse_buttons()
-
     st.markdown("Please share your thoughts on this guide.")
 
     name = st.text_input("Your name *")
