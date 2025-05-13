@@ -314,7 +314,7 @@ elif current_page == "Temperature & Sampling":
     st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
 elif current_page == "Feedback":
     st.header("💬 We Value Your Feedback")
-    show_expand_collapse_buttons()
+    display_expand_collapse_controls()
 
     st.markdown("Please share your thoughts on this guide.")
 
