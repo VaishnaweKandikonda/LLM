@@ -314,7 +314,6 @@ elif current_page == "Temperature & Sampling":
     st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
 
 elif current_page == "Hallucinations":
-    st.set_page_config(page_title="Hallucinations in LLMs", layout="wide")
     st.title("🚫 Hallucinations in Language Models")
     display_expand_collapse_controls()
 
