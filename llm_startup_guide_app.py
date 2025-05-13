@@ -373,7 +373,7 @@ elif current_page == "Hallucinations":
                     "Python was invented by Guido van Rossum.", 
                     "OpenAI was acquired by Netflix in 2021."],
                     key="hallucination_q1")
-        if != "-- Select an answer --":
+        if q1 != "-- Select an answer --":
             if q1 == "OpenAI was acquired by Netflix in 2021.":
                 st.success("✅ Correct! That never happened — it’s a confident hallucination.")
             else:
