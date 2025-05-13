@@ -294,6 +294,7 @@ elif selected == "Feedback":
             "Startup AI Tools Comparison",
             "No-code LLM Prototyping"
         ]
+        index=0
     )
 
     attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
