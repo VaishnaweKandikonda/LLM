@@ -10,20 +10,26 @@ st.set_page_config(
     layout="wide"
 )
 
-# Session State Initialization
+# --- Session State Initialization ---
 if 'feedback' not in st.session_state:
     st.session_state['feedback'] = []
 if 'page_index' not in st.session_state:
     st.session_state['page_index'] = 0
+if 'expand_all' not in st.session_state:
+    st.session_state['expand_all'] = None  # Controls expand/collapse of expanders
 
-# All Sections List
+# --- Helper Function for Expanders ---
+def custom_expander(label):
+    expanded = st.session_state['expand_all'] if st.session_state['expand_all'] is not None else False
+    return st.expander(label, expanded=expanded)
+
+# --- Sidebar Menu ---
 all_sections = [
     "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
     "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary",
     "Interactive Use Cases", "Download Toolkit", "Feedback"
 ]
 
-# Sidebar Menu
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu",
@@ -37,16 +43,22 @@ with st.sidebar:
     )
     st.session_state['page_index'] = all_sections.index(selected)
 
-# Section Routing
+    st.markdown("**🧭 Quick View Options**")
+    if st.button("➕ Expand All"):
+        st.session_state['expand_all'] = True
+    if st.button("➖ Collapse All"):
+        st.session_state['expand_all'] = False
+
+# --- Section Routing ---
 if selected == "Home":
     st.title("Smart Startups, Smarter AI")
     intro = "Welcome, founders and entrepreneurs! This guide is designed to help you understand and use large language models effectively, responsibly, and efficiently in your startup."
     st.markdown(intro)
 
-    with st.expander("🤖 What are Language Models?"):
+    with custom_expander("🤖 What are Language Models?"):
         st.markdown("Language models are AI tools trained to understand and generate human-like text. Tools like ChatGPT, Claude, and Gemini are based on LLMs.")
 
-    with st.expander("💡 Why Should Startups Care?"):
+    with custom_expander("💡 Why Should Startups Care?"):
         st.markdown("""
         LLMs can help you:
         - Write product descriptions and marketing copy
@@ -57,7 +69,7 @@ if selected == "Home":
         But they also come with risks — like false information (hallucinations), cost inefficiencies, and ethical concerns.
         """)
 
-    with st.expander("🚀 What You’ll Learn in This Guide"):
+    with custom_expander("🚀 What You’ll Learn in This Guide"):
         st.markdown("""
         - How to write better prompts
         - How temperature affects creativity
@@ -73,11 +85,11 @@ elif selected == "Prompt Engineering":
     sub = st.selectbox("Choose a sub-topic:", ["All", "What is a Prompt?", "Best Practices", "Try It Yourself"])
 
     if sub == "All" or sub == "What is a Prompt?":
-        with st.expander("🔍 What is a Prompt?"):
+        with custom_expander("🔍 What is a Prompt?"):
             st.markdown("A **prompt** is the text you give to an AI model to guide its response. The clearer your prompt, the better the output.")
 
     if sub == "All" or sub == "Best Practices":
-        with st.expander("🛠️ Best Practices"):
+        with custom_expander("🛠️ Best Practices"):
             st.markdown("""
             - Be **specific**: "Write a 2-sentence product description for a pet food startup."
             - Set a **role**: "You are a copywriter for eco-brands..."
@@ -85,7 +97,7 @@ elif selected == "Prompt Engineering":
             """)
 
     if sub == "All" or sub == "Try It Yourself":
-        with st.expander("✍️ Try it Yourself"):
+        with custom_expander("✍️ Try it Yourself"):
             user_prompt = st.text_area("Enter a prompt you'd use for your business:", "Write a catchy product description for a new app that tracks sleep patterns.")
             if user_prompt:
                 st.markdown(f"_Example result (simulated):_\n\n> \"{user_prompt.replace('Write a', 'Introducing our new tool that helps you')}\"")
@@ -95,7 +107,7 @@ elif selected == "Temperature & Sampling":
     sub = st.selectbox("Choose a sub-topic:", ["All", "What is Temperature?", "Live Example"])
 
     if sub == "All" or sub == "What is Temperature?":
-        with st.expander("🔥 What is Temperature?"):
+        with custom_expander("🔥 What is Temperature?"):
             st.markdown("""
             Temperature controls how **random** or **creative** the AI’s response will be:
             - `0.0` = Very precise and repetitive (good for factual answers)
@@ -104,7 +116,7 @@ elif selected == "Temperature & Sampling":
             """)
 
     if sub == "All" or sub == "Live Example":
-        with st.expander("🤖 Try adjusting the temperature"):
+        with custom_expander("🤖 Try adjusting the temperature"):
             temp = st.slider("Choose a temperature:", 0.0, 1.0, 0.7, 0.1)
             sample_prompt = "Describe a smart water bottle in one sentence."
             if temp < 0.3:
@@ -120,17 +132,17 @@ elif selected == "Hallucinations":
     st.header("🚨 Avoiding AI Hallucinations")
     st.markdown("Sometimes, LLMs make up facts or details. This is called a **hallucination**.")
 
-    with st.expander("🧠 Why It Happens"):
+    with custom_expander("🧠 Why It Happens"):
         st.markdown("LLMs predict text based on patterns in data. They do not \"know\" truth — they generate what sounds plausible.")
 
-    with st.expander("🚫 Example"):
+    with custom_expander("🚫 Example"):
         st.markdown("""
         **Prompt:** "What’s the latest GDPR certification for startups?"
 
         **LLM Output:** "The 2024 GDPR-AI Gold Standard certification…" ❌ _(this does not exist)_
         """)
 
-    with st.expander("✅ Best Practices"):
+    with custom_expander("✅ Best Practices"):
         st.markdown("""
         - Cross-check AI outputs with trusted sources
         - Use LLMs for drafting, not verifying
@@ -140,14 +152,14 @@ elif selected == "Hallucinations":
 
 elif selected == "API Cost Optimization":
     st.header("💸 Saving Money with LLM APIs")
-    with st.expander("📉 Why It Matters"):
+    with custom_expander("📉 Why It Matters"):
         st.markdown("""
         - GPT-4 is powerful but expensive
         - Longer prompts and outputs = more tokens
         - Every API call has a cost
         """)
 
-    with st.expander("💰 Strategies to Reduce Cost"):
+    with custom_expander("💰 Strategies to Reduce Cost"):
         st.markdown("""
         - Use **GPT-3.5** for non-critical tasks
         - Keep prompts **short and efficient**
@@ -155,7 +167,7 @@ elif selected == "API Cost Optimization":
         - Use **caching** for repeated requests
         """)
 
-    with st.expander("📊 Cost Example"):
+    with custom_expander("📊 Cost Example"):
         st.markdown("""
         - 100 calls to GPT-4 at 500 tokens each = ~$3
         - 100 calls to GPT-3.5 = ~$0.20
@@ -163,20 +175,20 @@ elif selected == "API Cost Optimization":
 
 elif selected == "Ethics & Bias":
     st.header("⚖️ Responsible AI Use for Startups")
-    with st.expander("⚠️ What’s the Risk?"):
+    with custom_expander("⚠️ What’s the Risk?"):
         st.markdown("""
         - LLMs can reflect or amplify **biases** in their training data
         - Outputs can reinforce **stereotypes** or generate **harmful assumptions**
         """)
 
-    with st.expander("🧪 Example"):
+    with custom_expander("🧪 Example"):
         st.markdown("""
         **Prompt:** "Describe a CEO."
 
         **Output:** "He is a confident leader..." ❌ _(gender bias)_
         """)
 
-    with st.expander("🛡 How to Mitigate"):
+    with custom_expander("🛡 How to Mitigate"):
         st.markdown("""
         - Use **inclusive language** in your prompts
         - **Test outputs** for bias before publishing
@@ -186,13 +198,13 @@ elif selected == "Ethics & Bias":
 
 elif selected == "FAQs":
     st.header("❓ Frequently Asked Questions")
-    with st.expander("What is a language model?"):
+    with custom_expander("What is a language model?"):
         st.write("An LLM is an AI system trained to understand and generate human-like text.")
-    with st.expander("What is a token?"):
+    with custom_expander("What is a token?"):
         st.write("A token is a chunk of text (word or part-word) used in LLMs. Cost is often based on token count.")
-    with st.expander("Can I trust the output?"):
+    with custom_expander("Can I trust the output?"):
         st.write("LLMs are not always accurate. Always verify important information.")
-    with st.expander("Is GPT-3.5 enough for my startup?"):
+    with custom_expander("Is GPT-3.5 enough for my startup?"):
         st.write("Usually yes! It’s cheaper and performs well for most use cases.")
 
 elif selected == "Glossary":
@@ -269,22 +281,20 @@ elif selected == "Feedback":
         df = pd.DataFrame(st.session_state['feedback'])
         st.dataframe(df)
 
-# --- Responsive Navigation Buttons ---
+# --- Navigation Buttons ---
 st.markdown("---")
 nav_col1, nav_col2, nav_col3 = st.columns([2, 4, 2])
-
 with nav_col1:
     if st.session_state['page_index'] > 0:
         if st.button("⬅️ Previous"):
             st.session_state['page_index'] -= 1
             st.rerun()
-
 with nav_col3:
     if st.session_state['page_index'] < len(all_sections) - 1:
         if st.button("Next ➡️"):
             st.session_state['page_index'] += 1
             st.rerun()
 
-# Footer
+# --- Footer ---
 st.markdown("---")
 st.caption(f"© 2025 LLM Startup Guide – Last updated {datetime.now().strftime('%Y-%m-%d')}")
