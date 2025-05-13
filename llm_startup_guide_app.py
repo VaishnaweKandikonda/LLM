@@ -241,6 +241,67 @@ elif current_page == "Prompt Engineering":
 
             q3 = st.radio("3. True or False: AI always knows your intent.", ["True", "False"])
             st.success("✅ Correct!") if q3 == "False" else st.error("❌ Incorrect.")
+elif current_page == "Temperature & Sampling":
+    st.title("🎛️ Temperature & Sampling")
+    display_expand_collapse_controls()
+
+    with expander_section("🔥 What is Temperature in Language Models?"):
+        st.write("""
+        **Temperature** controls how predictable or creative the AI's output is.
+
+        It ranges from **0.0 to 1.0**:
+        - A **low temperature** (e.g., 0.1) makes the model **precise, reliable, and factual**.
+        - A **high temperature** (e.g., 0.9) makes it **creative, surprising, and more risky**.
+
+        Think of it like this:
+        > 🔧 0.1 = robotic, safe replies  
+        > 🎨 0.9 = playful, unexpected ideas
+        """)
+        st.info("💡 Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
+
+    with expander_section("🎯 Adjust the Temperature and See the Difference"):
+        temperature = st.slider("Select Temperature Level", 0.1, 1.0, 0.7)
+        if temperature < 0.3:
+            st.success("🧊 Low Temperature (Factual & Consistent)")
+            st.markdown("Example: “Our app helps freelancers manage budgets. It's secure and simple.”")
+        elif temperature < 0.7:
+            st.info("⚖️ Medium Temperature (Balanced)")
+            st.markdown("Example: “Meet the financial sidekick for freelancers — smart, helpful, and always on call.”")
+        else:
+            st.warning("🔥 High Temperature (Creative & Risky)")
+            st.markdown("Example: “Money? Managed. Chaos? Cancelled. Our app is your financial freedom button.”")
+
+    with expander_section("📊 Temperature Summary Table"):
+        st.markdown("""
+        | Temperature | Behavior                  | Best For                      |
+        |-------------|---------------------------|-------------------------------|
+        | 0.1 - 0.3   | Factual, focused, safe    | Reports, investor decks       |
+        | 0.4 - 0.7   | Balanced, conversational  | Product copy, onboarding flows|
+        | 0.8 - 1.0   | Creative, surprising      | Brainstorms, social content   |
+        """)
+
+    with expander_section("🎲 What Is Sampling in LLMs?"):
+        st.write("""
+        **Sampling** is how the model decides **which word to say next**. It picks from a range of likely options, not just the top one.
+
+        Two techniques:
+        - **Top-k sampling**: From top k most likely next words
+        - **Top-p sampling (nucleus sampling)**: From smallest group of words with probability above p
+
+        This helps avoid repetition and create variation — useful for startups generating product copy, blog posts, or email variations.
+        """)
+
+    with expander_section("🧠 Match Temperature to a Task"):
+        use_case = st.radio("Select your use case:", 
+                            ["Summarizing a feature list", "Generating Instagram ad copy", "Writing a refund response email"])
+        if use_case == "Summarizing a feature list":
+            st.success("✅ Best with: Low Temperature (0.1 - 0.3)")
+        elif use_case == "Generating Instagram ad copy":
+            st.warning("🔥 Best with: High Temperature (0.8 - 1.0)")
+        elif use_case == "Writing a refund response email":
+            st.info("⚖️ Best with: Medium Temperature (0.4 - 0.6)")
+
+    st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
 
 # --- Page Navigation ---
 nav_prev, _, nav_next = st.columns([2, 6, 2])
