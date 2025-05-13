@@ -423,6 +423,56 @@ elif current_page == "API Cost Optimization":
     with expander_section("Final Note"):
         st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
 
+elif current_page == "Ethics & Bias":
+    st.title("Ethics and Bias in Language Models")
+    display_expand_collapse_controls()
+
+    with expander_section("Why Ethics and Fairness Matter"):
+        st.write("""
+        Language models are incredibly powerful — but they’re not perfect.
+
+        Since they are trained on vast amounts of internet data, they can reflect social and cultural biases. These biases can unintentionally affect your startup's messaging, hiring tools, or customer communication systems.
+
+        As a founder, you’re responsible for building inclusive and trustworthy experiences.
+        """)
+
+    with expander_section("Examples of Bias in AI"):
+        st.markdown("""
+        - A resume-screening assistant that favors male candidates based on historical hiring data.
+        - A chatbot that assumes all engineers are men.
+        - A product description generator that omits diverse customer personas.
+        """)
+
+    with expander_section("Why Bias Happens in Language Models"):
+        st.write("""
+        Language models learn from patterns in public text data — books, websites, social media, forums. This means:
+        - They may repeat harmful stereotypes.
+        - They often reflect dominant voices more than marginalized ones.
+        - They don't understand fairness — they reproduce frequency patterns in data.
+        """)
+
+    with expander_section("What Startup Founders Can Do"):
+        st.markdown("""
+        - Test outputs for different demographic or geographic user profiles.
+        - Avoid using AI tools blindly in hiring, lending, or content moderation.
+        - Review all AI-generated content before using it externally.
+        - Add a disclaimer or human review step for sensitive outputs.
+        - Be transparent with users when AI is involved in decisions.
+        """)
+
+    with expander_section("Try This"):
+        bias_prompt = st.radio("Which of these might reflect bias?", [
+            "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'", 
+            "Summarize a product spec for a software tool", 
+            "Generate a welcome message for a task management app"
+        ])
+        if bias_prompt == "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'":
+            st.success("Correct. This assumes the doctor's gender, which may reflect bias.")
+        else:
+            st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
+
+    st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
+
 elif current_page == "Feedback":
     st.header("We Value Your Feedback")
     display_expand_collapse_controls()
