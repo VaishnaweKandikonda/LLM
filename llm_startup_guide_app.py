@@ -117,19 +117,6 @@ with st.sidebar:
         menu_icon="cast"
     )
 
-# with st.sidebar:
-#     current_page = option_menu(
-#         menu_title="📘 Guide Sections",
-#         options=page_titles,
-#         icons=[
-#             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
-#             "question-circle", "book", "tools", "download", "chat-dots"
-#         ],
-#         menu_icon="cast",
-#         default_index=st.session_state['current_page_index']
-#     )
-#     st.session_state['current_page_index'] = page_titles.index(current_page)
-
 # --- Home Page ---
 if current_page == "Home":
     st.markdown("<h1 style='text-align:center;'>Smart Startups. Smart AI.</h1>", unsafe_allow_html=True)
@@ -243,7 +230,7 @@ elif current_page == "Prompt Engineering":
     if subtopic in ("All", "Prompt Checklist"):
         with expander_section("7. ✅ Prompt Checklist"):
             st.markdown("- [x] Be specific\n- [x] Set a role\n- [x] Define output format")
-
+            
     if subtopic in ("All", "Quiz"):
         with expander_section("8. 🧠 Test Your Knowledge"):
             q1 = st.radio("1. What makes a good prompt?", [
@@ -251,17 +238,30 @@ elif current_page == "Prompt Engineering":
                 "Clear instructions with role, format, and topic",
                 "Anything, the AI will figure it out"
             ])
-            st.success("✅ Correct!") if q1 == "Clear instructions with role, format, and topic" else st.error("❌ Try again.")
-
+            if q1:
+                if q1 == "Clear instructions with role, format, and topic":
+                    st.success("✅ Correct!")
+                else:
+                    st.error("❌ Try again.")
+    
             q2 = st.radio("2. Which is a strong ad prompt?", [
                 "Write an ad",
                 "Write a 2-line ad copy for a wearable fitness tracker targeting new moms in a friendly tone",
                 "Make something catchy"
             ])
-            st.success("✅ Spot on!") if "fitness tracker" in q2 else st.error("❌ Try again.")
-
+            if q2:
+                if "fitness tracker" in q2:
+                    st.success("✅ Spot on!")
+                else:
+                    st.error("❌ Try again.")
+    
             q3 = st.radio("3. True or False: AI always knows your intent.", ["True", "False"])
-            st.success("✅ Correct!") if q3 == "False" else st.error("❌ Incorrect.")
+            if q3:
+                if q3 == "False":
+                    st.success("✅ Correct!")
+                else:
+                    st.error("❌ Incorrect.")
+
 elif current_page == "Temperature & Sampling":
     st.title("🎛️ Temperature & Sampling")
     display_expand_collapse_controls()
