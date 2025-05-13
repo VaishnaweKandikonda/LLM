@@ -78,7 +78,7 @@ def get_llm_response(prompt):
         }
 
         response = requests.post(
-            "https://api-inference.huggingface.co/models/google/flan-t5-large",
+            "https://api-inference.huggingface.co/models/google/flan-t5-small",
             headers=headers,
             json=payload
         )
