@@ -313,22 +313,19 @@ elif current_page == "Temperature & Sampling":
 
     st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
 
-elif selected == "API Cost Optimization":
+elif current_page == "API Cost Optimization":
     st.header("💸 Saving Money with LLM APIs")
-    show_expand_collapse_buttons()
-
-    with custom_expander("📉 Why It Matters"):
+    display_expand_collapse_controls()
+    with expander_section("📉 Why It Matters"):
         st.markdown("LLM API calls cost money. Reduce usage where possible.")
-
-    with custom_expander("💰 Strategies to Reduce Cost"):
+    with expander_section("💰 Strategies to Reduce Cost"):
         st.markdown("""
-        - Use GPT-3.5 when possible
-        - Keep prompts short
-        - Batch tasks
+        - Use GPT-3.5 when possible  
+        - Keep prompts short  
+        - Batch tasks  
         - Use caching
         """)
-
-    with custom_expander("📊 Cost Example"):
+    with expander_section("📊 Cost Example"):
         st.markdown("""
         - 100 GPT-4 calls = ~$3  
         - 100 GPT-3.5 calls = ~$0.20
