@@ -19,11 +19,12 @@ if os.path.exists("WebAppstyling.css"):
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
 # --- Session State ---
+@st.cache_data
+def load_feedback(path="feedback.csv"):
+    return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
+
 if 'feedback_entries' not in st.session_state:
-    if os.path.exists("feedback.csv"):
-        st.session_state['feedback_entries'] = pd.read_csv("feedback.csv").to_dict("records")
-    else:
-        st.session_state['feedback_entries'] = []
+    st.session_state['feedback_entries'] = load_feedback()
 
 if 'current_page_index' not in st.session_state:
     st.session_state['current_page_index'] = 0
@@ -113,10 +114,21 @@ with st.sidebar:
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
             "question-circle", "book", "tools", "download", "chat-dots"
         ],
-        menu_icon="cast",
-        default_index=st.session_state['current_page_index']
+        menu_icon="cast"
     )
-    st.session_state['current_page_index'] = page_titles.index(current_page)
+
+# with st.sidebar:
+#     current_page = option_menu(
+#         menu_title="📘 Guide Sections",
+#         options=page_titles,
+#         icons=[
+#             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
+#             "question-circle", "book", "tools", "download", "chat-dots"
+#         ],
+#         menu_icon="cast",
+#         default_index=st.session_state['current_page_index']
+#     )
+#     st.session_state['current_page_index'] = page_titles.index(current_page)
 
 # --- Home Page ---
 if current_page == "Home":
@@ -197,15 +209,14 @@ elif current_page == "Prompt Engineering":
         with expander_section("4. ✍️ Try it Yourself"):
             st.markdown("Write a real prompt you'd like to test. We'll generate a response using FLAN-T5.")
             user_prompt = st.text_area("Enter your business prompt:")
-
-            if user_prompt:
+            if st.button("Run Prompt") and user_prompt:
                 with st.spinner("Generating response..."):
                     response, error = get_llm_response(user_prompt)
-
-                    if response:
-                        st.success(response)
-                    else:
-                        st.error(error)
+            
+                if response:
+                    st.success(response)
+                else:
+                    st.error(error)
 
     if subtopic in ("All", "Prompt Use Cases"):
         with expander_section("5. What are you using the prompt for?"):
@@ -406,18 +417,18 @@ elif current_page == "Feedback":
 
 # --- Navigation Buttons ---
 st.markdown("---")
-# --- Page Navigation ---
-nav_prev, _, nav_next = st.columns([2, 6, 2])
-with nav_prev:
-    if st.session_state['current_page_index'] > 0:
-        if st.button("⬅️ Previous"):
-            st.session_state['current_page_index'] -= 1
-            st.rerun()
-with nav_next:
-    if st.session_state['current_page_index'] < len(page_titles) - 1:
-        if st.button("Next ➡️"):
-            st.session_state['current_page_index'] += 1
-            st.rerun()
+# # --- Page Navigation ---
+# nav_prev, _, nav_next = st.columns([2, 6, 2])
+# with nav_prev:
+#     if st.session_state['current_page_index'] > 0:
+#         if st.button("⬅️ Previous"):
+#             st.session_state['current_page_index'] -= 1
+#             st.rerun()
+# with nav_next:
+#     if st.session_state['current_page_index'] < len(page_titles) - 1:
+#         if st.button("Next ➡️"):
+#             st.session_state['current_page_index'] += 1
+#             st.rerun()
 
 # --- Footer ---
 st.markdown("---")
