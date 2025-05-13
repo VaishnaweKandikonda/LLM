@@ -2,8 +2,6 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pandas as pd
-import pyttsx3
-import threading
 
 # Page Config
 st.set_page_config(
@@ -11,15 +9,6 @@ st.set_page_config(
     page_icon="🤖",
     layout="wide"
 )
-
-# Initialize TTS engine
-engine = pyttsx3.init()
-
-def speak_text(text):
-    def _speak():
-        engine.say(text)
-        engine.runAndWait()
-    threading.Thread(target=_speak).start()
 
 # Session State Initialization
 if 'feedback' not in st.session_state:
@@ -48,17 +37,11 @@ with st.sidebar:
     )
     st.session_state['page_index'] = all_sections.index(selected)
 
-# Read-aloud button
-def speak_section(content):
-    if st.button("🔊 Read Aloud"):
-        speak_text(content)
-
 # Section Routing
 if selected == "Home":
     st.title("Smart Startups, Smarter AI")
     intro = "Welcome, founders and entrepreneurs! This guide is designed to help you understand and use large language models effectively, responsibly, and efficiently in your startup."
     st.markdown(intro)
-    speak_section(intro)
 
     with st.expander("🤖 What are Language Models?"):
         st.markdown("Language models are AI tools trained to understand and generate human-like text. Tools like ChatGPT, Claude, and Gemini are based on LLMs.")
