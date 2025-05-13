@@ -277,10 +277,10 @@ elif selected == "Feedback":
     Your feedback helps us refine and expand this resource for fellow entrepreneurs.  
     """)
 
-    name = st.text_input("Your Name (optional):")
+    name = st.text_input("Your name *")
     email = st.text_input("Want a follow-up? Enter your email (optional):")
     rating = st.slider("How helpful was this guide?", 1, 5, 3)
-    feedback = st.text_area("Your thoughts:")
+    feedback = st.text_area("Your thoughts *")
     suggestion = st.selectbox(
         "What would you like to see next from us?",
         [
@@ -293,28 +293,27 @@ elif selected == "Feedback":
     )
     attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
 
-    if st.button("Submit Feedback"):
+    submit_disabled = not name.strip() or not feedback.strip()
+    if st.button("Submit Feedback", disabled=submit_disabled):
         entry = {
             "S.No": len(st.session_state['feedback']) + 1,
-            "Name": name,
-            "Email": email,
+            "Name": name.strip(),
+            "Email": email.strip(),
             "Rating": rating,
-            "Feedback": feedback,
+            "Feedback": feedback.strip(),
             "Suggested topic": suggestion,
             "Attachment name": attachment.name if attachment else None
         }
         st.session_state['feedback'].append(entry)
-        if name:
-            st.success(f"Thanks {name} for your feedback! We’ll use your input to improve the experience.")
-        else:
-            st.success("Thanks for your feedback! We’ll use your input to improve the experience.")
+        st.success(f"Thanks {name.strip()} for your feedback! We’ll use your input to improve the experience.")
 
-    if st.checkbox("Show All Feedback"):
-        df = pd.DataFrame(st.session_state['feedback'])
+    # Show "Show All Feedback" only if feedback exists
+    if st.session_state['feedback']:
+        if st.checkbox("Show All Feedback"):
+            df = pd.DataFrame(st.session_state['feedback'])
+            df.columns = [col.capitalize() for col in df.columns]  # Sentence case headers
+            st.dataframe(df)
 
-        # Format headers to sentence case
-        df.columns = [col.capitalize() for col in df.columns]
-        st.dataframe(df)
 
 # --- Navigation Buttons ---
 st.markdown("---")
