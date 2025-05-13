@@ -168,14 +168,14 @@ elif current_page == "Prompt Engineering":
     )
 
     if subtopic in ("All", "What is a Prompt?"):
-        with expander_section("1. What is a Prompt?"):
+        with expander_section("What is a Prompt?"):
             st.write("""
             A **prompt** is the instruction you give to an AI model. Think of it like a creative brief — 
             the clearer you are, the better the output.
             """)
 
     if subtopic in ("All", "Best Practices"):
-        with expander_section("2. Best Practices"):
+        with expander_section("Best Practices"):
             st.markdown("- Be Specific\n- Set a Role\n- Define Output Format")
             st.success("""
             Example Prompt:\n
@@ -183,7 +183,7 @@ elif current_page == "Prompt Engineering":
             """)
 
     if subtopic in ("All", "Vague vs. Clear Examples"):
-        with expander_section("3. Vague vs. Clear Prompt Examples"):
+        with expander_section("Vague vs. Clear Prompt Examples"):
             col1, col2 = st.columns(2)
             with col1:
                 st.error("Vague Prompt")
@@ -193,7 +193,7 @@ elif current_page == "Prompt Engineering":
                 st.markdown("- Write a 3-sentence product description...\n- Write a 2-sentence announcement...")
 
     if subtopic in ("All", "Try it Yourself"):
-        with expander_section("4.Try it Yourself"):
+        with expander_section("Try it Yourself"):
             st.markdown("Write a real prompt you'd like to test. We'll generate a response using FLAN-T5.")
             user_prompt = st.text_area("Enter your business prompt:")
             if st.button("Run Prompt") and user_prompt:
@@ -206,7 +206,7 @@ elif current_page == "Prompt Engineering":
                     st.error(error)
 
     if subtopic in ("All", "Prompt Use Cases"):
-        with expander_section("5. What are you using the prompt for?"):
+        with expander_section("What are you using the prompt for?"):
             use_case = st.radio("", ["Marketing", "Customer Support", "Product", "Sales"], horizontal=True)
             suggestions = {
                 "Marketing": "Write a tagline for a social media post promoting our product launch.",
@@ -217,7 +217,7 @@ elif current_page == "Prompt Engineering":
             st.info(f"Try: '{suggestions[use_case]}'")
 
     if subtopic in ("All", "Prompt Generator"):
-        with expander_section("6. Prompt Generator"):
+        with expander_section("Prompt Generator"):
             samples = [
                 "Write a product update email for a budgeting app.",
                 "Draft a refund message that is professional.",
@@ -228,11 +228,11 @@ elif current_page == "Prompt Engineering":
                 st.write(random.choice(samples))
 
     if subtopic in ("All", "Prompt Checklist"):
-        with expander_section("7. Prompt Checklist"):
-            st.markdown("- [x] Be specific\n- [x] Set a role\n- [x] Define output format")
+        with expander_section("Prompt Checklist"):
+            st.markdown("- Be specific\n- Set a role\n- Define output format")
             
     if subtopic in ("All", "Quiz"):
-        with expander_section("8.Test Your Knowledge"):
+        with expander_section("Test Your Knowledge"):
             q1 = st.radio("1. What makes a good prompt?", [
                 "-- Select an answer --",
                 "Something short like 'Write something'",
@@ -289,7 +289,7 @@ elif current_page == "Temperature & Sampling":
     with expander_section("Adjust the Temperature and See the Difference"):
         temperature = st.slider("Select Temperature Level", 0.1, 1.0, 0.7)
         if temperature < 0.3:
-            st.success("🧊 Low Temperature (Factual & Consistent)")
+            st.success("Low Temperature (Factual & Consistent)")
             st.markdown("Example: “Our app helps freelancers manage budgets. It's secure and simple.”")
         elif temperature < 0.7:
             st.info("Medium Temperature (Balanced)")
@@ -331,7 +331,7 @@ elif current_page == "Temperature & Sampling":
     st.markdown("Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
 
 elif current_page == "Hallucinations":
-    st.title("🚫 Hallucinations in Language Models")
+    st.title("Hallucinations in Language Models")
     display_expand_collapse_controls()
 
     # Intro explanation
