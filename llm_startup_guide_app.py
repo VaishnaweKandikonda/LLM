@@ -369,17 +369,64 @@ elif current_page == "Hallucinations":
     # Quiz interaction
     with expander_section("🧠 Quick Check: Can You Spot the Hallucination?"):
         q1 = st.radio("Which of the following is most likely a hallucination?",
-                    ["Google was founded in 1998.", 
+                    ["-- Select an answer --","Google was founded in 1998.", 
                     "Python was invented by Guido van Rossum.", 
                     "OpenAI was acquired by Netflix in 2021."],
                     key="hallucination_q1")
-        if q1:
+        if != "-- Select an answer --":
             if q1 == "OpenAI was acquired by Netflix in 2021.":
                 st.success("✅ Correct! That never happened — it’s a confident hallucination.")
             else:
                 st.error("❌ Not quite — both other statements are factual.")
 
     st.markdown("💡 Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
+
+elif current_page == "API Cost Optimization":
+    st.set_page_config(page_title="API Cost Optimization", layout="wide")
+    st.title("💸 API Cost Optimization")
+    display_expand_collapse_controls()
+
+    with expander_section("📊 Why API Costs Matter for Startups"):
+        st.write("""
+        Using language models like GPT-4 can get expensive — especially when handling lots of requests, long prompts, or frequent usage.
+
+        Startups must be **smart and efficient** when building with LLMs, balancing quality with cost.
+        """)
+
+    with expander_section("🔍 What Drives API Cost?"):
+        st.markdown("""
+        - 🧾 **Token usage** – You pay per word (input + output tokens).  
+        - ⚙️ **Model selection** – GPT-4 is powerful but much costlier than GPT-3.5.  
+        - 🔁 **Request frequency** – More requests = more expense.  
+        - 🧩 **Advanced features** – Streaming, tool use, and chaining can add overhead.  
+        """)
+
+    with expander_section("✅ Optimization Strategies for Founders"):
+        st.markdown("""
+        1. ✂️ **Shorten prompts**: Remove unnecessary words and boilerplate.  
+        2. 💾 **Cache outputs**: Reuse responses for repeated or similar queries.  
+        3. ⚖️ **Use cheaper models for simpler tasks**:  
+            - GPT-3.5 for summarization, formatting, and basic Q&A.  
+            - GPT-4 for critical reasoning and edge-case handling.  
+        4. 📦 **Batch your inputs**: Send multiple queries in a single call when possible.  
+        5. 🧠 **Think like a product manager**:  
+            - Only use AI where it **adds value**.  
+            - Avoid using LLMs as your database or source of truth.  
+        """)
+
+    with expander_section("💰 Estimate Token Cost"):
+        tokens = st.slider("How many tokens per request?", min_value=100, max_value=2000, step=100, value=500)
+        requests = st.slider("How many requests per day?", min_value=1, max_value=5000, step=50, value=1000)
+        model = st.radio("Select model:", ["GPT-3.5 ($0.002 / 1K tokens)", "GPT-4 ($0.06 / 1K tokens)"])
+
+        cost_per_1k = 0.002 if "3.5" in model else 0.06
+        daily_cost = (tokens * requests / 1000) * cost_per_1k
+        monthly_cost = daily_cost * 30
+
+        st.success(f"📅 Estimated Monthly Cost: **${monthly_cost:,.2f}**")
+
+    with expander_section("💡 Final Note"):
+        st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
 
 elif current_page == "Feedback":
     st.header("💬 We Value Your Feedback")
