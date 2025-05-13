@@ -62,9 +62,6 @@ def store_feedback(entry, path="feedback.csv"):
     new_entry_df.to_csv(path, index=False)
 
 def get_llm_response(prompt):
-    import streamlit as st
-    import requests
-
     HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
     try:
@@ -81,15 +78,17 @@ def get_llm_response(prompt):
         }
 
         response = requests.post(
-            "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
+            "https://api-inference.huggingface.co/models/google/flan-t5-large",
             headers=headers,
             json=payload
         )
 
         if response.status_code == 200:
             result = response.json()
-            if isinstance(result, list) and len(result) > 0 and "generated_text" in result[0]:
-                return result[0]["generated_text"], None
+            if isinstance(result, dict) and "generated_text" in result:
+                return result["generated_text"], None
+            elif isinstance(result, list) and len(result) > 0:
+                return result[0].get("generated_text", str(result)), None
             else:
                 return str(result), None  # fallback
         else:
