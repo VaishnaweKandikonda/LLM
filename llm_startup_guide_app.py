@@ -331,7 +331,7 @@ elif current_page == "Feedback":
 
     if st.button("Submit Feedback", disabled=not form_valid):
         entry = {
-            "S.No": len(st.session_state['feedback']) + 1,
+            "S.No": len(st.session_state['feedback_entries']) + 1,
             "Name": name.strip(),
             "Email": email.strip(),
             "Rating": rating,
@@ -339,13 +339,13 @@ elif current_page == "Feedback":
             "Suggested topic": None if suggestion == "None" else suggestion,
             "Attachment name": attachment.name if attachment else None
         }
-        st.session_state['feedback'].append(entry)
-        save_feedback_to_csv(entry)
+        st.session_state['feedback_entries'].append(entry)
+        store_feedback(entry)
         st.success(f"Thanks {name.strip()} for your feedback!")
 
-    if st.session_state['feedback']:
+    if st.session_state['feedback_entries']:
         if st.checkbox("Show All Feedback"):
-            df = pd.DataFrame(st.session_state['feedback'])
+            df = pd.DataFrame(st.session_state['feedback_entries'])
             if 'S.No' in df.columns:
                 df = df.drop(columns=['S.No'])
             df.index = df.index + 1  # Show index starting from 1
