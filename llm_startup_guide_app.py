@@ -5,7 +5,7 @@ import pandas as pd
 import re
 import os
 import random
-import openai
+import requests
 
 # --- App Config ---
 st.set_page_config(page_title="LLM Guide for Startups", page_icon="🤖", layout="wide")
@@ -15,8 +15,8 @@ if os.path.exists("WebAppstyling.css"):
     with open("WebAppstyling.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# --- OpenAI API Key ---
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# --- Hugging Face API Key ---
+HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
 # --- Session State ---
 if 'feedback_entries' not in st.session_state:
@@ -61,16 +61,27 @@ def store_feedback(entry, path="feedback.csv"):
     new_entry_df.to_csv(path, index=False)
 
 def get_llm_response(prompt):
-    if not openai.api_key:
-        return None, "Missing OpenAI API key"
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",  # or "gpt-3.5-turbo"
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-            max_tokens=200
+        headers = {
+            "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
+        }
+        payload = {
+            "inputs": prompt,
+            "parameters": {
+                "temperature": 0.7,
+                "max_new_tokens": 200
+            }
+        }
+        response = requests.post(
+            "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1",
+            headers=headers,
+            json=payload
         )
-        return response.choices[0].message["content"].strip(), None
+        if response.status_code == 200:
+            result = response.json()
+            return result[0]["generated_text"], None
+        else:
+            return None, f"Error {response.status_code}: {response.text}"
     except Exception as e:
         return None, str(e)
 
@@ -171,7 +182,7 @@ elif current_page == "Prompt Engineering":
 
     if subtopic in ("All", "Try it Yourself"):
         with expander_section("4. ✍️ Try it Yourself"):
-            st.markdown("Write a real prompt you'd like to test. We'll generate a response using OpenAI.")
+            st.markdown("Write a real prompt you'd like to test. We'll generate a response using Mistral-7B (Hugging Face).")
             user_prompt = st.text_area("Enter your business prompt:")
 
             if user_prompt:
@@ -181,7 +192,7 @@ elif current_page == "Prompt Engineering":
                     if response:
                         st.success(response)
                     else:
-                        st.warning("⚠️ Unable to connect to OpenAI. Here's a simulated response instead.")
+                        st.warning("⚠️ Unable to connect to Hugging Face. Here's a simulated response instead.")
                         fake_responses = [
                             "Sure! Here's a quick draft for you:",
                             "Absolutely, try this:",
