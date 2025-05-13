@@ -155,7 +155,6 @@ elif current_page == "Feedback":
             st.dataframe(feedback_df.reset_index(drop=True), use_container_width=True)
 
 # --- Page Navigation ---
-st.markdown("---")
 nav_prev, _, nav_next = st.columns([2, 6, 2])
 with nav_prev:
     if st.session_state['current_page_index'] > 0:
