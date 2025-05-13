@@ -16,7 +16,7 @@ if os.path.exists("WebAppstyling.css"):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # --- OpenAI API Key ---
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 # --- Session State ---
 if 'feedback_entries' not in st.session_state:
