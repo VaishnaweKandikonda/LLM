@@ -5,99 +5,97 @@ import pandas as pd
 import re
 import os
 
-# --- Page Config ---
+# --- App Configuration ---
 st.set_page_config(
     page_title="LLM Guide for Startups",
     page_icon="🤖",
     layout="wide"
 )
 
-# --- Session State Initialization ---
-if 'feedback' not in st.session_state:
+# --- Initialize Session State ---
+if 'feedback_entries' not in st.session_state:
     if os.path.exists("feedback.csv"):
-        st.session_state['feedback'] = pd.read_csv("feedback.csv").to_dict("records")
+        st.session_state['feedback_entries'] = pd.read_csv("feedback.csv").to_dict("records")
     else:
-        st.session_state['feedback'] = []
+        st.session_state['feedback_entries'] = []
 
-if 'page_index' not in st.session_state:
-    st.session_state['page_index'] = 0
-if 'expand_all' not in st.session_state:
-    st.session_state['expand_all'] = None
+if 'current_page_index' not in st.session_state:
+    st.session_state['current_page_index'] = 0
+if 'global_expansion_state' not in st.session_state:
+    st.session_state['global_expansion_state'] = None
 
-# --- Helper Functions ---
-def custom_expander(label):
-    expanded = st.session_state['expand_all'] if st.session_state['expand_all'] is not None else False
-    return st.expander(label, expanded=expanded)
+# --- Utility Functions ---
+def expander_section(title):
+    expanded = st.session_state['global_expansion_state'] if st.session_state['global_expansion_state'] is not None else False
+    return st.expander(title, expanded=expanded)
 
-def show_expand_collapse_buttons():
-    current_page = all_sections[st.session_state['page_index']]
-    target_pages = [
+def display_expand_collapse_controls():
+    visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
         "API Cost Optimization", "Ethics & Bias"
     ]
-    if current_page in target_pages:
-        col1, col2, col3 = st.columns([6, 1, 1])
-        with col2:
-            if st.button("➕", help="Expand All Sections"):
-                st.session_state['expand_all'] = True
-        with col3:
-            if st.button("➖", help="Collapse All Sections"):
-                st.session_state['expand_all'] = False
+    if page_titles[st.session_state['current_page_index']] in visible_on_pages:
+        _, col_expand, col_collapse = st.columns([6, 1, 1])
+        with col_expand:
+            if st.button("➕ Expand All", help="Open all content sections"):
+                st.session_state['global_expansion_state'] = True
+        with col_collapse:
+            if st.button("➖ Collapse All", help="Close all content sections"):
+                st.session_state['global_expansion_state'] = False
 
-def save_feedback_to_csv(entry, path="feedback.csv"):
-    df = pd.DataFrame([entry])
+def is_valid_email(email):
+    return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
+
+def store_feedback(entry, path="feedback.csv"):
+    new_entry_df = pd.DataFrame([entry])
     if os.path.exists(path):
-        existing = pd.read_csv(path)
-        df = pd.concat([existing, df], ignore_index=True)
-    df.to_csv(path, index=False)
+        existing_df = pd.read_csv(path)
+        new_entry_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
+    new_entry_df.to_csv(path, index=False)
 
-def is_valid_email(email_str):
-    pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
-    return re.match(pattern, email_str)
-
-# --- Sidebar Menu ---
-all_sections = [
+# --- Sidebar Navigation ---
+page_titles = [
     "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
     "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary",
     "Interactive Use Cases", "Download Toolkit", "Feedback"
 ]
 
 with st.sidebar:
-    selected = option_menu(
-        menu_title="Main Menu",
-        options=all_sections,
+    current_page = option_menu(
+        menu_title="📘 Guide Sections",
+        options=page_titles,
         icons=[
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
             "question-circle", "book", "tools", "download", "chat-dots"
         ],
         menu_icon="cast",
-        default_index=st.session_state['page_index']
+        default_index=st.session_state['current_page_index']
     )
-    st.session_state['page_index'] = all_sections.index(selected)
+    st.session_state['current_page_index'] = page_titles.index(current_page)
 
-# --- Home Page ---
-if selected == "Home":
+# --- Home Page Content ---
+if current_page == "Home":
     st.markdown("""
-        <h1 style='text-align: center; font-size: 3em; color: #333;'>Smart Startups. Smart AI.</h1>
+        <h1 style='text-align: center; font-size: 2.8em; color: #333;'>Smart Startups. Smart AI.</h1>
         <style>
-            .stButton>button {
-                transition: 0.3s ease;
+            .stButton > button {
+                transition: all 0.3s ease-in-out;
             }
-            .stButton>button:hover {
+            .stButton > button:hover {
                 background-color: #00bcd4 !important;
                 color: white !important;
                 transform: scale(1.05);
             }
-            .custom-card {
-                padding: 1em;
-                border-radius: 10px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                background-color: white;
+            .custom-box {
+                padding: 1.2rem;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+                background-color: #ffffff;
                 transition: 0.3s ease;
                 margin-bottom: 1rem;
             }
-            .custom-card:hover {
-                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            .custom-box:hover {
+                box-shadow: 0 6px 16px rgba(0,0,0,0.12);
                 transform: scale(1.01);
             }
             @media screen and (max-width: 768px) {
@@ -108,87 +106,92 @@ if selected == "Home":
         </style>
     """, unsafe_allow_html=True)
 
-    show_expand_collapse_buttons()
+    display_expand_collapse_controls()
 
     home_sections = {
-        "🤖 What are Language Models?": "Language models are AI tools trained to understand and generate human-like text. Tools like ChatGPT, Claude, and Gemini are based on LLMs.",
-        "💡 Why Should Startups Care?": """
-            LLMs can help you:
-            - Write product descriptions and marketing copy
-            - Automate customer support and FAQ generation
-            - Draft emails, blogs, and pitch decks
-            - Prototype conversational agents and tools
-        """,
-        "🚀 What You’ll Learn in This Guide": """
-            - How to write better prompts  
-            - How temperature affects creativity  
-            - How to spot and avoid hallucinations  
-            - How to save on API costs  
-            - How to use LLMs ethically
-        """
+        "🤖 Introduction to Large Language Models": (
+            "Large Language Models (LLMs) are advanced AI systems trained to understand and generate human-like text. "
+            "Popular platforms like ChatGPT, Claude, and Gemini use LLMs to assist users with content generation, problem-solving, and more."
+        ),
+        "💡 Why LLMs Matter for Startups": (
+            "Startups can use LLMs to:\n"
+            "- Automate customer support and FAQs\n"
+            "- Generate pitch decks, emails, blogs, and product content\n"
+            "- Build intelligent prototypes and chatbots\n"
+            "- Accelerate idea validation and MVP development"
+        ),
+        "🚀 What You'll Gain from This Guide": (
+            "- Learn prompt design for better results\n"
+            "- Understand model temperature and creativity\n"
+            "- Identify and avoid AI-generated misinformation\n"
+            "- Optimize API usage to save costs\n"
+            "- Apply AI responsibly and ethically"
+        )
     }
 
-    for title, content in home_sections.items():
-        st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
-        with custom_expander(title):
+    for heading, content in home_sections.items():
+        st.markdown("<div class='custom-box'>", unsafe_allow_html=True)
+        with expander_section(heading):
             st.markdown(content)
         st.markdown("</div>", unsafe_allow_html=True)
 
 # --- Feedback Page ---
-elif selected == "Feedback":
-    st.header("💬 We Value Your Feedback")
-    show_expand_collapse_buttons()
-    st.markdown("Please share your thoughts on this guide.")
+elif current_page == "Feedback":
+    st.header("💬 Share Your Feedback")
+    display_expand_collapse_controls()
+    st.markdown("We’d love to hear your thoughts and suggestions to improve this guide.")
 
-    name = st.text_input("Your name *")
-    email = st.text_input("Your email (optional)")
-    rating = st.slider("How helpful was this guide?", 1, 5, 3)
-    feedback = st.text_area("Your thoughts (optional)")
-    suggestion = st.selectbox("What would you like to see next?", ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
-    attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
+    user_name = st.text_input("Your Name *")
+    user_email = st.text_input("Email (Optional)")
+    usefulness_rating = st.slider("How useful was this guide?", 1, 5, 3)
+    user_comment = st.text_area("Your Thoughts (Optional)")
+    topic_suggestion = st.selectbox("What topic would you like us to cover next?", [
+        "None", "LLM APIs", "Customer Support Automation", "Tool Comparisons", "No-code AI Prototyping"
+    ])
+    uploaded_file = st.file_uploader("📎 Upload a file (Optional)", type=["png", "jpg", "pdf", "txt", "docx"])
 
-    required_filled = bool(name.strip())
-    email_valid = True if not email.strip() else is_valid_email(email.strip())
-    form_valid = required_filled and email_valid
+    is_name_valid = bool(user_name.strip())
+    is_email_valid = True if not user_email.strip() else is_valid_email(user_email.strip())
+    form_ready = is_name_valid and is_email_valid
 
-    if not required_filled:
-        st.warning("Name is required.")
-    elif not email_valid:
-        st.warning("Please enter a valid email address.")
+    if not is_name_valid:
+        st.warning("Please enter your name.")
+    elif not is_email_valid:
+        st.warning("Email format appears invalid.")
 
-    if st.button("Submit Feedback", disabled=not form_valid):
-        entry = {
-            "S.No": len(st.session_state['feedback']) + 1,
-            "Name": name.strip(),
-            "Email": email.strip(),
-            "Rating": rating,
-            "Feedback": feedback.strip(),
-            "Suggested topic": None if suggestion == "None" else suggestion,
-            "Attachment name": attachment.name if attachment else None
+    if st.button("Submit Feedback", disabled=not form_ready):
+        feedback_entry = {
+            "Entry No": len(st.session_state['feedback_entries']) + 1,
+            "Name": user_name.strip(),
+            "Email": user_email.strip(),
+            "Rating": usefulness_rating,
+            "Feedback": user_comment.strip(),
+            "Suggested Topic": None if topic_suggestion == "None" else topic_suggestion,
+            "Uploaded File": uploaded_file.name if uploaded_file else None
         }
-        st.session_state['feedback'].append(entry)
-        save_feedback_to_csv(entry)
-        st.success(f"Thanks {name.strip()} for your feedback!")
+        st.session_state['feedback_entries'].append(feedback_entry)
+        store_feedback(feedback_entry)
+        st.success(f"Thanks, {user_name.strip()}! Your feedback has been submitted.")
 
-    if st.session_state['feedback']:
-        if st.checkbox("Show All Feedback"):
-            df = pd.DataFrame(st.session_state['feedback'])
-            st.dataframe(df.reset_index(drop=True), use_container_width=True)
+    if st.session_state['feedback_entries']:
+        if st.checkbox("📂 View Submitted Feedback"):
+            feedback_df = pd.DataFrame(st.session_state['feedback_entries'])
+            st.dataframe(feedback_df.reset_index(drop=True), use_container_width=True)
 
-# --- Navigation Buttons ---
+# --- Navigation Controls ---
 st.markdown("---")
-nav_col1, nav_col2, nav_col3 = st.columns([2, 4, 2])
-with nav_col1:
-    if st.session_state['page_index'] > 0:
+nav_prev, _, nav_next = st.columns([2, 6, 2])
+with nav_prev:
+    if st.session_state['current_page_index'] > 0:
         if st.button("⬅️ Previous"):
-            st.session_state['page_index'] -= 1
+            st.session_state['current_page_index'] -= 1
             st.rerun()
-with nav_col3:
-    if st.session_state['page_index'] < len(all_sections) - 1:
+with nav_next:
+    if st.session_state['current_page_index'] < len(page_titles) - 1:
         if st.button("Next ➡️"):
-            st.session_state['page_index'] += 1
+            st.session_state['current_page_index'] += 1
             st.rerun()
 
 # --- Footer ---
 st.markdown("---")
-st.caption(f"© 2025 LLM Startup Guide – Last updated {datetime.now().strftime('%Y-%m-%d')}")
+st.caption(f"© 2025 LLM Startup Guide • Last updated {datetime.now().strftime('%Y-%m-%d')}")
