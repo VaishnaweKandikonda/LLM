@@ -312,7 +312,7 @@ elif current_page == "Temperature & Sampling":
             st.info("⚖️ Best with: Medium Temperature (0.4 - 0.6)")
 
     st.markdown("💬 Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
-elif selected == "Feedback":
+elif current_page == "Feedback":
     st.header("💬 We Value Your Feedback")
     show_expand_collapse_buttons()
 
