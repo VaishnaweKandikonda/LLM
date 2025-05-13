@@ -63,7 +63,6 @@ def store_feedback(entry, path="feedback.csv"):
 
 def get_llm_response(prompt):
     HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
-
     try:
         headers = {
             "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
@@ -85,18 +84,16 @@ def get_llm_response(prompt):
 
         if response.status_code == 200:
             result = response.json()
-            if isinstance(result, dict) and "generated_text" in result:
-                return result["generated_text"], None
-            elif isinstance(result, list) and len(result) > 0:
-                return result[0].get("generated_text", str(result)), None
+            # flan-t5 returns a list of dicts with 'generated_text'
+            if isinstance(result, list) and len(result) > 0:
+                return result[0].get("generated_text", "No output generated."), None
             else:
-                return str(result), None  # fallback
+                return str(result), None
         else:
             return None, f"HF API Error {response.status_code}: {response.text}"
 
     except Exception as e:
         return None, f"Exception: {str(e)}"
-
 
 # --- Sidebar Navigation ---
 page_titles = [
