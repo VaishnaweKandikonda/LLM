@@ -136,6 +136,7 @@ if current_page == "Home":
                 "Let's Get Started!",
             ]
         )
+        
     home_sections = {
     "Introduction to Large Language Models": (
         "Large Language Models (LLMs) are smart computer programs that can read, understand, and write text like a human. "
@@ -256,25 +257,25 @@ elif current_page == "Prompt Engineering":
 
     with col_left:
         st.markdown("### Prompt Engineering Insights")
-        
-    subtopic = st.selectbox(
-        "Sub-topic",
-        [
-            "All",
-            "Introduction to Prompt Engineering",
-            "Types of Prompts",
-            "Prompt Best Practices",
-            "Vague vs. Clear Examples",
-            "Startup Use Cases",
-            "Common Pitfalls",
-            "Prompt Engineering vs Prompt Tuning",
-            "Prompt Learning Resources",
-            "Quiz",
-            "Prompt Generator",
-            "Try it Yourself"
-        ]
-    )
-    
+    with col_right:  
+        subtopic = st.selectbox(
+            "Sub-topic",
+            [
+                "All",
+                "Introduction to Prompt Engineering",
+                "Types of Prompts",
+                "Prompt Best Practices",
+                "Vague vs. Clear Examples",
+                "Startup Use Cases",
+                "Common Pitfalls",
+                "Prompt Engineering vs Prompt Tuning",
+                "Prompt Learning Resources",
+                "Quiz",
+                "Prompt Generator",
+                "Try it Yourself"
+            ]
+        )
+
     if subtopic in ("All", "Introduction to Prompt Engineering"):
         with expander_section("What is Prompt and Prompt Engineering?"):
             st.markdown("""
