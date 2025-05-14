@@ -113,19 +113,19 @@ subpage_options = {
         "Try it Yourself", "Prompt Use Cases", "Prompt Generator", "Prompt Checklist", "Quiz"
     ],
     "Temperature & Sampling": [
-        "What is Temperature?", "See the Difference", "Temperature Table",
+        "All", "What is Temperature?", "See the Difference", "Temperature Table",
         "What is Sampling?", "Match Temperature to Task"
     ],
     "Hallucinations": [
-        "What Are Hallucinations?", "Product Fact Gone Wrong", "Why Do LLMs Hallucinate?",
+        "All", "What Are Hallucinations?", "Product Fact Gone Wrong", "Why Do LLMs Hallucinate?",
         "Minimize Hallucinations", "Quick Check"
     ],
     "API Cost Optimization": [
-        "Why API Costs Matter", "What Drives Cost?", "Founder Strategies",
+        "All", "Why API Costs Matter", "What Drives Cost?", "Founder Strategies",
         "Estimate Token Cost", "Final Note"
     ],
     "Ethics & Bias": [
-        "Why Ethics Matter", "Examples of Bias", "Why Bias Happens",
+        "All", "Why Ethics Matter", "Examples of Bias", "Why Bias Happens",
         "What Founders Can Do", "Bias Checklist", "Detect the Bias", "Try This", "Ethical Template"
     ]
 }
@@ -141,15 +141,17 @@ with st.sidebar:
         menu_icon="cast"
     )
 
+    # Show subtopics only under the selected page
     if current_page in subpage_options:
-        st.markdown("##### 📚 Sub-Topics")
+        st.markdown("##### Sub-Topics")
         for sub in subpage_options[current_page]:
-            if st.button(sub, key=f"{current_page}_{sub}"):
+            label = f"↳ {sub}" if sub != "All" else "Show All"
+            if st.button(label, key=f"{current_page}_{sub}"):
                 st.session_state[f"subtopic_{current_page}"] = sub
 
-        # Default selection
+        # Set default to "All" if nothing selected
         if f"subtopic_{current_page}" not in st.session_state:
-            st.session_state[f"subtopic_{current_page}"] = subpage_options[current_page][0]
+            st.session_state[f"subtopic_{current_page}"] = "All"
 
 # --- Home Page ---
 if current_page == "Home":
