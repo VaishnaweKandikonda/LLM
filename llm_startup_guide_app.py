@@ -847,13 +847,11 @@ elif current_page == "Feedback":
 st.markdown("---")
 st.markdown("""
 **LLM Guide for Startups** — practical insights for using language models responsibly and efficiently in startup settings.  
-Built with ❤️ by:
-
-- Kushal Pratap Singh (24205476)  
-- Shivani Singh (24234516)  
-- Vaishnavi Kandikonda (24216940)
+Built with by:
+- **Vaishnavi Kandikonda** (24216940) — [vaishnavi.kandikonda@ucdconnect.com](mailto:vaishnavi.kandikonda@ucdconnect.com)
+- **Shivani Singh** (24234516) — [shivani.singh@ucdconnect.ie](mailto:shivani.singh@ucdconnect.ie)
+- **Kushal Pratap Singh** (24205476) — [singhkushal.pratap@ucdconnect.ie](mailto:singhkushal.pratap@ucdconnect.ie)
 
 Guided by principles of **transparency**, **fairness**, and **human-centered AI**.  
-📬 [Contact us](mailto:hello@yourstartup.com) • 🌐 [yourstartup.com](https://yourstartup.com)
 """)
 st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}** • Built with Streamlit 💡")
