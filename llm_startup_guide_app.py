@@ -438,27 +438,55 @@ elif current_page == "Ethics & Bias":
 
     with expander_section("Examples of Bias in AI"):
         st.markdown("""
-        - A resume-screening assistant that favors male candidates based on historical hiring data.
-        - A chatbot that assumes all engineers are men.
-        - A product description generator that omits diverse customer personas.
+        - A resume-screening assistant that favors male candidates based on historical hiring data.  
+        - A chatbot that assumes all engineers are men.  
+        - A product description generator that omits diverse customer personas.  
         """)
 
     with expander_section("Why Bias Happens in Language Models"):
         st.write("""
         Language models learn from patterns in public text data — books, websites, social media, forums. This means:
-        - They may repeat harmful stereotypes.
-        - They often reflect dominant voices more than marginalized ones.
-        - They don't understand fairness — they reproduce frequency patterns in data.
+        - They may repeat harmful stereotypes.  
+        - They often reflect dominant voices more than marginalized ones.  
+        - They don't understand fairness — they reproduce frequency patterns in data.  
         """)
 
     with expander_section("What Startup Founders Can Do"):
         st.markdown("""
-        - Test outputs for different demographic or geographic user profiles.
-        - Avoid using AI tools blindly in hiring, lending, or content moderation.
-        - Review all AI-generated content before using it externally.
-        - Add a disclaimer or human review step for sensitive outputs.
-        - Be transparent with users when AI is involved in decisions.
+        - Test outputs for different demographic or geographic user profiles.  
+        - Avoid using AI tools blindly in hiring, lending, or content moderation.  
+        - Review all AI-generated content before using it externally.  
+        - Add a disclaimer or human review step for sensitive outputs.  
+        - Be transparent with users when AI is involved in decisions.  
         """)
+
+        with st.expander("📋 Downloadable Bias Prevention Checklist"):
+            checklist_content = (
+                "Bias Prevention Checklist:\n"
+                "- Test outputs for multiple user profiles\n"
+                "- Flag outputs with harmful stereotypes\n"
+                "- Apply manual review to sensitive use cases\n"
+                "- Maintain transparency in AI decision-making\n"
+                "- Regularly update prompts or models for fairness\n"
+            )
+            st.text(checklist_content)
+            st.download_button("📥 Download Checklist (TXT)", checklist_content, file_name="bias_checklist.txt")
+
+    with expander_section("Live Example: Can You Detect the Bias?"):
+        example_prompt = st.selectbox("Choose a prompt", [
+            "Write a job ad for a software engineer",
+            "Describe a CEO of a tech startup",
+            "Introduce a nurse character in a story"
+        ])
+        
+        biased_outputs = {
+            "Write a job ad for a software engineer": "We're looking for a strong, young male developer to join our elite dev team.",
+            "Describe a CEO of a tech startup": "He is a brilliant visionary leading a disruptive fintech company.",
+            "Introduce a nurse character in a story": "She is a caring young woman who loves to help others."
+        }
+
+        st.warning(f"⚠️ Model Output: “{biased_outputs[example_prompt]}”")
+        st.markdown("🤔 **Reflection:** Are assumptions being made? Who is being stereotyped or excluded?")
 
     with expander_section("Try This"):
         bias_prompt = st.radio("Which of these might reflect bias?", [
@@ -467,11 +495,58 @@ elif current_page == "Ethics & Bias":
             "Generate a welcome message for a task management app"
         ])
         if bias_prompt == "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'":
-            st.success("Correct. This assumes the doctor's gender, which may reflect bias.")
+            st.success("✅ Correct. This assumes the doctor's gender, which may reflect bias.")
         else:
             st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
 
+    with expander_section("🧾 Ethical Review Template (For Startups)"):
+        ethical_template = (
+            "## Ethical AI Feature Review Template\n\n"
+            "**Feature Name:**\n"
+            "[Enter here]\n\n"
+            "**Purpose of AI Usage:**\n"
+            "[Summarize briefly]\n\n"
+            "**Potential Ethical Risks:**\n"
+            "[e.g., bias, misinformation, exclusion]\n\n"
+            "**Bias Testing Completed?** Yes / No\n"
+            "**Human Review Process?** Yes / No\n"
+            "**Disclosure to Users?** Yes / No\n\n"
+            "**Final Risk Assessment:** Low / Medium / High"
+        )
+        st.markdown(ethical_template.replace("##", "###"))  # Format as Streamlit Markdown
+        st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
+
     st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
+
+elif current_page == "FAQs":
+    st.title("Frequently Asked Questions")
+    display_expand_collapse_controls()
+
+    st.header("LLMs for Startup Founders")
+    st.markdown("Below are some common questions about using language models like ChatGPT in startup settings:")
+
+    with expander_section("What is a large language model (LLM)?"):
+        st.write("A large language model (LLM) is an AI system trained to generate and understand human-like text. It can help you write, summarize, explain, and automate content in your startup workflows.")
+
+    with expander_section("Is ChatGPT the same as a search engine?"):
+        st.write("No. ChatGPT doesn’t search the internet live. It generates responses based on patterns learned from training data. It doesn’t verify facts, so double-check anything important.")
+
+    with expander_section("Why does it sometimes say things that are wrong?"):
+        st.write("This is called a hallucination. The model doesn’t know what’s true — it just predicts what sounds right. Always review AI-generated content before using it externally.")
+
+    with expander_section("How can I control the tone or creativity of the AI's response?"):
+        st.write("Use the temperature setting. Lower values (e.g., 0.2) generate more factual, safe content. Higher values (e.g., 0.8) create more creative or varied outputs.")
+
+    with expander_section("Will using LLMs increase my startup’s costs?"):
+        st.write("It can. LLMs charge based on token usage. Use prompt optimization, shorter outputs, model tiering (e.g., GPT-3.5 over GPT-4), and batch processing to control costs.")
+
+    with expander_section("Can I use LLMs for decisions like hiring or pricing?"):
+        st.write("Only with caution. LLMs can reflect social bias and make mistakes. Never automate high-stakes decisions without human review.")
+
+    with expander_section("How do I avoid biased or exclusionary outputs?"):
+        st.write("Test prompts using diverse scenarios. Be mindful of wording that assumes gender, age, or culture. Use a review process before publishing AI-generated content.")
+
+    st.markdown("Have more questions? Use the **Feedback** section to suggest more topics.")
 
 elif current_page == "Feedback":
     st.header("We Value Your Feedback")
