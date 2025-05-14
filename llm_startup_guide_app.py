@@ -43,10 +43,8 @@ if 'global_expansion_state' not in st.session_state:
 # --- Utility Functions ---
 def expander_section(title):
     key = f"expander_{title}"
-
-    # Init state for each expander
     if key not in st.session_state:
-        st.session_state[key] = False
+        st.session_state[key] = False  # Default to collapsed
 
     return st.expander(title, expanded=st.session_state[key])
 
