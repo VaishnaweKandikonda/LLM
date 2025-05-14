@@ -468,18 +468,18 @@ elif current_page == "Ethics & Bias":
         - Be transparent with users when AI is involved in decisions.  
         """)
 
-       st.markdown("**📋 Downloadable Bias Prevention Checklist:**")
-            checklist_content = (
-                "Bias Prevention Checklist:\n"
-                "- Test outputs for multiple user profiles\n"
-                "- Flag outputs with harmful stereotypes\n"
-                "- Apply manual review to sensitive use cases\n"
-                "- Maintain transparency in AI decision-making\n"
-                "- Regularly update prompts or models for fairness\n"
-            )
-            st.text(checklist_content)
-            st.download_button("📥 Download Checklist (TXT)", checklist_content, file_name="bias_checklist.txt")
-
+        st.markdown("**📋 Downloadable Bias Prevention Checklist:**")
+        checklist_content = (
+            "Bias Prevention Checklist:\n"
+            "- Test outputs for multiple user profiles\n"
+            "- Flag outputs with harmful stereotypes\n"
+            "- Apply manual review to sensitive use cases\n"
+            "- Maintain transparency in AI decision-making\n"
+            "- Regularly update prompts or models for fairness\n"
+        )
+        st.text(checklist_content)
+        st.download_button("📥 Download Checklist (TXT)", checklist_content, file_name="bias_checklist.txt")
+    
     with expander_section("Live Example: Can You Detect the Bias?"):
         example_prompt = st.selectbox("Choose a prompt", [
             "Write a job ad for a software engineer",
