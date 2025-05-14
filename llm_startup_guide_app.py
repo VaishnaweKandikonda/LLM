@@ -40,7 +40,7 @@ def expander_section(title):
 def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
-        "API Cost Optimization", "Ethics & Bias","Startup Use Case Matcher"
+        "API Cost Optimization", "Ethics & Bias","Startup Use Case Matcher", "FAQs", "Glossary"
     ]
     if current_page in visible_on_pages:
         col1, col2, col3 = st.columns([9, 0.5, 0.5])  # Adjust width ratios as needed
@@ -846,6 +846,7 @@ elif current_page == "FAQs":
 
 elif current_page == "Glossary":
     st.title("Glossary")
+    display_expand_collapse_controls(current_page)
     st.write("This glossary includes terms covered in this website to help startup founders understand and use language models effectively.")
 
     glossary = {
