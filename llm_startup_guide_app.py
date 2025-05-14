@@ -1000,7 +1000,7 @@ elif current_page == "Download Toolkit":
     feedback = st.text_area("Which tools were most helpful or what would you like to see added?")
     if st.button("Submit Toolkit Feedback"):
         st.success("Thanks for your input! We'll use it to improve the toolkit.")
-
+        
 elif current_page == "Feedback":
     st.title("📣 Share Your Experience")
     st.markdown("""
@@ -1031,41 +1031,31 @@ elif current_page == "Feedback":
         )
         attachment = st.file_uploader("📎 Optional File Upload", type=["png", "jpg", "pdf", "txt", "docx"])
 
+        # Submit button inside the form
+        submitted = st.form_submit_button("🚀 Submit Feedback")
+
         # --- Validation Logic ---
         required_filled = bool(name.strip())
         email_valid = True if not email.strip() else is_valid_email(email.strip())
-        form_valid = required_filled and email_valid
-
-        submitted = st.form_submit_button("🚀 Submit Feedback", disabled=not form_valid)
 
         if submitted:
-            entry = {
-                "S.No": len(st.session_state['feedback_entries']) + 1,
-                "Name": name.strip(),
-                "Email": email.strip(),
-                "Rating": rating,
-                "Feedback": feedback.strip(),
-                "Suggested topic": None if suggestion == "None" else suggestion,
-                "Attachment name": attachment.name if attachment else None
-            }
-            st.session_state['feedback_entries'].append(entry)
-            store_feedback(entry)
-            st.success(f"✅ Thank you, {name.strip()}! We truly appreciate your insights and will use your feedback to make this guide even better.")
-
-        elif not form_valid and submitted:
             if not required_filled:
                 st.warning("⚠️ Please enter your name to submit the form.")
             elif not email_valid:
                 st.error("❌ Invalid email address. Please check and try again.")
-
-    # --- View Feedback Entries ---
-    if st.session_state['feedback_entries']:
-        with st.expander("📋 View Submitted Feedback"):
-            df = pd.DataFrame(st.session_state['feedback_entries'])
-            if 'S.No' in df.columns:
-                df = df.drop(columns=['S.No'])
-            df.index = df.index + 1
-            st.dataframe(df, use_container_width=True)
+            else:
+                entry = {
+                    "S.No": len(st.session_state['feedback_entries']) + 1,
+                    "Name": name.strip(),
+                    "Email": email.strip(),
+                    "Rating": rating,
+                    "Feedback": feedback.strip(),
+                    "Suggested topic": None if suggestion == "None" else suggestion,
+                    "Attachment name": attachment.name if attachment else None
+                }
+                st.session_state['feedback_entries'].append(entry)
+                store_feedback(entry)
+                st.success(f"✅ Thank you, {name.strip()}! We truly appreciate your insights and will use your feedback to make this guide even better.")
             
     # --- Admin Maintenance (Secure + Exportable) ---
     with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
