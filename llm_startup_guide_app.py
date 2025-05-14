@@ -555,11 +555,10 @@ elif current_page == "FAQs":
         st.write("Test prompts using diverse scenarios. Be mindful of wording that assumes gender, age, or culture. Use a review process before publishing AI-generated content.")
 
     st.markdown("Have more questions? Use the **Feedback** section to suggest more topics.")
+
 elif current_page == "Glossary":
     st.title("Glossary")
-
     st.write("This glossary includes terms covered in this website to help startup founders understand and use language models effectively.")
-    display_expand_collapse_controls(current_page)
 
     glossary = {
         "LLM (Large Language Model)": "An AI model trained on vast text datasets to generate and understand human-like language. Examples include GPT-3.5 and GPT-4.",
