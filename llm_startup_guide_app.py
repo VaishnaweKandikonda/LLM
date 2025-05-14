@@ -468,7 +468,7 @@ elif current_page == "Ethics & Bias":
         - Be transparent with users when AI is involved in decisions.  
         """)
 
-        with st.expander("📋 Downloadable Bias Prevention Checklist"):
+       st.markdown("**📋 Downloadable Bias Prevention Checklist:**")
             checklist_content = (
                 "Bias Prevention Checklist:\n"
                 "- Test outputs for multiple user profiles\n"
