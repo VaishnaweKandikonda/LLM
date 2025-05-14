@@ -19,7 +19,7 @@ if os.path.exists("WebAppstyling.css"):
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
 # --- File Path for Feedback ---
-FEEDBACK_PATH = "/mnt/data/feedback.csv"
+FEEDBACK_PATH = "feedback.csv"
 
 # --- Load Feedback ---
 @st.cache_data(ttl=3600)
