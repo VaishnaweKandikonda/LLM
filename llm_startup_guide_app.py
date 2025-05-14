@@ -18,9 +18,6 @@ if os.path.exists("WebAppstyling.css"):
 # --- Hugging Face API Key ---
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
-# Load admin passphrase
-ADMIN_PASSPHRASE = st.secrets["ADMIN_PASSPHRASE"]
-
 # --- File Path for Feedback ---
 FEEDBACK_PATH = "feedback.csv"
 
@@ -1098,6 +1095,7 @@ elif current_page == "Feedback":
             st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
     
         if st.button("🗑️ Clear All Feedback"):
+            ADMIN_PASSPHRASE = st.secrets["ADMIN_PASSPHRASE"]
             if admin_key_input == ADMIN_PASSPHRASE and confirm_clear:
                 try:
                     # Delete the file from disk if it exists
