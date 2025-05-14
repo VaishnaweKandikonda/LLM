@@ -847,26 +847,41 @@ elif current_page == "FAQs":
 elif current_page == "Glossary":
     st.title("Glossary")
     display_expand_collapse_controls(current_page)
-    st.write("This glossary includes terms covered in this website to help startup founders understand and use language models effectively.")
 
     glossary = {
         "LLM (Large Language Model)": "An AI model trained on vast text datasets to generate and understand human-like language. Examples include GPT-3.5 and GPT-4.",
         "Prompt": "The instruction or input you give to the AI model. Clear, specific prompts produce better results.",
-        "Temperature": "A setting that controls the creativity of the output. Lower values generate more predictable responses; higher values create more varied or surprising ones.",
-        "Token": "A piece of text (word or part of a word). You are charged based on the number of tokens processed.",
-        "Hallucination": "When an LLM gives a confident but incorrect answer. These often look factual but are actually made up.",
-        "Bias": "When an AI system reflects unfair assumptions or stereotypes present in the training data.",
-        "Sampling": "The technique used to decide the next word in a generated sentence. Includes methods like top-k and top-p sampling.",
-        "Human-in-the-Loop": "An approach where human reviewers monitor or approve outputs from the AI, especially in high-stakes situations.",
-        "Model Selection": "Choosing which model (e.g., GPT-3.5 vs GPT-4) to use based on cost, speed, and task complexity.",
-        "Cost Optimization": "Strategies to reduce LLM usage costs, such as shortening prompts, batching requests, and using cheaper models.",
-        "Search vs. LLM": "LLMs generate responses based on past training, while search engines retrieve existing documents in real-time."
+        "Prompt Engineering": "The practice of crafting clear and effective inputs to guide large language models and achieve high-quality outputs.",
+        "Zero-shot Prompting": "A prompt format that provides no examples — the model relies solely on the instruction.",
+        "Few-shot Prompting": "A prompt that includes multiple examples to guide the model’s responses more effectively.",
+        "Instructional Prompt": "A direct command, like 'Summarize this email in three bullet points.'",
+        "Conversational Prompt": "A friendly, dialogue-based prompt like 'Hi! Can you help me explain this to a 10-year-old?'",
+        "Temperature": "A setting that controls how predictable or creative the model’s output is. Lower = more deterministic, Higher = more diverse.",
+        "Token": "A unit of text (like a word or subword). AI models process and charge based on tokens.",
+        "Sampling": "A method for selecting which word comes next. Includes top-k and top-p (nucleus) sampling to control randomness.",
+        "Top-k Sampling": "The model picks from the top k most likely next tokens.",
+        "Top-p Sampling (Nucleus Sampling)": "The model selects from the smallest group of tokens whose cumulative probability is above a threshold p.",
+        "Hallucination": "When a language model outputs a confident but incorrect or made-up statement.",
+        "Bias": "Unintended favoritism or prejudice in model outputs, usually inherited from biased training data.",
+        "Human-in-the-Loop": "A method where humans validate or oversee AI-generated outputs, especially for sensitive tasks.",
+        "Model Selection": "Choosing the right AI model based on cost, capability, and complexity — e.g., GPT-4 vs FLAN-T5.",
+        "Prompt Tuning": "An advanced technique that fine-tunes prompts using gradient-based optimization and training data.",
+        "Use Case": "A real-world application of LLMs to solve a specific startup or business need (e.g., customer support, content generation).",
+        "API Token Cost": "The pricing structure based on the number of input and output tokens processed by the model.",
+        "Cost Optimization": "Strategies to reduce the cost of using AI APIs, such as shortening prompts and using cheaper models.",
+        "Hallucination Risk": "The likelihood of a model generating inaccurate or fabricated content.",
+        "Ethical AI": "The practice of using AI responsibly by reducing bias, ensuring fairness, and protecting user trust.",
+        "Bias Checklist": "A list of considerations for detecting and minimizing bias in AI outputs or prompts.",
+        "Prompt Generator": "A tool that suggests high-quality prompts for specific business or startup needs.",
+        "Startup Use Case Matcher": "An interactive tool that recommends LLM use cases based on industry, goal, and team size.",
+        "Temperature Control": "The process of tuning the model’s output randomness using the temperature parameter.",
+        "Try it Yourself": "An interactive section where users can test prompts and view real-time LLM responses.",
+        "Toolkit": "A downloadable collection of templates, guides, and resources for implementing LLMs in startups."
     }
 
     for term, definition in glossary.items():
-        st.markdown(f"**{term}**")
-        st.write(definition)
-        st.markdown("---")
+        with expander_section(f"**{term}**"):
+            st.markdown(f"{definition}")
 
 elif current_page == "Interactive Use Cases":
     st.title("🚀 Interactive Use Cases")
