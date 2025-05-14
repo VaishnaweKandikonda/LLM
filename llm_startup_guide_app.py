@@ -42,22 +42,34 @@ if 'global_expansion_state' not in st.session_state:
 
 # --- Utility Functions ---
 def expander_section(title):
-    expanded = st.session_state['global_expansion_state'] if st.session_state['global_expansion_state'] is not None else False
-    return st.expander(title, expanded=expanded)
+    key = f"expander_{title}"
+
+    # Init state for each expander
+    if key not in st.session_state:
+        st.session_state[key] = False
+
+    return st.expander(title, expanded=st.session_state[key])
 
 def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
-        "API Cost Optimization", "Ethics & Bias","Startup Use Case Matcher", "FAQs", "Glossary"
+        "API Cost Optimization", "Ethics & Bias", "Startup Use Case Matcher", "FAQs", "Glossary"
     ]
+    
     if current_page in visible_on_pages:
-        col1, col2, col3 = st.columns([9, 0.5, 0.5])  # Adjust width ratios as needed
+        col1, col2, col3 = st.columns([9, 0.5, 0.5])
         with col2:
             if st.button("➕", help="Expand All"):
-                st.session_state['global_expansion_state'] = True
+                # Set all expanders on this page to True
+                for key in st.session_state.keys():
+                    if key.startswith("expander_"):
+                        st.session_state[key] = True
         with col3:
             if st.button("➖", help="Collapse All"):
-                st.session_state['global_expansion_state'] = False
+                # Set all expanders on this page to False
+                for key in st.session_state.keys():
+                    if key.startswith("expander_"):
+                        st.session_state[key] = False
 
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
@@ -228,7 +240,7 @@ if current_page == "Home":
                 # --- Enhanced features only for LLM Fundamentals ---
                 if title == "How Language Models Work":
                     # Infographic
-                    st.image("how_llms_generate_text.png", caption="How LLMs Generate Text",use_container_width=True)
+                    st.image("how_llms_generate_text.png", caption="How LLMs Generate Text", width=400)
 
                     # Prompt vs Output Example
                     st.markdown("#### Prompt vs. Output Example")
