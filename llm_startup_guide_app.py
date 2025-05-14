@@ -44,20 +44,13 @@ def display_expand_collapse_controls(current_page: str):
     ]
 
     if current_page in visible_on_pages:
-        st.markdown("""
-            <div class="exp-control-buttons">
-                <form action="" method="post">
-                    <button name="expand_action" value="expand">➕</button>
-                    <button name="expand_action" value="collapse">➖</button>
-                </form>
-            </div>
-        """, unsafe_allow_html=True)
-
-        expand_action = st.query_params.get("expand_action", None)
-        if expand_action == "expand":
-            st.session_state['global_expansion_state'] = True
-        elif expand_action == "collapse":
-            st.session_state['global_expansion_state'] = False
+        col1, col2, col3 = st.columns([8, 1, 1])  # Adjust width ratios as needed
+        with col2:
+            if st.button("➕", help="Expand All"):
+                st.session_state['global_expansion_state'] = True
+        with col3:
+            if st.button("➖", help="Collapse All"):
+                st.session_state['global_expansion_state'] = False
 
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
