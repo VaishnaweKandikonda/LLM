@@ -1002,41 +1002,88 @@ elif current_page == "Download Toolkit":
         st.success("Thanks for your input! We'll use it to improve the toolkit.")
 
 elif current_page == "Feedback":
-    st.header("We Value Your Feedback")
-    st.markdown("Please share your thoughts on this guide.")
+    st.title("📣 Share Your Experience")
+    st.markdown("""
+        Your feedback helps us improve the **LLM Guide for Startups**.  
+        Let us know what you found useful and what you'd like to see next.
+    """)
 
-    name = st.text_input("Your name *")
-    email = st.text_input("Your email (optional)")
-    rating = st.slider("How helpful was this guide?", 1, 5, 3)
-    feedback = st.text_area("Your thoughts (optional)")
-    suggestion = st.selectbox("What would you like to see next?", ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
-    attachment = st.file_uploader("📎 Attach a file (optional)", type=["png", "jpg", "pdf", "txt", "docx"])
+    st.markdown("### 🧾 Feedback Form")
 
-    required_filled = bool(name.strip())
-    email_valid = True if not email.strip() else is_valid_email(email.strip())
-    form_valid = required_filled and email_valid
+    # --- Input Fields ---
+    with st.form("feedback_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            name = st.text_input("👤 Full Name *", placeholder="Enter your full name")
+        with col2:
+            email = st.text_input("📧 Email Address (optional)", placeholder="e.g. alex@startup.com")
 
-    if st.button("Submit Feedback", disabled=not form_valid):
-        entry = {
-            "S.No": len(st.session_state['feedback_entries']) + 1,
-            "Name": name.strip(),
-            "Email": email.strip(),
-            "Rating": rating,
-            "Feedback": feedback.strip(),
-            "Suggested topic": None if suggestion == "None" else suggestion,
-            "Attachment name": attachment.name if attachment else None
-        }
-        st.session_state['feedback_entries'].append(entry)
-        store_feedback(entry)
-        st.success(f"Thanks {name.strip()} for your feedback!")
+        rating = st.slider(
+            "⭐ How helpful was this guide?",
+            1, 5, 3,
+            help="1 = Not helpful, 5 = Extremely helpful"
+        )
 
+        feedback = st.text_area("💬 Your Comments (optional)", placeholder="What worked well? What could be improved?")
+        suggestion = st.selectbox(
+            "🧠 What topics should we cover next?",
+            ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"]
+        )
+        attachment = st.file_uploader("📎 Optional File Upload", type=["png", "jpg", "pdf", "txt", "docx"])
+
+        # --- Validation Logic ---
+        required_filled = bool(name.strip())
+        email_valid = True if not email.strip() else is_valid_email(email.strip())
+        form_valid = required_filled and email_valid
+
+        submitted = st.form_submit_button("🚀 Submit Feedback", disabled=not form_valid)
+
+        if submitted:
+            entry = {
+                "S.No": len(st.session_state['feedback_entries']) + 1,
+                "Name": name.strip(),
+                "Email": email.strip(),
+                "Rating": rating,
+                "Feedback": feedback.strip(),
+                "Suggested topic": None if suggestion == "None" else suggestion,
+                "Attachment name": attachment.name if attachment else None
+            }
+            st.session_state['feedback_entries'].append(entry)
+            store_feedback(entry)
+            st.success(f"✅ Thank you, {name.strip()}! We truly appreciate your insights and will use your feedback to make this guide even better.")
+
+        elif not form_valid and submitted:
+            if not required_filled:
+                st.warning("⚠️ Please enter your name to submit the form.")
+            elif not email_valid:
+                st.error("❌ Invalid email address. Please check and try again.")
+
+    # --- View Feedback Entries ---
     if st.session_state['feedback_entries']:
-        if st.checkbox("Show All Feedback"):
+        with st.expander("📋 View Submitted Feedback"):
             df = pd.DataFrame(st.session_state['feedback_entries'])
             if 'S.No' in df.columns:
                 df = df.drop(columns=['S.No'])
-            df.index = df.index + 1  # Show index starting from 1
+            df.index = df.index + 1
             st.dataframe(df, use_container_width=True)
+
+    # --- Admin Maintenance (Optional) ---
+    with st.expander("🛠️ Admin Controls: Clear All Feedback"):
+        st.markdown("Permanently delete all feedback entries from both memory and file storage.")
+
+        admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
+        confirm_clear = st.checkbox("I understand this action is irreversible")
+
+        if st.button("🗑️ Clear All Feedback") and admin_key == "delete123" and confirm_clear:
+            try:
+                st.session_state['feedback_entries'] = []
+                if os.path.exists("feedback.csv"):
+                    os.remove("feedback.csv")
+                st.success("✅ All feedback records have been successfully deleted.")
+            except Exception as e:
+                st.error(f"❌ Failed to delete feedback records: {str(e)}")
+        elif st.button("🗑️ Clear All Feedback"):
+            st.error("🔒 Please enter a valid admin passphrase and confirm deletion.")
 
 # --- Compact Unified Footer ---
 st.markdown("""---""")
