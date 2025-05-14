@@ -1066,26 +1066,50 @@ elif current_page == "Feedback":
                 df = df.drop(columns=['S.No'])
             df.index = df.index + 1
             st.dataframe(df, use_container_width=True)
-
-    # --- Admin Maintenance (Optional) ---
-    with st.expander("🛠️ Admin Controls: Clear All Feedback"):
-        st.markdown("Permanently delete all feedback entries from both memory and file storage.")
-
+            
+    # --- Admin Maintenance (Secure + Exportable) ---
+    with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
+        st.markdown("""
+        You can **export**, **review**, or **permanently delete** all feedback entries from the app and local storage.
+        """)
+    
+        # Admin authentication
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
-        confirm_clear = st.checkbox("I understand this action is irreversible")
-
+        confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
+    
+        # Export current feedback before deletion
+        if st.session_state['feedback_entries']:
+            export_df = pd.DataFrame(st.session_state['feedback_entries'])
+            csv_data = export_df.to_csv(index=False).encode("utf-8")
+            st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
+    
+        # Clear button
         clear_clicked = st.button("🗑️ Clear All Feedback", key="clear_feedback_btn")
+    
+        if clear_clicked:
+            if admin_key == "delete123" and confirm_clear:
+                try:
+                    # Remove CSV file
+                    if os.path.exists("feedback.csv"):
+                        os.remove("feedback.csv")
+    
+                    # Clear memory
+                    st.session_state['feedback_entries'] = []
+    
+                    # Reset cache
+                    @st.cache_data(ttl=0, show_spinner=False)
+                    def load_feedback(path="feedback.csv"):
+                        return []
+    
+                    st.cache_data.clear()
+                    st.success("✅ All feedback records have been cleared.")
+                    st.rerun()
+    
+                except Exception as e:
+                    st.error(f"❌ Error deleting feedback: {str(e)}")
+            else:
+                st.error("🔒 Please enter a valid passphrase and confirm the action.")
 
-        if clear_clicked and admin_key == "delete123" and confirm_clear:
-            try:
-                st.session_state['feedback_entries'] = []
-                if os.path.exists("feedback.csv"):
-                    os.remove("feedback.csv")
-                st.success("✅ All feedback records have been successfully deleted.")
-            except Exception as e:
-                st.error(f"❌ Failed to delete feedback records: {str(e)}")
-        elif clear_clicked:
-            st.error("🔒 Please enter a valid admin passphrase and confirm deletion.")
 
 
 # --- Compact Unified Footer ---
