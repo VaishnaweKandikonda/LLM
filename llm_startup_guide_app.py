@@ -1020,6 +1020,9 @@ elif current_page == "Feedback":
 
     st.markdown("### 🧾 Feedback Form")
 
+    # Always reload feedback from CSV to persist across sessions
+    st.session_state['feedback_entries'] = load_feedback()
+
     # --- Input Form ---
     with st.form("feedback_form"):
         col1, col2 = st.columns(2)
@@ -1034,29 +1037,34 @@ elif current_page == "Feedback":
                                   ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
         attachment = st.file_uploader("📎 Optional File Upload", type=["png", "jpg", "pdf", "txt", "docx"])
 
-        # --- Validation ---
+        # Validation logic
         required_filled = bool(name.strip())
         email_valid = True if not email.strip() else re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email.strip())
-        form_valid = required_filled and email_valid
 
-        submitted = st.form_submit_button("🚀 Submit Feedback", disabled=not form_valid)
+        submitted = st.form_submit_button("🚀 Submit Feedback")
 
         if submitted:
-            entry = {
-                "Name": name.strip(),
-                "Email": email.strip(),
-                "Rating": rating,
-                "Feedback": feedback.strip(),
-                "Suggested topic": None if suggestion == "None" else suggestion,
-                "Attachment name": attachment.name if attachment else None
-            }
-            st.session_state['feedback_entries'].append(entry)
-            store_feedback(entry)
-            st.success(f"✅ Thank you, {name.strip()}! Your feedback has been submitted successfully.")
+            if not required_filled:
+                st.warning("⚠️ Please enter your name to submit the form.")
+            elif not email_valid:
+                st.error("❌ Invalid email format. Please check and try again.")
+            else:
+                entry = {
+                    "Name": name.strip(),
+                    "Email": email.strip(),
+                    "Rating": rating,
+                    "Feedback": feedback.strip(),
+                    "Suggested topic": None if suggestion == "None" else suggestion,
+                    "Attachment name": attachment.name if attachment else None
+                }
+                store_feedback(entry)
+                st.success(f"✅ Thank you, {name.strip()}! Your feedback has been recorded.")
+                st.rerun()  # reloads data
 
-    # --- Display All Feedback After Submission ---
-    if st.session_state['feedback_entries']:
-        df = pd.DataFrame(st.session_state['feedback_entries'])
+    # --- Show Submitted Feedback ---
+    all_feedback = load_feedback()
+    if all_feedback:
+        df = pd.DataFrame(all_feedback)
         df.index = df.index + 1
         df.index.name = "No."
         st.markdown("### 📋 All Submitted Feedback")
@@ -1064,15 +1072,15 @@ elif current_page == "Feedback":
     else:
         st.info("No feedback submitted yet. Be the first to contribute!")
 
-    # --- Admin Tools ---
+    # --- Admin Controls ---
     with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
         st.markdown("Export or delete all feedback entries below.")
 
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
         confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
 
-        if st.session_state['feedback_entries']:
-            export_df = pd.DataFrame(st.session_state['feedback_entries'])
+        if all_feedback:
+            export_df = pd.DataFrame(all_feedback)
             csv_data = export_df.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
 
@@ -1081,14 +1089,12 @@ elif current_page == "Feedback":
                 try:
                     if os.path.exists("feedback.csv"):
                         os.remove("feedback.csv")
-                    st.session_state['feedback_entries'] = []
-                    st.cache_data.clear()
                     st.success("✅ All feedback has been permanently deleted.")
                     st.rerun()
                 except Exception as e:
                     st.error(f"❌ Error while deleting: {str(e)}")
             else:
-                st.error("🔒 Invalid passphrase or confirmation checkbox not selected.")
+                st.error("🔒 Invalid passphrase or confirmation not checked.")
 
 # --- Compact Unified Footer ---
 st.markdown("""---""")
