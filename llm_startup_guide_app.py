@@ -128,55 +128,83 @@ if current_page == "Home":
             "Sub-topic",
             [
                 "All",
-                "How Language Models Work",
                 "Introduction to Large Language Models",
+                "How Language Models Work",
                 "Why LLMs Matter for Startups",
-                "Let's Get Started!",
                 "Best Practices & Ethics",
-                "Who Should Use This Guide"
+                "Who Should Use This Guide",
+                "Let's Get Started!",
             ]
         )
     home_sections = {
-        "How Language Models Work": (
-            "Large Language Models (LLMs) are trained on massive text datasets (books, websites, articles) to predict the next word in a sentence. "
-            "They don’t understand meaning — they generate language based on statistical patterns.\n\n"
-            "**How LLMs generate text:**\n"
-            "- You write a prompt.\n"
-            "- The model predicts the next word/token, again and again.\n"
-            "- It forms a complete answer based on probabilities.\n\n"
-            "**What's a token?**\n"
-            "Tokens are chunks of text — often words or parts of words. For example, 'Startup' might be split into 'Start' and 'up'. "
-            "You are charged based on the number of tokens in your input and output.\n\n"
-            "**Key takeaway:** LLMs are not search engines. They don’t ‘know’ facts — they predict likely responses from prior data. Use them critically!"
-        ),
-        "Introduction to Large Language Models": (
-            "Large Language Models (LLMs) are advanced AI systems trained to understand and generate human-like text. "
-            "Popular platforms like ChatGPT, Claude, and Gemini use LLMs to assist users with content generation, problem-solving, and more."
-        ),
-        "Why LLMs Matter for Startups": (
-            "- Automate customer support and FAQs\n"
-            "- Generate pitch decks, emails, blogs, and product content\n"
-            "- Build intelligent prototypes and chatbots\n"
-            "- Accelerate idea validation and MVP development"
-        ),
-        "Let's Get Started!": (
-            "Use the left menu to explore sections packed with insights, use cases, and practical tools to build smarter with AI."
-        ),
-        "Best Practices & Ethics": (
-            "- Learn prompt design for better results\n"
-            "- Understand model temperature and creativity\n"
-            "- Avoid AI-generated misinformation\n"
-            "- Optimize API costs\n"
-            "- Navigate bias and fairness responsibly"
-        ),
-        "Who Should Use This Guide": (
-            "- Startup founders exploring AI\n"
-            "- Developers and PMs integrating LLMs\n"
-            "- Investors evaluating AI strategies\n"
-            "- Anyone curious about AI in startups"
-        )
-    }
+    "Introduction to Large Language Models": (
+        "Large Language Models (LLMs) are smart computer programs that can read, understand, and write text like a human. "
+        "They are trained by reading huge amounts of information from books, websites, and articles. "
+        "This helps them learn how people use language, so they can help in many useful ways:\n\n"
+        "- Answer questions and explain things clearly\n"
+        "- Write emails, blog posts, or summaries\n"
+        "- Assist with code generation and debugging\n"
+        "- Translate between different languages\n"
+        "- Support tasks in education, business, and creative work\n\n"
+        "**In Simple Terms:**\n"
+        "- LLMs power chatbots like ChatGPT, Claude, and Google Gemini.\n"
+        "- They’re trained on billions of words from the internet.\n"
+        "- Widely used in customer service, education, content creation, and tools."
+    ),
 
+    "How Language Models Work": (
+        "LLMs are trained using large amounts of text to learn patterns in language. "
+        "They don’t understand meaning like humans do — instead, they predict the most likely next word or phrase based on what you type.\n\n"
+        "**How LLMs generate text:**\n"
+        "- You provide a prompt or question.\n"
+        "- The model predicts the next word, again and again, to form a full response.\n"
+        "- It uses probabilities learned during training to decide what comes next.\n\n"
+        "**What's a token?**\n"
+        "- A token is a small piece of text — like a word or part of a word.\n"
+        "- For example, “Startup” might become “Start” and “up.”\n"
+        "- Most AI tools charge based on the number of tokens processed.\n\n"
+        "**Key takeaway:**\n"
+        "- LLMs aren’t search engines — they don’t know facts.\n"
+        "- They generate likely-sounding responses. Always verify important info!"
+    ),
+
+    "Why LLMs Matter for Startups": (
+        "Startups often need to move fast with limited resources. LLMs help teams work more efficiently, build smarter tools, and scale faster without needing big teams.\n\n"
+        "- Automate customer support and answer FAQs\n"
+        "- Write product descriptions, blog posts, and marketing emails\n"
+        "- Build chatbots and interactive assistants quickly\n"
+        "- Speed up MVP development with code generation and idea testing\n"
+        "- Save time on repetitive tasks and research"
+    ),
+
+    "Best Practices & Ethics": (
+        "Using LLMs wisely ensures safe, fair, and productive outcomes. Here are some key best practices to follow:\n\n"
+        "- Write clear, specific prompts for better results\n"
+        "- Learn how model temperature affects creativity and accuracy\n"
+        "- Don’t rely on AI for factual truth — always double-check\n"
+        "- Monitor and manage API usage to control costs\n"
+        "- Be aware of potential bias, fairness issues, and ethical concerns"
+    ),
+
+    "Who Should Use This Guide": (
+        "This guide is built for anyone curious about applying LLMs in a startup or business setting — no technical background required.\n\n"
+        "- Startup founders exploring how AI can boost their business\n"
+        "- Product managers and developers building AI features\n"
+        "- Marketing and content teams looking to scale output\n"
+        "- Investors or advisors evaluating AI strategies\n"
+        "- Curious learners who want to understand AI in practical terms"
+    ),
+
+    "Let's Get Started!": (
+        "Use the left menu to explore helpful topics, real use cases, and interactive tools. "
+        "You’ll find step-by-step guidance to help you start using AI effectively — whether for writing, coding, customer support, or product development.\n\n"
+        "- Browse each section to learn more\n"
+        "- Try interactive examples and tools\n"
+        "- Get inspired by practical applications for startups\n"
+        "- Start small and scale smart with LLMs"
+    )
+}
+    
     # --- Render Sections Based on Selection ---
     for title, content in home_sections.items():
         if home_subtopic == "All" or home_subtopic == title:
