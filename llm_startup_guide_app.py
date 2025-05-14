@@ -784,6 +784,7 @@ elif current_page == "Ethics & Bias":
     if ethics_subtopic in ("All", "Bias Reflection Quiz"):
         with expander_section("Try This"):
             bias_prompt = st.radio("Which of these might reflect bias?", [
+                "-- Select an answer --",
                 "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'", 
                 "Summarize a product spec for a software tool", 
                 "Generate a welcome message for a task management app"
