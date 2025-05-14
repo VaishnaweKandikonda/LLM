@@ -1086,27 +1086,34 @@ elif current_page == "Feedback":
     # --- Admin Controls ---
     with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
         st.markdown("Export or delete all feedback entries below.")
-
+    
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
         confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
-
-        if st.session_state['feedback_entries']:
+    
+        # Export feedback if exists
+        if st.session_state.get('feedback_entries'):
             export_df = pd.DataFrame(st.session_state['feedback_entries'])
             csv_data = export_df.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
-
+    
+        # Clear feedback file and session
         if st.button("🗑️ Clear All Feedback"):
             if admin_key == "delete123" and confirm_clear:
                 try:
-                    if os.path.exists("feedback.csv"):
-                        os.remove("feedback.csv")
+                    # Overwrite the file with empty headers instead of deleting
+                    empty_df = pd.DataFrame(columns=["Name", "Email", "Rating", "Feedback", "Suggested topic", "Attachment name"])
+                    empty_df.to_csv(FEEDBACK_PATH, index=False)
+    
+                    # Reset session state
                     st.session_state['feedback_entries'] = []
-                    st.success("✅ All feedback has been permanently deleted.")
+    
+                    st.success("✅ All feedback has been cleared.")
                     st.rerun()
                 except Exception as e:
-                    st.error(f"❌ Error while deleting: {str(e)}")
+                    st.error(f"❌ Error while clearing feedback: {str(e)}")
             else:
                 st.error("🔒 Invalid passphrase or confirmation not checked.")
+
 
 
 # --- Compact Unified Footer ---
