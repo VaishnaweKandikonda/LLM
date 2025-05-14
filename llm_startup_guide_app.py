@@ -740,10 +740,43 @@ elif current_page == "Startup Use Case Matcher":
             st.warning("📊 Summarize industry trends using public data + GPT.")
         if goal == "Internal Automation":
             st.success("📂 Use AI to write scripts, meeting summaries, or task updates.")
+            
+elif current_page == "Model Comparison":
+    st.title("⚖️ Try Prompts on Multiple Models")
+    st.markdown("See how the same prompt performs across different open-source models.")
 
+    prompt = st.text_area("Enter a prompt to test:", "Write a short welcome email for a new user.")
+
+    if st.button("Compare Outputs"):
+        with st.spinner("Generating responses..."):
+            models = {
+                "FLAN-T5": "google/flan-t5-small",
+                "Mistral 7B": "mistralai/Mistral-7B-Instruct-v0.1"
+            }
+
+            for label, model_id in models.items():
+                st.markdown(f"**{label} Response:**")
+                headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
+                payload = {"inputs": prompt, "parameters": {"temperature": 0.7, "max_new_tokens": 200}}
+                response = requests.post(f"https://api-inference.huggingface.co/models/{model_id}", headers=headers, json=payload)
+                if response.status_code == 200:
+                    output = response.json()
+                    st.success(output[0]['generated_text'])
+                else:
+                    st.error(f"{label} failed: {response.text}")
 
 elif current_page == "Download Toolkit":
     st.title("📦 LLM Starter Toolkit")
+    st.markdown("### Select Your Startup Stage")
+    stage = st.radio("Pick your maturity stage:", ["MVP/Prototype", "Scaling", "Enterprise-ready"])
+    
+    if stage == "MVP/Prototype":
+        st.info("🎯 Focus: Fast prototyping, free-tier tools, Notion templates.")
+    elif stage == "Scaling":
+        st.warning("⚙️ Focus: API cost optimization, batch automation, prompt consistency.")
+    elif stage == "Enterprise-ready":
+        st.success("🏢 Focus: Governance, monitoring, privacy audits, SLA-compliant APIs.")
+
     st.markdown("Download ready-made templates, cheat sheets, and code snippets to accelerate your LLM adoption.")
 
     st.markdown("### Included:")
@@ -809,7 +842,34 @@ elif current_page == "Feedback":
                 df = df.drop(columns=['S.No'])
             df.index = df.index + 1  # Show index starting from 1
             st.dataframe(df, use_container_width=True)
-            
+
+# --- About This Guide ---
+with st.expander("📘 About This Guide"):
+    st.markdown("""
+    This educational resource helps startup founders understand, test, and responsibly implement LLMs.
+    
+    - Created by AI enthusiasts & product builders.
+    - All insights are independent and model-neutral.
+    - Updated regularly to reflect the latest LLM trends.
+    """)
+
+# --- Ethics Commitment ---
+with st.expander("🛡️ Our AI Ethics Commitment"):
+    st.markdown("""
+    - We aim to present unbiased, inclusive guidance.
+    - AI outputs should always be reviewed before deployment.
+    - We encourage transparency and fairness in all AI use cases.
+    """)
+
+st.markdown("## 👥 Meet the Team")
+st.markdown("""
+Built with ❤️ by [Your Name or Team Name].
+
+For questions or collaboration:  
+📧 **Email**: hello@yourstartup.com  
+🐦 **Twitter**: [@yourhandle](https://twitter.com/yourhandle)
+""")
+    
 # --- Footer ---
 st.markdown("---")
 st.caption(f"© 2025 LLM Startup Guide • Last updated {datetime.now().strftime('%Y-%m-%d')}")
