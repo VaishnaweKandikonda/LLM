@@ -42,7 +42,6 @@ def display_expand_collapse_controls(current_page: str):
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
         "API Cost Optimization", "Ethics & Bias","Startup Use Case Matcher"
     ]
-
     if current_page in visible_on_pages:
         col1, col2, col3 = st.columns([9, 0.5, 0.5])  # Adjust width ratios as needed
         with col2:
@@ -137,8 +136,6 @@ if current_page == "Home":
                 "Who Should Use This Guide"
             ]
         )
-
-    # --- Home Page Content Dictionary ---
     home_sections = {
         "How Language Models Work": (
             "Large Language Models (LLMs) are trained on massive text datasets (books, websites, articles) to predict the next word in a sentence. "
@@ -894,14 +891,18 @@ elif current_page == "Feedback":
             st.dataframe(df, use_container_width=True)
 
 # --- Compact Unified Footer ---
-# --- Compact Unified Footer ---
-st.markdown("---")
-st.markdown("""
-**LLM Guide for Startups** — practical insights for using language models responsibly and efficiently in startup settings.  
-Built with ❤️ by:  
-- **Vaishnavi Kandikonda** (24216940) — [vaishnavi.kandikonda@ucdconnect.com](mailto:vaishnavi.kandikonda@ucdconnect.com)  
-- **Shivani Singh** (24234516) — [shivani.singh@ucdconnect.ie](mailto:shivani.singh@ucdconnect.ie)  
-- **Kushal Pratap Singh** (24205476) — [singhkushal.pratap@ucdconnect.ie](mailto:singhkushal.pratap@ucdconnect.ie)
-""")
+st.markdown("""---""")
 
-st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}** • Built with Streamlit • Guided by principles of transparency, fairness, and human-centered AI.")
+st.markdown("""
+<div style='font-size: 16px; line-height: 1.6;'>
+    <strong>LLM Guide for Startups</strong> — Practical insights for using language models responsibly and efficiently in startup settings.<br><br>
+    Built with ❤️ by:<br>
+    • <strong>Vaishnavi Kandikonda</strong> (24216940) — <a href="mailto:vaishnavi.kandikonda@ucdconnect.com">vaishnavi.kandikonda@ucdconnect.com</a><br>
+    • <strong>Shivani Singh</strong> (24234516) — <a href="mailto:shivani.singh@ucdconnect.ie">shivani.singh@ucdconnect.ie</a><br>
+    • <strong>Kushal Pratap Singh</strong> (24205476) — <a href="mailto:singhkushal.pratap@ucdconnect.ie">singhkushal.pratap@ucdconnect.ie</a><br>
+</div>
+""", unsafe_allow_html=True)
+
+st.caption(
+    f"© 2025 LLM Startup Guide • Last updated {datetime.now().strftime('%Y-%m-%d')} • Built with Streamlit • Guided by principles of transparency, fairness, and human-centered AI."
+)
