@@ -844,32 +844,45 @@ elif current_page == "Feedback":
             st.dataframe(df, use_container_width=True)
 
 # --- About This Guide ---
-with st.expander("📘 About This Guide"):
+with st.expander("📘 About This Guide", expanded=False):
     st.markdown("""
-    This educational resource helps startup founders understand, test, and responsibly implement LLMs.
-    
-    - Created by AI enthusiasts & product builders.
-    - All insights are independent and model-neutral.
-    - Updated regularly to reflect the latest LLM trends.
+    Welcome to the **LLM Guide for Startups** — a practical companion for founders, developers, and product teams building with AI.
+
+    ✅ Designed for non-technical and technical teams  
+    ✅ Covers everything from prompt design to ethical deployment  
+    ✅ Model-agnostic insights — updated with the latest LLM trends  
+
+    _Built to empower lean teams with smart, safe, and scalable AI adoption._
     """)
 
 # --- Ethics Commitment ---
-with st.expander("🛡️ Our AI Ethics Commitment"):
+with st.expander("🛡️ Our AI Ethics Commitment", expanded=False):
     st.markdown("""
-    - We aim to present unbiased, inclusive guidance.
-    - AI outputs should always be reviewed before deployment.
-    - We encourage transparency and fairness in all AI use cases.
+    We believe that **responsible AI** is not optional — it's essential for trust and success.  
+    Our commitment includes:
+
+    - 🔍 **Transparency** in how AI content is generated and used  
+    - ⚖️ **Fairness & Inclusion** — avoiding biased, harmful, or exclusionary outputs  
+    - 👩‍💼 **Human-in-the-loop** for all critical decisions  
+    - 🔐 **Data privacy and safety-first mindset**
+
+    _LLMs are powerful — but your judgment, values, and context matter more._
     """)
 
-st.markdown("## 👥 Meet the Team")
+# --- Meet the Team ---
+st.markdown("### 👥 Meet the Team")
 st.markdown("""
-Built with ❤️ by [Your Name or Team Name].
+Built with ❤️ by **[Your Team Name]**  
+We’re a group of AI researchers, product designers, and startup builders passionate about enabling smarter, faster innovation.
 
-For questions or collaboration:  
-📧 **Email**: hello@yourstartup.com  
-🐦 **Twitter**: [@yourhandle](https://twitter.com/yourhandle)
+Want to get in touch or contribute?
+
+📧 **Email**: [hello@yourstartup.com](mailto:hello@yourstartup.com)  
+🐦 **Twitter**: [@yourhandle](https://twitter.com/yourhandle)  
+🌐 **Website**: [yourstartup.com](https://yourstartup.com)
 """)
-    
+
 # --- Footer ---
 st.markdown("---")
-st.caption(f"© 2025 LLM Startup Guide • Last updated {datetime.now().strftime('%Y-%m-%d')}")
+st.caption("Made with Streamlit • Optimized for startup builders 💡")
+st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}**")
