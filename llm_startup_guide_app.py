@@ -253,11 +253,10 @@ elif current_page == "Prompt Engineering":
     display_expand_collapse_controls(current_page)
 
     col_left, col_right = st.columns([3, 1])  # Wider content on left, selector on right
-    
+
     with col_left:
         st.markdown("### Prompt Engineering Insights")
-    
-    with col_right:
+        
     subtopic = st.selectbox(
         "Sub-topic",
         [
@@ -279,6 +278,7 @@ elif current_page == "Prompt Engineering":
             "Prompt Learning Resources"
         ]
     )
+
     if subtopic in ("All", "What is a Prompt?"):
         with expander_section("What is a Prompt?"):
             st.write("""
@@ -311,7 +311,7 @@ elif current_page == "Prompt Engineering":
             if st.button("Run Prompt") and user_prompt:
                 with st.spinner("Generating response..."):
                     response, error = get_llm_response(user_prompt)
-            
+
                 if response:
                     st.success(response)
                 else:
@@ -342,7 +342,7 @@ elif current_page == "Prompt Engineering":
     if subtopic in ("All", "Prompt Checklist"):
         with expander_section("Prompt Checklist"):
             st.markdown("- Be specific\n- Set a role\n- Define output format")
-            
+
     if subtopic in ("All", "Quiz"):
         with expander_section("Test Your Knowledge"):
             q1 = st.radio("1. What makes a good prompt?", [
@@ -356,7 +356,7 @@ elif current_page == "Prompt Engineering":
                     st.success("Correct!")
                 else:
                     st.error("Try again.")
-    
+
             q2 = st.radio("2. Which is a strong ad prompt?", [
                 "-- Select an answer --",
                 "Write an ad",
@@ -368,7 +368,7 @@ elif current_page == "Prompt Engineering":
                     st.success("Spot on!")
                 else:
                     st.error("Try again.")
-    
+
             q3 = st.radio("3. True or False: AI always knows your intent.", [
                 "-- Select an answer --",
                 "True",
@@ -379,106 +379,108 @@ elif current_page == "Prompt Engineering":
                     st.success("Correct!")
                 else:
                     st.error("Incorrect.")
-if subtopic in ("All", "Introduction to Prompt Engineering"):
-    with expander_section("What is Prompt Engineering?"):
-        st.markdown("""
-        **Prompt Engineering** is the practice of crafting clear and effective inputs (prompts) to guide large language models (LLMs) like GPT-4.  
-        Think of it like writing instructions to a very smart assistant — the better your instructions, the better the output.
 
-        #### Why It Matters for Startups
-        - 🔍 Speeds up content generation and prototyping
-        - 💬 Powers customer support chatbots and assistants
-        - 💡 Helps in idea generation, naming, and brainstorming
-        - 💸 Reduces reliance on manual copywriting, support, or even coding
-        """)
+    if subtopic in ("All", "Introduction to Prompt Engineering"):
+        with expander_section("What is Prompt Engineering?"):
+            st.markdown("""
+            **Prompt Engineering** is the practice of crafting clear and effective inputs (prompts) to guide large language models (LLMs) like GPT-4.  
+            Think of it like writing instructions to a very smart assistant — the better your instructions, the better the output.
 
-if subtopic in ("All", "Types of Prompts"):
-    with expander_section("Types of Prompts"):
-        st.markdown("""
-        Different types of prompts serve different needs. Here are the most common:
+            #### Why It Matters for Startups
+            -  Speeds up content generation and prototyping
+            -  Powers customer support chatbots and assistants
+            -  Helps in idea generation, naming, and brainstorming
+            -  Reduces reliance on manual copywriting, support, or even coding
+            """)
 
-        #### 🟢 Zero-shot Prompting
-        No examples are provided. The model relies entirely on the instruction.
-        - *Example:* "Write a one-line product description for a fitness tracker."
+    if subtopic in ("All", "Types of Prompts"):
+        with expander_section("Types of Prompts"):
+            st.markdown("""
+            Different types of prompts serve different needs. Here are the most common:
 
-        #### 🟡 One-shot Prompting
-        A single example is included.
-        - *Example:*  
-          Q: What’s 2 + 2? A: 4  
-          Q: What’s 7 + 5?
+            ####  Zero-shot Prompting
+            No examples are provided. The model relies entirely on the instruction.
+            - *Example:* "Write a one-line product description for a fitness tracker."
 
-        #### 🔵 Few-shot Prompting
-        Multiple examples help guide the model.
-        - *Example:*  
-          "Translate: EN: Hello → ES: Hola. EN: Thank you → ES: Gracias."
+            ####  One-shot Prompting
+            A single example is included.
+            - *Example:*  
+              Q: What’s 2 + 2? A: 4  
+              Q: What’s 7 + 5?
 
-        #### 🗣️ Instructional vs Conversational
-        - **Instructional:** Direct commands like “Summarize this email in 3 lines.”
-        - **Conversational:** Framed as a dialogue, e.g., “Hi! Can you help me explain this concept to a 10-year-old?”
-        """)
-        
+            ####  Few-shot Prompting
+            Multiple examples help guide the model.
+            - *Example:*  
+              "Translate: EN: Hello → ES: Hola. EN: Thank you → ES: Gracias."
+
+            #### 🗣️ Instructional vs Conversational
+            - **Instructional:** Direct commands like “Summarize this email in 3 lines.”
+            - **Conversational:** Framed as a dialogue, e.g., “Hi! Can you help me explain this concept to a 10-year-old?”
+            """)
+
     if subtopic in ("All", "Prompt Best Practices"):
         with expander_section("Prompt Engineering Best Practices"):
             st.markdown("""
             Great prompts are clear, structured, and targeted.
-    
-            #### ✅ Key Techniques
+
+
+            ####  Key Techniques
             - **Be Clear & Specific:** Avoid vague instructions.
             - **Use Delimiters:** Separate instructions from content with `"""` or `---`.
             - **Step-by-Step Instructions:** Ask the model to “explain step-by-step” when needed.
             - **Set a Role:** E.g., “You are a technical recruiter.”
             - **Define Output Format:** Specify number of bullets, length, tone, etc.
             - **Iterate:** Rerun and refine based on what works.
-    
+
             _Example Prompt:_  
             > “You are a SaaS marketer. Write a 2-sentence announcement for our AI onboarding tool, in a friendly tone.”
             """)
+    
     if subtopic in ("All", "Common Pitfalls"):
         with expander_section("Common Pitfalls to Avoid"):
             st.markdown("""
             Even simple prompts can fail if they're poorly structured. Here are key mistakes to avoid:
-    
-            - ❌ **Ambiguity:** “Tell me about our product” — too vague.
-            - ❌ **Overloading Instructions:** Don't cram 5 tasks into 1 prompt.
-            - ❌ **Missing Context:** Always provide enough background for the model to understand the task.
+
+            -  **Ambiguity:** “Tell me about our product” — too vague.
+            -  **Overloading Instructions:** Don't cram 5 tasks into 1 prompt.
+            -  **Missing Context:** Always provide enough background for the model to understand the task.
             """)
-    
+
     if subtopic in ("All", "Startup Use Cases"):
         with expander_section("Prompt Engineering Use Cases for Startups"):
             st.markdown("""
             Prompt engineering can unlock huge value across startup functions:
-    
-            - 📢 **Marketing:** Social media posts, taglines, blog intros
-            - 🛎️ **Customer Support:** Smart autoresponders, refund replies
-            - 🧑‍💻 **Product & Dev:** Auto-generate feature descriptions, bug summaries
-            - 🎨 **Branding:** Name generation, slogan ideas, elevator pitches
+
+            -  **Marketing:** Social media posts, taglines, blog intros
+            -  **Customer Support:** Smart autoresponders, refund replies
+            -  **Product & Dev:** Auto-generate feature descriptions, bug summaries
+            -  **Branding:** Name generation, slogan ideas, elevator pitches
             """)
-    
+
     if subtopic in ("All", "Prompt Engineering vs Prompt Tuning"):
         with expander_section("Prompt Engineering vs Prompt Tuning"):
             st.markdown("""
             While both involve improving how AI generates output, they differ significantly:
-    
+
             - **Prompt Engineering**  
               Uses well-crafted text prompts to control output. No training required. Fast and flexible.
-    
+
             - **Prompt Tuning (Advanced)**  
               Involves fine-tuning the model on a custom dataset. Requires ML knowledge, compute resources, and time.
-    
-            _✅ Prompt Engineering is ideal for startups needing quick results without deep ML expertise._
+
+            _ Prompt Engineering is ideal for startups needing quick results without deep ML expertise._
             """)
-    
+
     if subtopic in ("All", "Prompt Learning Resources"):
         with expander_section("Learn More: Prompt Engineering Resources"):
             st.markdown("""
             Dive deeper into the art and science of prompting with these free resources:
-    
-            - 🔗 [OpenAI Cookbook – Prompting Guide](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb)
-            - 🔗 [PromptHero (Community Examples)](https://prompthero.com/)
-            - 🔗 [FlowGPT – Community Prompt Library](https://flowgpt.com/)
-            - 🔗 [Full Guide to Prompt Engineering](https://www.promptingguide.ai/)
-            """)
 
+            -  [OpenAI Cookbook – Prompting Guide](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb)
+            -  [PromptHero (Community Examples)](https://prompthero.com/)
+            -  [FlowGPT – Community Prompt Library](https://flowgpt.com/)
+            -  [Full Guide to Prompt Engineering](https://www.promptingguide.ai/)
+            """)
 
 elif current_page == "Temperature & Sampling":
     st.title("Temperature & Sampling")
@@ -800,7 +802,7 @@ elif current_page == "Ethics & Bias":
                 "Generate a welcome message for a task management app"
             ])
             if bias_prompt == "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'":
-                st.success("✅ Correct. This assumes the doctor's gender, which may reflect bias.")
+                st.success(" Correct. This assumes the doctor's gender, which may reflect bias.")
             else:
                 st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
 
@@ -911,7 +913,7 @@ elif current_page == "Interactive Use Cases":
             st.error(error or "Something went wrong.")
             
 elif current_page == "Startup Use Case Matcher":
-    st.title("🔍 Startup Use Case Matcher")
+    st.title(" Startup Use Case Matcher")
     st.markdown("Get personalized LLM use cases based on your startup type and needs.")
 
     industry = st.selectbox("What’s your industry?", ["FinTech", "EdTech", "HealthTech", "E-Commerce", "SaaS"])
@@ -972,7 +974,7 @@ elif current_page == "Download Toolkit":
     st.markdown("""
     - 📘 **Prompt Engineering 101** – Quick-start PDF guide  
     - 📋 **LLM Ethics Checklist** – Governance-friendly reference  
-    - 💸 **API Pricing Calculator** – Estimate costs in Excel  
+    -  **API Pricing Calculator** – Estimate costs in Excel  
     - 📁 **Prompt Library Template** – Notion-ready template  
     - 🧾 **Cost Tracking Sheet** – Monitor LLM API usage  
     - 🧪 **Code Snippets** – Python examples for API calls  
