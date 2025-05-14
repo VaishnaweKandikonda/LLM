@@ -312,7 +312,7 @@ elif current_page == "Prompt Engineering":
             - *Example:*  
               "Translate: EN: Hello → ES: Hola. EN: Thank you → ES: Gracias."
 
-            #### 🗣️ Instructional vs Conversational
+            #### Instructional vs Conversational
             - **Instructional:** Direct commands like “Summarize this email in 3 lines.”
             - **Conversational:** Framed as a dialogue, e.g., “Hi! Can you help me explain this concept to a 10-year-old?”
             """)
@@ -322,7 +322,7 @@ elif current_page == "Prompt Engineering":
             st.markdown('''
                 Great prompts are clear, structured, and targeted.
                 
-                #### ✅ Key Techniques
+                ####  Key Techniques
                 - **Be Clear & Specific:** Avoid vague instructions.
                 - **Use Delimiters:** Separate instructions from content with `"""` or `---`.
                 - **Step-by-Step Instructions:** Ask the model to "explain step-by-step" when needed.
@@ -478,7 +478,7 @@ elif current_page == "Temperature & Sampling":
             - **Medium (0.4–0.6)** → Natural balance  
             - **High (0.7–1.0)** → Creative, surprising
 
-            🧠 Think of temperature as the AI’s **risk-taking slider**.
+             Think of temperature as the AI’s **risk-taking slider**.
             """)
             st.info("Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
 
@@ -531,9 +531,9 @@ elif current_page == "Temperature & Sampling":
     if subtopic in ("All", "Common Misconceptions"):
         with expander_section("Common Misconceptions"):
             st.markdown("""
-            | ❌ Myth                                | ✅ Truth                                              |
+            |  Myth                                  |  Truth                                               |
             |----------------------------------------|------------------------------------------------------|
-            | High temperature = more accurate       | No — it means more *variety*, not accuracy.         |
+            | High temperature = more accurate       | No — it means more *variety*, not accuracy.          |
             | Low temperature is always best         | It’s best only when you want very safe output.       |
             | Sampling doesn’t matter                | It’s crucial for avoiding repetition.                |
             """)
@@ -541,12 +541,12 @@ elif current_page == "Temperature & Sampling":
     if subtopic in ("All", "Final Takeaway"):
         with expander_section("Final Takeaway: Use Temperature & Sampling Like Controls"):
             st.markdown("""
-            ✅ **Quick Guide:**
+             **Quick Guide:**
             - Use **low temperature** for consistent, formal content.
             - Use **high temperature** to ideate, entertain, and experiment.
             - Use **sampling** to keep outputs fresh and natural.
 
-            🎨 Your AI is like a co-creator. Adjust temperature and sampling to guide tone and creativity.
+             Your AI is like a co-creator. Adjust temperature and sampling to guide tone and creativity.
             """)
 
     st.markdown("Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
