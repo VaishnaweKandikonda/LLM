@@ -37,7 +37,7 @@ def expander_section(title):
     expanded = st.session_state['global_expansion_state'] if st.session_state['global_expansion_state'] is not None else False
     return st.expander(title, expanded=expanded)
 
-ddef display_expand_collapse_controls():
+def display_expand_collapse_controls():
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
         "API Cost Optimization", "Ethics & Bias"
