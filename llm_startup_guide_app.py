@@ -185,28 +185,28 @@ if current_page == "Home":
 
                 # --- Enhanced features only for LLM Fundamentals ---
                 if title == "How Language Models Work":
-                    # 📊 Infographic
-                    st.image("assets/how_llms_generate_text.png", caption="How LLMs Generate Text", use_column_width=True)
+                    # Infographic
+                    st.image("how_llms_generate_text.png", caption="How LLMs Generate Text", use_column_width=True)
 
-                    # 💬 Prompt vs Output Example
-                    st.markdown("#### 💬 Prompt vs. Output Example")
+                    # Prompt vs Output Example
+                    st.markdown("#### Prompt vs. Output Example")
                     col1, col2 = st.columns(2)
                     with col1:
                         st.code("Prompt:\n\"Describe our budgeting app in one sentence.\"", language="text")
                     with col2:
                         st.success("SmartBudget helps freelancers take control of their finances with simple tracking and goal setting.")
 
-                    # 🧠 Quiz
-                    st.markdown("#### 🧠 Quiz: How Well Do You Understand LLMs?")
+                    # Quiz
+                    st.markdown("#### Quiz: How Well Do You Understand LLMs?")
                     q1 = st.radio("True or False: LLMs search the internet to answer questions.",
                                   ["-- Select --", "True", "False"], key="llm_q1")
                     if q1 == "False":
-                        st.success("✅ Correct! LLMs generate responses from prior training, not live web access.")
+                        st.success("Correct! LLMs generate responses from prior training, not live web access.")
                     elif q1 == "True":
-                        st.error("❌ Not quite. LLMs don’t use the internet — they generate likely next words.")
+                        st.error("Not quite. LLMs don’t use the internet — they generate likely next words.")
 
-                    # ✅ Can vs. Can’t Table
-                    st.markdown("#### ✅ What LLMs Can & Can’t Do")
+                    # Can vs. Can’t Table
+                    st.markdown("#### What LLMs Can & Can’t Do")
                     st.markdown("""
                     | Can Do                              | Cannot Do                         |
                     |-------------------------------------|------------------------------------|
@@ -216,8 +216,8 @@ if current_page == "Home":
                     | Translate languages                 | Know current events                |
                     """)
 
-                    # 🎥 Optional Video
-                    st.markdown("#### 🎥 Optional Explainer Video")
+                    # Optional Video
+                    st.markdown("#### Optional Explainer Video")
                     st.video("https://www.youtube.com/embed/t4kyRyKyOpo")  # Replace with your team's video if applicable
 
 # --- Prompt Engineering Page ---
