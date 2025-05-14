@@ -1082,36 +1082,41 @@ elif current_page == "Feedback":
     else:
         st.info("No feedback submitted yet. Be the first to contribute!")
 
-   # --- Admin Controls ---
-with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
-    st.markdown("Export or delete all feedback entries below.")
-
-    # Input field
-    admin_key_input = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
-    confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
-
-    # Load passphrase securely from Streamlit Secrets
-    ADMIN_PASSPHRASE = st.secrets["ADMIN_PASSPHRASE"]
-
-    # Download option
-    if st.session_state.get('feedback_entries'):
-        export_df = pd.DataFrame(st.session_state['feedback_entries'])
-        csv_data = export_df.to_csv(index=False).encode("utf-8")
-        st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
-
-    # Delete option
-    if st.button("🗑️ Clear All Feedback"):
-        if admin_key_input == ADMIN_PASSPHRASE and confirm_clear:
-            try:
-                if os.path.exists(FEEDBACK_PATH):
-                    os.remove(FEEDBACK_PATH)
-                st.session_state['feedback_entries'] = []
-                st.success("✅ All feedback has been permanently deleted from disk and memory.")
-                st.rerun()
-            except Exception as e:
-                st.error(f"❌ Error while deleting: {str(e)}")
-        else:
-            st.error("🔒 Invalid passphrase or confirmation not checked.")
+    # --- Admin Controls ---
+    with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
+        st.markdown("Export or delete all feedback entries below.")
+    
+        admin_key_input = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
+        confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
+        ADMIN_PASSPHRASE = st.secrets["ADMIN_PASSPHRASE"]
+    
+        # Download CSV if entries exist
+        if st.session_state.get("feedback_entries"):
+            export_df = pd.DataFrame(st.session_state["feedback_entries"])
+            csv_data = export_df.to_csv(index=False).encode("utf-8")
+            st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
+    
+        # Delete all feedback
+        if st.button("🗑️ Clear All Feedback"):
+            if admin_key_input == ADMIN_PASSPHRASE and confirm_clear:
+                try:
+                    # Delete the file if it exists
+                    if os.path.exists(FEEDBACK_PATH):
+                        os.remove(FEEDBACK_PATH)
+                        st.success("✅ feedback.csv file deleted from disk.")
+                    else:
+                        st.info("⚠️ feedback.csv file not found. Nothing to delete.")
+    
+                    # Clear session + cached data
+                    st.session_state["feedback_entries"] = []
+                    st.cache_data.clear()  # Clear any cached CSV load
+                    st.success("✅ All feedback entries cleared from memory and cache.")
+                    st.rerun()
+    
+                except Exception as e:
+                    st.error(f"❌ Error while deleting feedback: {str(e)}")
+            else:
+                st.error("🔒 Invalid passphrase or confirmation checkbox not selected.")
 
 # --- Compact Unified Footer ---
 st.markdown("""---""")
