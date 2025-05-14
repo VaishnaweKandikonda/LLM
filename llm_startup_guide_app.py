@@ -869,20 +869,17 @@ with st.expander("🛡️ Our AI Ethics Commitment", expanded=False):
     _LLMs are powerful — but your judgment, values, and context matter more._
     """)
 
-# --- Meet the Team ---
-st.markdown("### 👥 Meet the Team")
-st.markdown("""
-Built with ❤️ by **[Your Team Name]**  
-We’re a group of AI researchers, product designers, and startup builders passionate about enabling smarter, faster innovation.
-
-Want to get in touch or contribute?
-
-📧 **Email**: [hello@yourstartup.com](mailto:hello@yourstartup.com)  
-🐦 **Twitter**: [@yourhandle](https://twitter.com/yourhandle)  
-🌐 **Website**: [yourstartup.com](https://yourstartup.com)
-""")
-
-# --- Footer ---
+# --- Compact Unified Footer ---
 st.markdown("---")
-st.caption("Made with Streamlit • Optimized for startup builders 💡")
-st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}**")
+st.markdown("""
+**LLM Guide for Startups** — practical insights for using language models responsibly and efficiently in startup settings.  
+Built with ❤️ by:
+
+- Kushal Pratap Singh (24205476)  
+- Shivani Singh (24234516)  
+- Vaishnavi Kandikonda (24216940)
+
+Guided by principles of **transparency**, **fairness**, and **human-centered AI**.  
+📬 [Contact us](mailto:hello@yourstartup.com) • 🌐 [yourstartup.com](https://yourstartup.com)
+""")
+st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}** • Built with Streamlit 💡")
