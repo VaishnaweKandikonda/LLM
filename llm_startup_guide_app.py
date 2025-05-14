@@ -23,6 +23,16 @@ HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 def load_feedback(path="feedback.csv"):
     return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
 
+def store_feedback(entry, path="feedback.csv"):
+    new_entry_df = pd.DataFrame([entry])
+    if os.path.exists(path):
+        existing_df = pd.read_csv(path)
+        new_entry_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
+    new_entry_df.to_csv(path, index=False)
+
+def is_valid_email(email):
+    return re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email)
+
 if 'feedback_entries' not in st.session_state:
     st.session_state['feedback_entries'] = load_feedback()
 
@@ -1010,97 +1020,75 @@ elif current_page == "Feedback":
 
     st.markdown("### 🧾 Feedback Form")
 
-    # --- Input Fields ---
+    # --- Input Form ---
     with st.form("feedback_form"):
         col1, col2 = st.columns(2)
         with col1:
             name = st.text_input("👤 Full Name *", placeholder="Enter your full name")
         with col2:
-            email = st.text_input("📧 Email Address (optional)", placeholder="e.g. alex@startup.com")
+            email = st.text_input("📧 Email Address (optional)", placeholder="e.g. alex@startup.ie")
 
-        rating = st.slider(
-            "⭐ How helpful was this guide?",
-            1, 5, 3,
-            help="1 = Not helpful, 5 = Extremely helpful"
-        )
-
+        rating = st.slider("⭐ How helpful was this guide?", 1, 5, 3)
         feedback = st.text_area("💬 Your Comments (optional)", placeholder="What worked well? What could be improved?")
-        suggestion = st.selectbox(
-            "🧠 What topics should we cover next?",
-            ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"]
-        )
+        suggestion = st.selectbox("🧠 What topics should we cover next?", 
+                                  ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
         attachment = st.file_uploader("📎 Optional File Upload", type=["png", "jpg", "pdf", "txt", "docx"])
 
-        # Submit button inside the form
-        submitted = st.form_submit_button("🚀 Submit Feedback")
-
-        # --- Validation Logic ---
+        # --- Validation ---
         required_filled = bool(name.strip())
-        email_valid = True if not email.strip() else is_valid_email(email.strip())
+        email_valid = True if not email.strip() else re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email.strip())
+        form_valid = required_filled and email_valid
+
+        submitted = st.form_submit_button("🚀 Submit Feedback", disabled=not form_valid)
 
         if submitted:
-            if not required_filled:
-                st.warning("⚠️ Please enter your name to submit the form.")
-            elif not email_valid:
-                st.error("❌ Invalid email address. Please check and try again.")
-            else:
-                entry = {
-                    "S.No": len(st.session_state['feedback_entries']) + 1,
-                    "Name": name.strip(),
-                    "Email": email.strip(),
-                    "Rating": rating,
-                    "Feedback": feedback.strip(),
-                    "Suggested topic": None if suggestion == "None" else suggestion,
-                    "Attachment name": attachment.name if attachment else None
-                }
-                st.session_state['feedback_entries'].append(entry)
-                store_feedback(entry)
-                st.success(f"✅ Thank you, {name.strip()}! We truly appreciate your insights and will use your feedback to make this guide even better.")
-            
-    # --- Admin Maintenance (Secure + Exportable) ---
+            entry = {
+                "Name": name.strip(),
+                "Email": email.strip(),
+                "Rating": rating,
+                "Feedback": feedback.strip(),
+                "Suggested topic": None if suggestion == "None" else suggestion,
+                "Attachment name": attachment.name if attachment else None
+            }
+            st.session_state['feedback_entries'].append(entry)
+            store_feedback(entry)
+            st.success(f"✅ Thank you, {name.strip()}! Your feedback has been submitted successfully.")
+
+    # --- Display All Feedback After Submission ---
+    if st.session_state['feedback_entries']:
+        df = pd.DataFrame(st.session_state['feedback_entries'])
+        df.index = df.index + 1
+        df.index.name = "No."
+        st.markdown("### 📋 All Submitted Feedback")
+        st.dataframe(df, use_container_width=True)
+    else:
+        st.info("No feedback submitted yet. Be the first to contribute!")
+
+    # --- Admin Tools ---
     with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
-        st.markdown("""
-        You can **export**, **review**, or **permanently delete** all feedback entries from the app and local storage.
-        """)
-    
-        # Admin authentication
+        st.markdown("Export or delete all feedback entries below.")
+
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
         confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
-    
-        # Export current feedback before deletion
+
         if st.session_state['feedback_entries']:
             export_df = pd.DataFrame(st.session_state['feedback_entries'])
             csv_data = export_df.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
-    
-        # Clear button
-        clear_clicked = st.button("🗑️ Clear All Feedback", key="clear_feedback_btn")
-    
-        if clear_clicked:
+
+        if st.button("🗑️ Clear All Feedback"):
             if admin_key == "delete123" and confirm_clear:
                 try:
-                    # Remove CSV file
                     if os.path.exists("feedback.csv"):
                         os.remove("feedback.csv")
-    
-                    # Clear memory
                     st.session_state['feedback_entries'] = []
-    
-                    # Reset cache
-                    @st.cache_data(ttl=0, show_spinner=False)
-                    def load_feedback(path="feedback.csv"):
-                        return []
-    
                     st.cache_data.clear()
-                    st.success("✅ All feedback records have been cleared.")
+                    st.success("✅ All feedback has been permanently deleted.")
                     st.rerun()
-    
                 except Exception as e:
-                    st.error(f"❌ Error deleting feedback: {str(e)}")
+                    st.error(f"❌ Error while deleting: {str(e)}")
             else:
-                st.error("🔒 Please enter a valid passphrase and confirm the action.")
-
-
+                st.error("🔒 Invalid passphrase or confirmation checkbox not selected.")
 
 # --- Compact Unified Footer ---
 st.markdown("""---""")
