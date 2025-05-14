@@ -103,64 +103,114 @@ page_titles = [
     "Interactive Use Cases", "Download Toolkit", "Feedback"
 ]
 
-subpage_options = {
+# subpage_options = {
+    # "Home": [
+    #     "Introduction to LLMs", "Why LLMs Matter", "Let's Get Started!",
+    #     "Best Practices & Ethics", "Who Should Use This Guide"
+    # ],
+#     "Prompt Engineering": [
+#         "All", "What is a Prompt?", "Best Practices", "Vague vs. Clear Examples",
+#         "Try it Yourself", "Prompt Use Cases", "Prompt Generator", "Prompt Checklist", "Quiz"
+#     ],
+#     "Temperature & Sampling": [
+#         "All", "What is Temperature?", "See the Difference", "Temperature Table",
+#         "What is Sampling?", "Match Temperature to Task"
+#     ],
+#     "Hallucinations": [
+#         "All", "What Are Hallucinations?", "Product Fact Gone Wrong", "Why Do LLMs Hallucinate?",
+#         "Minimize Hallucinations", "Quick Check"
+#     ],
+#     "API Cost Optimization": [
+#         "All", "Why API Costs Matter", "What Drives Cost?", "Founder Strategies",
+#         "Estimate Token Cost", "Final Note"
+#     ],
+#     "Ethics & Bias": [
+#         "All", "Why Ethics Matter", "Examples of Bias", "Why Bias Happens",
+#         "What Founders Can Do", "Bias Checklist", "Detect the Bias", "Try This", "Ethical Template"
+#     ]
+# }
+
+menu_structure = {
     "Home": [
         "Introduction to LLMs", "Why LLMs Matter", "Let's Get Started!",
         "Best Practices & Ethics", "Who Should Use This Guide"
     ],
     "Prompt Engineering": [
-        "All", "What is a Prompt?", "Best Practices", "Vague vs. Clear Examples",
+        "What is a Prompt?", "Best Practices", "Vague vs. Clear Examples",
         "Try it Yourself", "Prompt Use Cases", "Prompt Generator", "Prompt Checklist", "Quiz"
     ],
     "Temperature & Sampling": [
-        "All", "What is Temperature?", "See the Difference", "Temperature Table",
+        "What is Temperature?", "See the Difference", "Temperature Table",
         "What is Sampling?", "Match Temperature to Task"
     ],
     "Hallucinations": [
-        "All", "What Are Hallucinations?", "Product Fact Gone Wrong", "Why Do LLMs Hallucinate?",
+        "What Are Hallucinations?", "Product Fact Gone Wrong", "Why Do LLMs Hallucinate?",
         "Minimize Hallucinations", "Quick Check"
     ],
     "API Cost Optimization": [
-        "All", "Why API Costs Matter", "What Drives Cost?", "Founder Strategies",
+        "Why API Costs Matter", "What Drives Cost?", "Founder Strategies",
         "Estimate Token Cost", "Final Note"
     ],
     "Ethics & Bias": [
-        "All", "Why Ethics Matter", "Examples of Bias", "Why Bias Happens",
+        "Why Ethics Matter", "Examples of Bias", "Why Bias Happens",
         "What Founders Can Do", "Bias Checklist", "Detect the Bias", "Try This", "Ethical Template"
-    ]
+    ],
+    "FAQs": [],
+    "Glossary": [],
+    "Interactive Use Cases": [],
+    "Download Toolkit": [],
+    "Feedback": []
 }
 
+# with st.sidebar:
+#     current_page = option_menu(
+#         menu_title="Sections",
+#         options=page_titles,
+#         icons=[
+#             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
+#             "question-circle", "book", "tools", "download", "chat-dots", "far fa-question-circle"
+#         ],
+#         menu_icon="cast"
+#     )
+
+#     # Show subtopics only under the selected page
+#     if current_page in subpage_options:
+#         st.markdown("##### Sub-Topics")
+#         for sub in subpage_options[current_page]:
+#             label = f"↳ {sub}" if sub != "All" else "Show All"
+#             if st.button(label, key=f"{current_page}_{sub}"):
+#                 st.session_state[f"subtopic_{current_page}"] = sub
+
+#         # Set default to "All" if nothing selected
+#         if f"subtopic_{current_page}" not in st.session_state:
+#             st.session_state[f"subtopic_{current_page}"] = "All"
+
 with st.sidebar:
-    current_page = option_menu(
-        menu_title="Sections",
-        options=page_titles,
-        icons=[
-            "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
-            "question-circle", "book", "tools", "download", "chat-dots", "far fa-question-circle"
-        ],
-        menu_icon="cast"
-    )
+    flat_menu = []
+    for parent, children in menu_structure.items():
+        flat_menu.append(parent)
+        for child in children:
+            flat_menu.append(f"↳ {child}")  # visually indented
 
-    # Show subtopics only under the selected page
-    if current_page in subpage_options:
-        st.markdown("##### Sub-Topics")
-        for sub in subpage_options[current_page]:
-            label = f"↳ {sub}" if sub != "All" else "Show All"
-            if st.button(label, key=f"{current_page}_{sub}"):
-                st.session_state[f"subtopic_{current_page}"] = sub
+    selection = st.radio("Sections", flat_menu)
 
-        # Set default to "All" if nothing selected
-        if f"subtopic_{current_page}" not in st.session_state:
-            st.session_state[f"subtopic_{current_page}"] = "All"
+def get_page_and_subtopic(selection):
+    if selection.startswith("↳ "):
+        for parent, children in menu_structure.items():
+            if selection[2:] in children:
+                return parent, selection[2:]
+    else:
+        return selection, "All"
+
+current_page, current_subtopic = get_page_and_subtopic(selection)
 
 # --- Home Page ---
 if current_page == "Home":
     st.markdown("<h1 style='text-align:center;'>Smart Startups. Smart AI.</h1>", unsafe_allow_html=True)
     display_expand_collapse_controls(current_page)
-
-    subtopic = st.session_state.get("subtopic_Home", "All")
-    st.markdown(f"### Currently Viewing: *{subtopic}*")
-
+    
+    st.markdown(f"### Currently Viewing: *{current_subtopic}*")
+    
     home_sections = {
         "Introduction to Large Language Models": (
             "Large Language Models (LLMs) are advanced AI systems trained to understand and generate human-like text. "
@@ -199,9 +249,8 @@ elif current_page == "Prompt Engineering":
     st.title("Prompt Like a Pro")
     display_expand_collapse_controls(current_page)
 
-    subtopic = st.session_state.get("subtopic_Prompt Engineering", "All")
-    st.markdown(f"### Currently Viewing: *{subtopic}*")
-    
+    st.markdown(f"### Currently Viewing: *{current_subtopic}*")
+
     if subtopic in ("All", "What is a Prompt?"):
         with expander_section("What is a Prompt?"):
             st.write("""
@@ -307,8 +356,7 @@ elif current_page == "Temperature & Sampling":
     st.title("Temperature & Sampling")
     display_expand_collapse_controls(current_page)
 
-    subtopic = st.session_state.get("subtopic_Temperature & Sampling", "All")
-    st.markdown(f"### Currently Viewing: *{subtopic}*")
+    st.markdown(f"### Currently Viewing: *{current_subtopic}*")
 
     with expander_section("What is Temperature in Language Models?"):
         st.write("""
@@ -372,8 +420,7 @@ elif current_page == "Hallucinations":
     st.title("Hallucinations in Language Models")
     display_expand_collapse_controls(current_page)
 
-    subtopic = st.session_state.get("subtopic_Hallucinations", "All")
-    st.markdown(f"### Currently Viewing: *{subtopic}*")
+    st.markdown(f"### Currently Viewing: *{current_subtopic}*")
 
     # Intro explanation
     with expander_section("What Are Hallucinations?"):
@@ -426,9 +473,7 @@ elif current_page == "API Cost Optimization":
     st.title("API Cost Optimization")
     display_expand_collapse_controls(current_page)
 
-    subtopic = st.session_state.get("subtopic_API Cost Optimization", "All")
-    st.markdown(f"### Currently Viewing: *{subtopic}*")
-
+    st.markdown(f"### Currently Viewing: *{current_subtopic}*")
 
     with expander_section("Why API Costs Matter for Startups"):
         st.write("""
@@ -476,8 +521,10 @@ elif current_page == "Ethics & Bias":
     st.title("Ethics and Bias in Language Models")
     display_expand_collapse_controls(current_page)
     
-    subtopic = st.session_state.get("subtopic_Ethics & Bias", "All")
-    st.markdown(f"### Currently Viewing: *{subtopic}*")
+    # subtopic = st.session_state.get("subtopic_Ethics & Bias", "All")
+    # st.markdown(f"### Currently Viewing: *{subtopic}*")
+
+    st.markdown(f"### Currently Viewing: *{current_subtopic}*")
 
     with expander_section("Why Ethics and Fairness Matter"):
         st.write("""
