@@ -99,7 +99,7 @@ def get_llm_response(prompt):
 page_titles = [
     "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
     "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary",
-    "Interactive Use Cases","Startup Use Case Matcher", "Download Toolkit", "Feedback"
+    "Interactive Use Cases","Startup Use Case Matcher","Model Comparison","Download Toolkit", "Feedback"
 ]
 
 with st.sidebar:
@@ -911,16 +911,16 @@ elif current_page == "Startup Use Case Matcher":
         st.markdown("### Recommended Use Cases:")
 
         if goal == "Customer Support":
-            st.success("🤖 Build an FAQ bot using LLMs to reduce support load by 40%.")
+            st.success("Build an FAQ bot using LLMs to reduce support load by 40%.")
         if goal == "Content Generation":
-            st.info("📝 Use LLMs to generate social media content, blogs, and emails.")
+            st.info(" Use LLMs to generate social media content, blogs, and emails.")
         if goal == "Market Research":
-            st.warning("📊 Summarize industry trends using public data + GPT.")
+            st.warning(" Summarize industry trends using public data + GPT.")
         if goal == "Internal Automation":
-            st.success("📂 Use AI to write scripts, meeting summaries, or task updates.")
+            st.success(" Use AI to write scripts, meeting summaries, or task updates.")
             
 elif current_page == "Model Comparison":
-    st.title("⚖️ Try Prompts on Multiple Models")
+    st.title(" Try Prompts on Multiple Models")
     st.markdown("See how the same prompt performs across different open-source models.")
 
     prompt = st.text_area("Enter a prompt to test:", "Write a short welcome email for a new user.")
@@ -949,11 +949,11 @@ elif current_page == "Download Toolkit":
     stage = st.radio("Pick your maturity stage:", ["MVP/Prototype", "Scaling", "Enterprise-ready"])
     
     if stage == "MVP/Prototype":
-        st.info("🎯 Focus: Fast prototyping, free-tier tools, Notion templates.")
+        st.info(" Focus: Fast prototyping, free-tier tools, Notion templates.")
     elif stage == "Scaling":
-        st.warning("⚙️ Focus: API cost optimization, batch automation, prompt consistency.")
+        st.warning(" Focus: API cost optimization, batch automation, prompt consistency.")
     elif stage == "Enterprise-ready":
-        st.success("🏢 Focus: Governance, monitoring, privacy audits, SLA-compliant APIs.")
+        st.success(" Focus: Governance, monitoring, privacy audits, SLA-compliant APIs.")
 
     st.markdown("Download ready-made templates, cheat sheets, and code snippets to accelerate your LLM adoption.")
 
@@ -979,7 +979,7 @@ elif current_page == "Download Toolkit":
     else:
         st.error("Toolkit not found. Please upload or generate it first.")
 
-    st.markdown("### 🙋‍♂️ Help us improve!")
+    st.markdown("### Help us improve!")
     feedback = st.text_area("Which tools were most helpful or what would you like to see added?")
     if st.button("Submit Toolkit Feedback"):
         st.success("Thanks for your input! We'll use it to improve the toolkit.")
