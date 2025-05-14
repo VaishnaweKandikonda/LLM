@@ -103,21 +103,61 @@ page_titles = [
     "Interactive Use Cases", "Download Toolkit", "Feedback"
 ]
 
+subpage_options = {
+    "Home": [
+        "Introduction to LLMs", "Why LLMs Matter", "Let's Get Started!",
+        "Best Practices & Ethics", "Who Should Use This Guide"
+    ],
+    "Prompt Engineering": [
+        "All", "What is a Prompt?", "Best Practices", "Vague vs. Clear Examples",
+        "Try it Yourself", "Prompt Use Cases", "Prompt Generator", "Prompt Checklist", "Quiz"
+    ],
+    "Temperature & Sampling": [
+        "What is Temperature?", "See the Difference", "Temperature Table",
+        "What is Sampling?", "Match Temperature to Task"
+    ],
+    "Hallucinations": [
+        "What Are Hallucinations?", "Product Fact Gone Wrong", "Why Do LLMs Hallucinate?",
+        "Minimize Hallucinations", "Quick Check"
+    ],
+    "API Cost Optimization": [
+        "Why API Costs Matter", "What Drives Cost?", "Founder Strategies",
+        "Estimate Token Cost", "Final Note"
+    ],
+    "Ethics & Bias": [
+        "Why Ethics Matter", "Examples of Bias", "Why Bias Happens",
+        "What Founders Can Do", "Bias Checklist", "Detect the Bias", "Try This", "Ethical Template"
+    ]
+}
+
 with st.sidebar:
     current_page = option_menu(
         menu_title="Sections",
         options=page_titles,
         icons=[
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
-            "question-circle", "book", "tools", "download", "chat-dots","far fa-question-circle"
+            "question-circle", "book", "tools", "download", "chat-dots", "far fa-question-circle"
         ],
         menu_icon="cast"
     )
+
+    if current_page in subpage_options:
+        st.markdown("##### 📚 Sub-Topics")
+        for sub in subpage_options[current_page]:
+            if st.button(sub, key=f"{current_page}_{sub}"):
+                st.session_state[f"subtopic_{current_page}"] = sub
+
+        # Default selection
+        if f"subtopic_{current_page}" not in st.session_state:
+            st.session_state[f"subtopic_{current_page}"] = subpage_options[current_page][0]
 
 # --- Home Page ---
 if current_page == "Home":
     st.markdown("<h1 style='text-align:center;'>Smart Startups. Smart AI.</h1>", unsafe_allow_html=True)
     display_expand_collapse_controls(current_page)
+
+    subtopic = st.session_state.get("subtopic_Home", "All")
+    st.markdown(f"### Currently Viewing: *{subtopic}*")
 
     home_sections = {
         "Introduction to Large Language Models": (
@@ -157,13 +197,9 @@ elif current_page == "Prompt Engineering":
     st.title("Prompt Like a Pro")
     display_expand_collapse_controls(current_page)
 
-    st.markdown("### Choose a sub-topic to explore:")
-    subtopic = st.selectbox(
-        "Select a topic:",
-        ["All", "What is a Prompt?", "Best Practices", "Vague vs. Clear Examples",
-         "Try it Yourself", "Prompt Use Cases", "Prompt Generator", "Prompt Checklist", "Quiz"]
-    )
-
+    subtopic = st.session_state.get("subtopic_Prompt Engineering", "All")
+    st.markdown(f"### Currently Viewing: *{subtopic}*")
+    
     if subtopic in ("All", "What is a Prompt?"):
         with expander_section("What is a Prompt?"):
             st.write("""
@@ -269,6 +305,9 @@ elif current_page == "Temperature & Sampling":
     st.title("Temperature & Sampling")
     display_expand_collapse_controls(current_page)
 
+    subtopic = st.session_state.get("subtopic_Temperature & Sampling", "All")
+    st.markdown(f"### Currently Viewing: *{subtopic}*")
+
     with expander_section("What is Temperature in Language Models?"):
         st.write("""
         **Temperature** controls how predictable or creative the AI's output is.
@@ -331,6 +370,9 @@ elif current_page == "Hallucinations":
     st.title("Hallucinations in Language Models")
     display_expand_collapse_controls(current_page)
 
+    subtopic = st.session_state.get("subtopic_Hallucinations", "All")
+    st.markdown(f"### Currently Viewing: *{subtopic}*")
+
     # Intro explanation
     with expander_section("What Are Hallucinations?"):
         st.write("""
@@ -382,6 +424,10 @@ elif current_page == "API Cost Optimization":
     st.title("API Cost Optimization")
     display_expand_collapse_controls(current_page)
 
+    subtopic = st.session_state.get("subtopic_API Cost Optimization", "All")
+    st.markdown(f"### Currently Viewing: *{subtopic}*")
+
+
     with expander_section("Why API Costs Matter for Startups"):
         st.write("""
         Using language models like GPT-4 can get expensive — especially when handling lots of requests, long prompts, or frequent usage.
@@ -427,6 +473,9 @@ elif current_page == "API Cost Optimization":
 elif current_page == "Ethics & Bias":
     st.title("Ethics and Bias in Language Models")
     display_expand_collapse_controls(current_page)
+    
+    subtopic = st.session_state.get("subtopic_Ethics & Bias", "All")
+    st.markdown(f"### Currently Viewing: *{subtopic}*")
 
     with expander_section("Why Ethics and Fairness Matter"):
         st.write("""
