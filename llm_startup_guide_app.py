@@ -465,47 +465,44 @@ elif current_page == "Temperature & Sampling":
             "Sub-topic",
             [
                 "All", "What is Temperature?", "Adjust the Temperature", "Summary Table",
-                "What is Sampling?", "Match Temp to Task"
+                "What is Sampling?", "Match Temp to Task", "Common Misconceptions", "Final Takeaway"
             ]
         )
-
-    # --- Conditional Expanders Based on Subtopic ---
     if subtopic in ("All", "What is Temperature?"):
         with expander_section("What is Temperature in Language Models?"):
-            st.write("""
-            **Temperature** controls how predictable or creative the AI's output is.
+            st.markdown("""
+            **Temperature** controls how creative or consistent a language model’s responses are.  
+            It ranges from **0.0 (very safe)** to **1.0 (very random)**.
 
-            It ranges from **0.0 to 1.0**:
-            - A **low temperature** (e.g., 0.1) makes the model **precise, reliable, and factual**.
-            - A **high temperature** (e.g., 0.9) makes it **creative, surprising, and more risky**.
+            - **Low (0.1–0.3)** → Factual, predictable, robotic  
+            - **Medium (0.4–0.6)** → Natural balance  
+            - **High (0.7–1.0)** → Creative, surprising
 
-            Think of it like this:
-            > 0.1 = robotic, safe replies  
-            > 0.9 = playful, unexpected ideas
+            🧠 Think of temperature as the AI’s **risk-taking slider**.
             """)
             st.info("Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
 
     if subtopic in ("All", "Adjust the Temperature"):
         with expander_section("Adjust the Temperature and See the Difference"):
-            temperature = st.slider("Select Temperature Level", 0.1, 1.0, 0.7)
-            if temperature < 0.3:
+            temp = st.slider("Choose a temperature value", 0.1, 1.0, step=0.1, value=0.7)
+            if temp < 0.3:
                 st.success("Low Temperature (Factual & Consistent)")
-                st.markdown("Example: “Our app helps freelancers manage budgets. It's secure and simple.”")
-            elif temperature < 0.7:
-                st.info("Medium Temperature (Balanced)")
-                st.markdown("Example: “Meet the financial sidekick for freelancers — smart, helpful, and always on call.”")
+                st.markdown("> Our app helps freelancers manage budgets. It's secure and simple.")
+            elif temp < 0.7:
+                st.info("Medium Temperature (Balanced & Natural)")
+                st.markdown("> Meet your financial sidekick — smart, helpful, and always on call.")
             else:
                 st.warning("High Temperature (Creative & Risky)")
-                st.markdown("Example: “Money? Managed. Chaos? Cancelled. Our app is your financial freedom button.”")
+                st.markdown("> Money? Managed. Chaos? Cancelled. Our app is your freedom button.")
 
     if subtopic in ("All", "Summary Table"):
         with expander_section("Temperature Summary Table"):
             st.markdown("""
-            | Temperature | Behavior                  | Best For                      |
-            |-------------|---------------------------|-------------------------------|
-            | 0.1 - 0.3   | Factual, focused, safe    | Reports, investor decks       |
-            | 0.4 - 0.7   | Balanced, conversational  | Product copy, onboarding flows|
-            | 0.8 - 1.0   | Creative, surprising      | Brainstorms, social content   |
+            | Temperature | Output Style       | Best For                            |
+            |-------------|--------------------|-------------------------------------|
+            | 0.1 – 0.3   | Safe, focused       | Legal disclaimers, investor reports |
+            | 0.4 – 0.7   | Balanced, natural   | Product copy, customer FAQs         |
+            | 0.8 – 1.0   | Creative, surprising| Marketing, brainstorming, social    |
             """)
 
     if subtopic in ("All", "What is Sampling?"):
@@ -522,14 +519,35 @@ elif current_page == "Temperature & Sampling":
 
     if subtopic in ("All", "Match Temp to Task"):
         with expander_section("Match Temperature to a Task"):
-            use_case = st.radio("Select your use case:", 
-                                ["Summarizing a feature list", "Generating Instagram ad copy", "Writing a refund response email"])
-            if use_case == "Summarizing a feature list":
-                st.success("Best with: Low Temperature (0.1 - 0.3)")
-            elif use_case == "Generating Instagram ad copy":
-                st.warning("Best with: High Temperature (0.8 - 1.0)")
-            elif use_case == "Writing a refund response email":
-                st.info("Best with: Medium Temperature (0.4 - 0.6)")
+            st.markdown("""
+            | Task                             | Best Temperature | Why                              |
+            |----------------------------------|------------------|----------------------------------|
+            | Legal docs or product specs      | 0.1 – 0.2        | Needs precision and consistency  |
+            | Customer service replies         | 0.3 – 0.5        | Polite, friendly, on-brand       |
+            | Blog intros or product stories   | 0.5 – 0.7        | Natural, slightly creative       |
+            | Instagram ad or slogan ideas     | 0.8 – 1.0        | Bold, punchy, unexpected         |
+            """)
+
+    if subtopic in ("All", "Common Misconceptions"):
+        with expander_section("Common Misconceptions"):
+            st.markdown("""
+            | ❌ Myth                                | ✅ Truth                                              |
+            |----------------------------------------|------------------------------------------------------|
+            | High temperature = more accurate       | No — it means more *variety*, not accuracy.         |
+            | Low temperature is always best         | It’s best only when you want very safe output.       |
+            | Sampling doesn’t matter                | It’s crucial for avoiding repetition.                |
+            """)
+
+    if subtopic in ("All", "Final Takeaway"):
+        with expander_section("Final Takeaway: Use Temperature & Sampling Like Controls"):
+            st.markdown("""
+            ✅ **Quick Guide:**
+            - Use **low temperature** for consistent, formal content.
+            - Use **high temperature** to ideate, entertain, and experiment.
+            - Use **sampling** to keep outputs fresh and natural.
+
+            🎨 Your AI is like a co-creator. Adjust temperature and sampling to guide tone and creativity.
+            """)
 
     st.markdown("Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
     
