@@ -108,7 +108,7 @@ with st.sidebar:
         options=page_titles,
         icons=[
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
-            "question-circle", "book", "tools", "download", "chat-dots","far fa-question-circle"
+            "question-circle", "book", "tools", "chat-dots", "emoji-smile","envelope","cloud-download"
         ],
         menu_icon="cast"
     )
