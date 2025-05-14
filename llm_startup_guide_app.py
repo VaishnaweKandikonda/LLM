@@ -62,12 +62,12 @@ def display_expand_collapse_controls(current_page: str):
                 for key in st.session_state.keys():
                     if key.startswith("expander_"):
                         st.session_state[key] = True
-        with col3:
-            if st.button("➖", help="Collapse All"):
-                # Set all expanders on this page to False
-                for key in st.session_state.keys():
-                    if key.startswith("expander_"):
-                        st.session_state[key] = False
+          with col3:
+              if st.button("➖", help="Collapse All"):
+                    for key in st.session_state.keys():
+                        if key.startswith("expander_"):
+                            st.session_state[key] = False
+                    st.rerun() 
 
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
