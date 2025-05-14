@@ -268,13 +268,13 @@ elif current_page == "Prompt Engineering":
             "Startup Use Cases",
             "Common Pitfalls",
             "Prompt Engineering vs Prompt Tuning",
-            "Prompt Learning Resources"
+            "Prompt Learning Resources",
             "Quiz",
             "Prompt Generator",
-            "Try it Yourself",
+            "Try it Yourself"
         ]
     )
-            
+    
     if subtopic in ("All", "Introduction to Prompt Engineering"):
         with expander_section("What is Prompt and Prompt Engineering?"):
             st.markdown("""
@@ -316,7 +316,7 @@ elif current_page == "Prompt Engineering":
             - **Conversational:** Framed as a dialogue, e.g., “Hi! Can you help me explain this concept to a 10-year-old?”
             """)
             
-   if subtopic in ("All", "Prompt Best Practices"):
+    if subtopic in ("All", "Prompt Best Practices"):
         with expander_section("Prompt Engineering Best Practices"):
             st.markdown('''
                 Great prompts are clear, structured, and targeted.
@@ -332,7 +332,7 @@ elif current_page == "Prompt Engineering":
                 _Example Prompt:_  
                 > "You are a SaaS marketer. Write a 2-sentence announcement for our AI onboarding tool, in a friendly tone."
                 ''')
-
+            
     if subtopic in ("All", "Vague vs. Clear Examples"):
         with expander_section("Vague vs. Clear Prompt Examples"):
             col1, col2 = st.columns(2)
