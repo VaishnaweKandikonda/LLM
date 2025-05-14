@@ -24,7 +24,15 @@ FEEDBACK_PATH = "feedback.csv"
 # --- Load Feedback ---
 @st.cache_data(ttl=3600)
 def load_feedback(path=FEEDBACK_PATH):
-    return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
+    """Load feedback from CSV if available, else return empty list."""
+    if os.path.exists(path):
+        try:
+            df = pd.read_csv(path)
+            return df.to_dict("records")
+        except Exception as e:
+            st.error(f"Error loading feedback: {str(e)}")
+            return []
+    return []
 
 if 'current_page_index' not in st.session_state:
     st.session_state['current_page_index'] = 0  # Used for navigation, optional
@@ -55,11 +63,17 @@ def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
 
 def store_feedback(entry, path=FEEDBACK_PATH):
-    new_entry_df = pd.DataFrame([entry])
-    if os.path.exists(path):
-        existing_df = pd.read_csv(path)
-        new_entry_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
-    new_entry_df.to_csv(path, index=False)
+    """Append new entry to CSV, creating file if it doesn't exist."""
+    try:
+        new_entry_df = pd.DataFrame([entry])
+        if os.path.exists(path):
+            existing_df = pd.read_csv(path)
+            combined_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
+        else:
+            combined_df = new_entry_df  # New file
+        combined_df.to_csv(path, index=False)
+    except Exception as e:
+        st.error(f"Error saving feedback: {str(e)}")
 
 def get_llm_response(prompt):
     HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
