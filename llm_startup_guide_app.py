@@ -766,7 +766,7 @@ elif current_page == "Ethics & Bias":
             - Add a disclaimer or human review step for sensitive outputs.  
             - Be transparent with users when AI is involved in decisions.  
             """)
-            st.markdown("**📋 Downloadable Bias Prevention Checklist:**")
+            st.markdown("** Downloadable Bias Prevention Checklist:**")
             checklist_content = (
                 "Bias Prevention Checklist:\n"
                 "- Test outputs for multiple user profiles\n"
@@ -792,8 +792,8 @@ elif current_page == "Ethics & Bias":
                 "Introduce a nurse character in a story": "She is a caring young woman who loves to help others."
             }
 
-            st.warning(f"⚠️ Model Output: “{biased_outputs[example_prompt]}”")
-            st.markdown("🤔 **Reflection:** Are assumptions being made? Who is being stereotyped or excluded?")
+            st.warning(f"Model Output: “{biased_outputs[example_prompt]}”")
+            st.markdown("**Reflection:** Are assumptions being made? Who is being stereotyped or excluded?")
 
     if ethics_subtopic in ("All", "Bias Reflection Quiz"):
         with expander_section("Try This"):
@@ -990,12 +990,12 @@ elif current_page == "Download Toolkit":
 
     st.markdown("### Included:")
     st.markdown("""
-    - 📘 **Prompt Engineering 101** – Quick-start PDF guide  
-    - 📋 **LLM Ethics Checklist** – Governance-friendly reference  
-    -  **API Pricing Calculator** – Estimate costs in Excel  
-    - 📁 **Prompt Library Template** – Notion-ready template  
-    - 🧾 **Cost Tracking Sheet** – Monitor LLM API usage  
-    - 🧪 **Code Snippets** – Python examples for API calls  
+    - **Prompt Engineering 101** – Quick-start PDF guide  
+    - **LLM Ethics Checklist** – Governance-friendly reference  
+    - **API Pricing Calculator** – Estimate costs in Excel  
+    - **Prompt Library Template** – Notion-ready template  
+    - **Cost Tracking Sheet** – Monitor LLM API usage  
+    - **Code Snippets** – Python examples for API calls  
     """)
 
     toolkit_path = "/mnt/data/LLM_Toolkit.zip"
@@ -1041,7 +1041,7 @@ elif current_page == "Feedback":
         required_filled = bool(name.strip())
         email_valid = True if not email.strip() else re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email.strip())
 
-        submitted = st.form_submit_button("🚀 Submit Feedback")
+        submitted = st.form_submit_button("Submit Feedback")
 
         if submitted:
             if not required_filled:
@@ -1058,7 +1058,7 @@ elif current_page == "Feedback":
                     "Attachment name": attachment.name if attachment else None
                 }
                 store_feedback(entry)
-                st.success(f"✅ Thank you, {name.strip()}! We truly appreciate your insights and will use your feedback to make this guide even better.")
+                st.success(f" Thank you, {name.strip()}! We truly appreciate your insights and will use your feedback to make this guide even better.")
                 
                 # Refresh entries in session state
                 st.session_state['feedback_entries'] = load_feedback()
@@ -1083,11 +1083,11 @@ elif current_page == "Feedback":
         st.info("No feedback submitted yet. Be the first to contribute!")
 
     # --- Admin Controls ---
-    with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
+    with st.expander("Admin Controls: Manage Feedback Records"):
         st.markdown("Export or delete all feedback entries below.")
     
-        admin_key_input = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
-        confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
+        admin_key_input = st.text_input("Admin Passphrase", type="password", placeholder="Enter passphrase")
+        confirm_clear = st.checkbox("I confirm this action is irreversible.")
         ADMIN_PASSPHRASE = st.secrets["ADMIN_PASSPHRASE"]
     
         # Download CSV if entries exist
@@ -1103,20 +1103,20 @@ elif current_page == "Feedback":
                     # Delete the file if it exists
                     if os.path.exists(FEEDBACK_PATH):
                         os.remove(FEEDBACK_PATH)
-                        st.success("✅ feedback.csv file deleted from disk.")
+                        st.success("feedback.csv file deleted from disk.")
                     else:
-                        st.info("⚠️ feedback.csv file not found. Nothing to delete.")
+                        st.info("feedback.csv file not found. Nothing to delete.")
     
                     # Clear session + cached data
                     st.session_state["feedback_entries"] = []
                     st.cache_data.clear()  # Clear any cached CSV load
-                    st.success("✅ All feedback entries cleared from memory and cache.")
+                    st.success("All feedback entries cleared from memory and cache.")
                     st.rerun()
     
                 except Exception as e:
-                    st.error(f"❌ Error while deleting feedback: {str(e)}")
+                    st.error(f"Error while deleting feedback: {str(e)}")
             else:
-                st.error("🔒 Invalid passphrase or confirmation checkbox not selected.")
+                st.error("Invalid passphrase or confirmation checkbox not selected.")
 
 # --- Compact Unified Footer ---
 st.markdown("""---""")
