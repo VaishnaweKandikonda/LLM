@@ -129,6 +129,7 @@ if current_page == "Home":
             "Sub-topic",
             [
                 "All",
+                "How Language Models Work",
                 "Introduction to Large Language Models",
                 "Why LLMs Matter for Startups",
                 "Let's Get Started!",
@@ -139,6 +140,18 @@ if current_page == "Home":
 
     # --- Home Page Content Dictionary ---
     home_sections = {
+        "How Language Models Work": (
+            "Large Language Models (LLMs) are trained on massive text datasets (books, websites, articles) to predict the next word in a sentence. "
+            "They don’t understand meaning — they generate language based on statistical patterns.\n\n"
+            "**How LLMs generate text:**\n"
+            "- You write a prompt.\n"
+            "- The model predicts the next word/token, again and again.\n"
+            "- It forms a complete answer based on probabilities.\n\n"
+            "**What's a token?**\n"
+            "Tokens are chunks of text — often words or parts of words. For example, 'Startup' might be split into 'Start' and 'up'. "
+            "You are charged based on the number of tokens in your input and output.\n\n"
+            "**Key takeaway:** LLMs are not search engines. They don’t ‘know’ facts — they predict likely responses from prior data. Use them critically!"
+        ),
         "Introduction to Large Language Models": (
             "Large Language Models (LLMs) are advanced AI systems trained to understand and generate human-like text. "
             "Popular platforms like ChatGPT, Claude, and Gemini use LLMs to assist users with content generation, problem-solving, and more."
@@ -172,6 +185,43 @@ if current_page == "Home":
         if home_subtopic == "All" or home_subtopic == title:
             with expander_section(title):
                 st.markdown(content)
+
+                # --- Enhanced features only for LLM Fundamentals ---
+                if title == "How Language Models Work":
+                    # 📊 Infographic
+                    st.image("assets/how_llms_generate_text.png", caption="How LLMs Generate Text", use_column_width=True)
+
+                    # 💬 Prompt vs Output Example
+                    st.markdown("#### 💬 Prompt vs. Output Example")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.code("Prompt:\n\"Describe our budgeting app in one sentence.\"", language="text")
+                    with col2:
+                        st.success("SmartBudget helps freelancers take control of their finances with simple tracking and goal setting.")
+
+                    # 🧠 Quiz
+                    st.markdown("#### 🧠 Quiz: How Well Do You Understand LLMs?")
+                    q1 = st.radio("True or False: LLMs search the internet to answer questions.",
+                                  ["-- Select --", "True", "False"], key="llm_q1")
+                    if q1 == "False":
+                        st.success("✅ Correct! LLMs generate responses from prior training, not live web access.")
+                    elif q1 == "True":
+                        st.error("❌ Not quite. LLMs don’t use the internet — they generate likely next words.")
+
+                    # ✅ Can vs. Can’t Table
+                    st.markdown("#### ✅ What LLMs Can & Can’t Do")
+                    st.markdown("""
+                    | Can Do                              | Cannot Do                         |
+                    |-------------------------------------|------------------------------------|
+                    | Generate text (e.g. emails, posts)  | Access real-time internet          |
+                    | Summarize and rephrase content      | Guarantee factual accuracy         |
+                    | Simulate tone or role (e.g. CEO)    | Understand human intent            |
+                    | Translate languages                 | Know current events                |
+                    """)
+
+                    # 🎥 Optional Video
+                    st.markdown("#### 🎥 Optional Explainer Video")
+                    st.video("https://www.youtube.com/embed/t4kyRyKyOpo")  # Replace with your team's video if applicable
 
 # --- Prompt Engineering Page ---
 elif current_page == "Prompt Engineering":
