@@ -555,6 +555,30 @@ elif current_page == "FAQs":
         st.write("Test prompts using diverse scenarios. Be mindful of wording that assumes gender, age, or culture. Use a review process before publishing AI-generated content.")
 
     st.markdown("Have more questions? Use the **Feedback** section to suggest more topics.")
+elif current_page == "Glossary":
+    st.title("Glossary")
+
+    st.write("This glossary includes terms covered in this website to help startup founders understand and use language models effectively.")
+    display_expand_collapse_controls(current_page)
+
+    glossary = {
+        "LLM (Large Language Model)": "An AI model trained on vast text datasets to generate and understand human-like language. Examples include GPT-3.5 and GPT-4.",
+        "Prompt": "The instruction or input you give to the AI model. Clear, specific prompts produce better results.",
+        "Temperature": "A setting that controls the creativity of the output. Lower values generate more predictable responses; higher values create more varied or surprising ones.",
+        "Token": "A piece of text (word or part of a word). You are charged based on the number of tokens processed.",
+        "Hallucination": "When an LLM gives a confident but incorrect answer. These often look factual but are actually made up.",
+        "Bias": "When an AI system reflects unfair assumptions or stereotypes present in the training data.",
+        "Sampling": "The technique used to decide the next word in a generated sentence. Includes methods like top-k and top-p sampling.",
+        "Human-in-the-Loop": "An approach where human reviewers monitor or approve outputs from the AI, especially in high-stakes situations.",
+        "Model Selection": "Choosing which model (e.g., GPT-3.5 vs GPT-4) to use based on cost, speed, and task complexity.",
+        "Cost Optimization": "Strategies to reduce LLM usage costs, such as shortening prompts, batching requests, and using cheaper models.",
+        "Search vs. LLM": "LLMs generate responses based on past training, while search engines retrieve existing documents in real-time."
+    }
+
+    for term, definition in glossary.items():
+        st.markdown(f"**{term}**")
+        st.write(definition)
+        st.markdown("---")
 
 elif current_page == "Feedback":
     st.header("We Value Your Feedback")
