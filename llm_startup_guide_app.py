@@ -186,7 +186,7 @@ if current_page == "Home":
                 # --- Enhanced features only for LLM Fundamentals ---
                 if title == "How Language Models Work":
                     # Infographic
-                    st.image("how_llms_generate_text.png", caption="How LLMs Generate Text", use_column_width=True)
+                    st.image("how_llms_generate_text.png", caption="How LLMs Generate Text",use_container_width=True)
 
                     # Prompt vs Output Example
                     st.markdown("#### Prompt vs. Output Example")
