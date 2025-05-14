@@ -44,7 +44,7 @@ def display_expand_collapse_controls(current_page: str):
     ]
 
     if current_page in visible_on_pages:
-        col1, col2, col3 = st.columns([8, 1, 1])  # Adjust width ratios as needed
+        col1, col2, col3 = st.columns([9, 0.5, 0.5])  # Adjust width ratios as needed
         with col2:
             if st.button("➕", help="Expand All"):
                 st.session_state['global_expansion_state'] = True
