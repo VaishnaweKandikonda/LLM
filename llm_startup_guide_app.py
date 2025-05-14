@@ -426,14 +426,14 @@ elif current_page == "Prompt Engineering":
 
             ####  Key Techniques
             - **Be Clear & Specific:** Avoid vague instructions.
-            - **Use Delimiters:** Separate instructions from content with `"""` or `---`.
-            - **Step-by-Step Instructions:** Ask the model to “explain step-by-step” when needed.
-            - **Set a Role:** E.g., “You are a technical recruiter.”
+            - **Use Delimiters:** Separate instructions from content with '"""' or '---'.
+            - **Step-by-Step Instructions:** Ask the model to "explain step-by-step" when needed.
+            - **Set a Role:** E.g., "You are a technical recruiter."
             - **Define Output Format:** Specify number of bullets, length, tone, etc.
             - **Iterate:** Rerun and refine based on what works.
 
             _Example Prompt:_  
-            > “You are a SaaS marketer. Write a 2-sentence announcement for our AI onboarding tool, in a friendly tone.”
+            > "You are a SaaS marketer. Write a 2-sentence announcement for our AI onboarding tool, in a friendly tone."
             """)
     
     if subtopic in ("All", "Common Pitfalls"):
