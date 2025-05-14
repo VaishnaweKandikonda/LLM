@@ -579,6 +579,70 @@ elif current_page == "Glossary":
         st.write(definition)
         st.markdown("---")
 
+elif current_page == "Interactive Use Cases":
+    st.title("🚀 Interactive Use Cases")
+
+    # --- Use Case Templates ---
+    use_cases = {
+        "Cold Email Generator": "Write a cold email to pitch {product} to {audience}. Use a {tone} tone.",
+        "Startup Pitch Generator": "Create a one-minute pitch for a {industry} startup called {product}. Use a persuasive tone.",
+        "Market Research Summary": "Summarize the latest trends in the {industry} sector for investors."
+    }
+
+    st.subheader("Select a Use Case")
+    use_case = st.selectbox("Choose a scenario", list(use_cases.keys()))
+    template = use_cases[use_case]
+
+    st.markdown("### Customize your prompt:")
+    product = st.text_input("Product/Startup Name", "SmartSaaS AI")
+    audience = st.text_input("Target Audience", "startup founders")
+    tone = st.selectbox("Tone", ["Professional", "Persuasive", "Casual"])
+    industry = st.text_input("Industry", "AI SaaS")
+
+    prompt = template.format(product=product, audience=audience, tone=tone, industry=industry)
+    st.code(prompt, language="text")
+
+    st.subheader("Generated Output")
+    if st.button("Run with AI"):
+        with st.spinner("Generating response..."):
+            response, error = get_llm_response(prompt)
+
+        if response:
+            st.success(response)
+        else:
+            st.error(error or "Something went wrong.")
+
+elif current_page == "Download Toolkit":
+    st.title("📦 LLM Starter Toolkit")
+    st.markdown("Download ready-made templates, cheat sheets, and code snippets to accelerate your LLM adoption.")
+
+    st.markdown("### Included:")
+    st.markdown("""
+    - 📘 **Prompt Engineering 101** – Quick-start PDF guide  
+    - 📋 **LLM Ethics Checklist** – Governance-friendly reference  
+    - 💸 **API Pricing Calculator** – Estimate costs in Excel  
+    - 📁 **Prompt Library Template** – Notion-ready template  
+    - 🧾 **Cost Tracking Sheet** – Monitor LLM API usage  
+    - 🧪 **Code Snippets** – Python examples for API calls  
+    """)
+
+    toolkit_path = "/mnt/data/LLM_Toolkit.zip"
+    if os.path.exists(toolkit_path):
+        with open(toolkit_path, "rb") as file:
+            st.download_button(
+                label="📥 Download Full Toolkit (.zip)",
+                data=file,
+                file_name="LLM_Toolkit.zip",
+                mime="application/zip"
+            )
+    else:
+        st.error("Toolkit not found. Please upload or generate it first.")
+
+    st.markdown("### 🙋‍♂️ Help us improve!")
+    feedback = st.text_area("Which tools were most helpful or what would you like to see added?")
+    if st.button("Submit Toolkit Feedback"):
+        st.success("Thanks for your input! We'll use it to improve the toolkit.")
+
 elif current_page == "Feedback":
     st.header("We Value Your Feedback")
     st.markdown("Please share your thoughts on this guide.")
