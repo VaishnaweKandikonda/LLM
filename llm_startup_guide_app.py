@@ -119,6 +119,25 @@ if current_page == "Home":
     st.markdown("<h1 style='text-align:center;'>Smart Startups. Smart AI.</h1>", unsafe_allow_html=True)
     display_expand_collapse_controls(current_page)
 
+    # --- Right-side Sub-topic Selector ---
+    col_left, col_right = st.columns([3, 1])
+    
+    with col_left:
+        st.markdown("### Explore Key Sections")
+    with col_right:
+        home_subtopic = st.selectbox(
+            "Sub-topic",
+            [
+                "All",
+                "Introduction to Large Language Models",
+                "Why LLMs Matter for Startups",
+                "Let's Get Started!",
+                "Best Practices & Ethics",
+                "Who Should Use This Guide"
+            ]
+        )
+
+    # --- Home Page Content Dictionary ---
     home_sections = {
         "Introduction to Large Language Models": (
             "Large Language Models (LLMs) are advanced AI systems trained to understand and generate human-like text. "
@@ -148,9 +167,11 @@ if current_page == "Home":
         )
     }
 
+    # --- Render Sections Based on Selection ---
     for title, content in home_sections.items():
-        with expander_section(title):
-            st.markdown(content)
+        if home_subtopic == "All" or home_subtopic == title:
+            with expander_section(title):
+                st.markdown(content)
 
 # --- Prompt Engineering Page ---
 elif current_page == "Prompt Engineering":
@@ -274,112 +295,151 @@ elif current_page == "Temperature & Sampling":
     st.title("Temperature & Sampling")
     display_expand_collapse_controls(current_page)
 
-    with expander_section("What is Temperature in Language Models?"):
-        st.write("""
-        **Temperature** controls how predictable or creative the AI's output is.
+    # --- Right-side Subtopic Selector ---
+    col_left, col_right = st.columns([3, 1])
 
-        It ranges from **0.0 to 1.0**:
-        - A **low temperature** (e.g., 0.1) makes the model **precise, reliable, and factual**.
-        - A **high temperature** (e.g., 0.9) makes it **creative, surprising, and more risky**.
+    with col_left:
+        st.markdown("### Explore Temperature & Sampling Concepts")
+    with col_right:
+        subtopic = st.selectbox(
+            "Sub-topic",
+            [
+                "All", "What is Temperature?", "Adjust the Temperature", "Summary Table",
+                "What is Sampling?", "Match Temp to Task"
+            ]
+        )
 
-        Think of it like this:
-        > 0.1 = robotic, safe replies  
-        > 0.9 = playful, unexpected ideas
-        """)
-        st.info("Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
+    # --- Conditional Expanders Based on Subtopic ---
+    if subtopic in ("All", "What is Temperature?"):
+        with expander_section("What is Temperature in Language Models?"):
+            st.write("""
+            **Temperature** controls how predictable or creative the AI's output is.
 
-    with expander_section("Adjust the Temperature and See the Difference"):
-        temperature = st.slider("Select Temperature Level", 0.1, 1.0, 0.7)
-        if temperature < 0.3:
-            st.success("Low Temperature (Factual & Consistent)")
-            st.markdown("Example: “Our app helps freelancers manage budgets. It's secure and simple.”")
-        elif temperature < 0.7:
-            st.info("Medium Temperature (Balanced)")
-            st.markdown("Example: “Meet the financial sidekick for freelancers — smart, helpful, and always on call.”")
-        else:
-            st.warning("High Temperature (Creative & Risky)")
-            st.markdown("Example: “Money? Managed. Chaos? Cancelled. Our app is your financial freedom button.”")
+            It ranges from **0.0 to 1.0**:
+            - A **low temperature** (e.g., 0.1) makes the model **precise, reliable, and factual**.
+            - A **high temperature** (e.g., 0.9) makes it **creative, surprising, and more risky**.
 
-    with expander_section("Temperature Summary Table"):
-        st.markdown("""
-        | Temperature | Behavior                  | Best For                      |
-        |-------------|---------------------------|-------------------------------|
-        | 0.1 - 0.3   | Factual, focused, safe    | Reports, investor decks       |
-        | 0.4 - 0.7   | Balanced, conversational  | Product copy, onboarding flows|
-        | 0.8 - 1.0   | Creative, surprising      | Brainstorms, social content   |
-        """)
+            Think of it like this:
+            > 0.1 = robotic, safe replies  
+            > 0.9 = playful, unexpected ideas
+            """)
+            st.info("Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
 
-    with expander_section("What Is Sampling in LLMs?"):
-        st.write("""
-        **Sampling** is how the model decides **which word to say next**. It picks from a range of likely options, not just the top one.
+    if subtopic in ("All", "Adjust the Temperature"):
+        with expander_section("Adjust the Temperature and See the Difference"):
+            temperature = st.slider("Select Temperature Level", 0.1, 1.0, 0.7)
+            if temperature < 0.3:
+                st.success("Low Temperature (Factual & Consistent)")
+                st.markdown("Example: “Our app helps freelancers manage budgets. It's secure and simple.”")
+            elif temperature < 0.7:
+                st.info("Medium Temperature (Balanced)")
+                st.markdown("Example: “Meet the financial sidekick for freelancers — smart, helpful, and always on call.”")
+            else:
+                st.warning("High Temperature (Creative & Risky)")
+                st.markdown("Example: “Money? Managed. Chaos? Cancelled. Our app is your financial freedom button.”")
 
-        Two techniques:
-        - **Top-k sampling**: From top k most likely next words
-        - **Top-p sampling (nucleus sampling)**: From smallest group of words with probability above p
+    if subtopic in ("All", "Summary Table"):
+        with expander_section("Temperature Summary Table"):
+            st.markdown("""
+            | Temperature | Behavior                  | Best For                      |
+            |-------------|---------------------------|-------------------------------|
+            | 0.1 - 0.3   | Factual, focused, safe    | Reports, investor decks       |
+            | 0.4 - 0.7   | Balanced, conversational  | Product copy, onboarding flows|
+            | 0.8 - 1.0   | Creative, surprising      | Brainstorms, social content   |
+            """)
 
-        This helps avoid repetition and create variation — useful for startups generating product copy, blog posts, or email variations.
-        """)
+    if subtopic in ("All", "What is Sampling?"):
+        with expander_section("What Is Sampling in LLMs?"):
+            st.write("""
+            **Sampling** is how the model decides **which word to say next**. It picks from a range of likely options, not just the top one.
 
-    with expander_section("Match Temperature to a Task"):
-        use_case = st.radio("Select your use case:", 
-                            ["Summarizing a feature list", "Generating Instagram ad copy", "Writing a refund response email"])
-        if use_case == "Summarizing a feature list":
-            st.success("Best with: Low Temperature (0.1 - 0.3)")
-        elif use_case == "Generating Instagram ad copy":
-            st.warning("Best with: High Temperature (0.8 - 1.0)")
-        elif use_case == "Writing a refund response email":
-            st.info("Best with: Medium Temperature (0.4 - 0.6)")
+            Two techniques:
+            - **Top-k sampling**: From top k most likely next words
+            - **Top-p sampling (nucleus sampling)**: From smallest group of words with probability above p
+
+            This helps avoid repetition and create variation — useful for startups generating product copy, blog posts, or email variations.
+            """)
+
+    if subtopic in ("All", "Match Temp to Task"):
+        with expander_section("Match Temperature to a Task"):
+            use_case = st.radio("Select your use case:", 
+                                ["Summarizing a feature list", "Generating Instagram ad copy", "Writing a refund response email"])
+            if use_case == "Summarizing a feature list":
+                st.success("Best with: Low Temperature (0.1 - 0.3)")
+            elif use_case == "Generating Instagram ad copy":
+                st.warning("Best with: High Temperature (0.8 - 1.0)")
+            elif use_case == "Writing a refund response email":
+                st.info("Best with: Medium Temperature (0.4 - 0.6)")
 
     st.markdown("Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
-
+    
 elif current_page == "Hallucinations":
     st.title("Hallucinations in Language Models")
     display_expand_collapse_controls(current_page)
 
-    # Intro explanation
-    with expander_section("What Are Hallucinations?"):
-        st.write("""
-        Hallucinations are **confident but incorrect responses** generated by a language model.
+    # --- Right-side Sub-topic Selector ---
+    col_left, col_right = st.columns([3, 1])
 
-        Even though the response may sound fluent and factual, the model may be **making things up** — especially when it lacks context or isn’t grounded in verified data.
-        """)
+    with col_left:
+        st.markdown("### Understand and Detect AI Hallucinations")
+    with col_right:
+        halluc_subtopic = st.selectbox(
+            "Sub-topic",
+            [
+                "All",
+                "What Are Hallucinations?",
+                "Startup Example",
+                "Why It Happens",
+                "How to Minimize",
+                "Spot the Hallucination (Quiz)"
+            ]
+        )
 
-    # Real-world startup example
-    with expander_section("Example: Product Fact Gone Wrong"):
-        st.write("**Prompt:** “When was Stripe founded?”")
-        st.error("**LLM Output:** “Stripe was founded in 2015 in Toronto.” (Incorrect)")
-        st.success("**Correct Answer:** Stripe was founded in 2010 in San Francisco.")
-        st.warning("For startups, hallucinations can lead to misinforming users, misrepresenting data in pitch decks, or publishing inaccurate content.")
+    # --- Section Display Logic ---
+    if halluc_subtopic in ("All", "What Are Hallucinations?"):
+        with expander_section("What Are Hallucinations?"):
+            st.write("""
+            Hallucinations are **confident but incorrect responses** generated by a language model.
 
-    # Why hallucinations happen
-    with expander_section("Why Do LLMs Hallucinate?"):
-        st.write("""
-        - LLMs generate language based on **patterns in training data**, not real-time internet access.
-        - They don’t “know” facts — they **predict** the next likely word based on the prompt.
-        - When uncertain, they may fabricate names, dates, citations, or product details.
-        """)
+            Even though the response may sound fluent and factual, the model may be **making things up** — especially when it lacks context or isn’t grounded in verified data.
+            """)
 
-    # Tips to reduce hallucinations
-    with expander_section("How to Minimize Hallucinations"):
-        st.markdown("""
-        - **Be specific with prompts**: Provide enough context.
-        - **Use retrieval-based methods (like RAG)** for factual accuracy.
-        - **Manually review** outputs before publishing externally.
-        - Ask the model to **cite sources** or say “I’m not sure” when unsure.
-        """)
+    if halluc_subtopic in ("All", "Startup Example"):
+        with expander_section("Example: Product Fact Gone Wrong"):
+            st.write("**Prompt:** “When was Stripe founded?”")
+            st.error("**LLM Output:** “Stripe was founded in 2015 in Toronto.” (Incorrect)")
+            st.success("**Correct Answer:** Stripe was founded in 2010 in San Francisco.")
+            st.warning("For startups, hallucinations can lead to misinforming users, misrepresenting data in pitch decks, or publishing inaccurate content.")
 
-    # Quiz interaction
-    with expander_section("Quick Check: Can You Spot the Hallucination?"):
-        q1 = st.radio("Which of the following is most likely a hallucination?",
-                    ["-- Select an answer --","Google was founded in 1998.", 
-                    "Python was invented by Guido van Rossum.", 
-                    "OpenAI was acquired by Netflix in 2021."],
-                    key="hallucination_q1")
-        if q1 != "-- Select an answer --":
-            if q1 == "OpenAI was acquired by Netflix in 2021.":
-                st.success("Correct! That never happened — it’s a confident hallucination.")
-            else:
-                st.error("Not quite — both other statements are factual.")
+    if halluc_subtopic in ("All", "Why It Happens"):
+        with expander_section("Why Do LLMs Hallucinate?"):
+            st.write("""
+            - LLMs generate language based on **patterns in training data**, not real-time internet access.
+            - They don’t “know” facts — they **predict** the next likely word based on the prompt.
+            - When uncertain, they may fabricate names, dates, citations, or product details.
+            """)
+
+    if halluc_subtopic in ("All", "How to Minimize"):
+        with expander_section("How to Minimize Hallucinations"):
+            st.markdown("""
+            - **Be specific with prompts**: Provide enough context.  
+            - **Use retrieval-based methods (like RAG)** for factual accuracy.  
+            - **Manually review** outputs before publishing externally.  
+            - Ask the model to **cite sources** or say “I’m not sure” when unsure.  
+            """)
+
+    if halluc_subtopic in ("All", "Spot the Hallucination (Quiz)"):
+        with expander_section("Quick Check: Can You Spot the Hallucination?"):
+            q1 = st.radio("Which of the following is most likely a hallucination?",
+                        ["-- Select an answer --", "Google was founded in 1998.",
+                         "Python was invented by Guido van Rossum.",
+                         "OpenAI was acquired by Netflix in 2021."],
+                        key="hallucination_q1")
+            if q1 != "-- Select an answer --":
+                if q1 == "OpenAI was acquired by Netflix in 2021.":
+                    st.success("Correct! That never happened — it’s a confident hallucination.")
+                else:
+                    st.error("Not quite — both other statements are factual.")
 
     st.markdown("Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
 
@@ -387,140 +447,191 @@ elif current_page == "API Cost Optimization":
     st.title("API Cost Optimization")
     display_expand_collapse_controls(current_page)
 
-    with expander_section("Why API Costs Matter for Startups"):
-        st.write("""
-        Using language models like GPT-4 can get expensive — especially when handling lots of requests, long prompts, or frequent usage.
+    # --- Right-side Sub-topic Selector ---
+    col_left, col_right = st.columns([3, 1])
+    
+    with col_left:
+        st.markdown("### Build Smart, Spend Smarter")
+    with col_right:
+        cost_subtopic = st.selectbox(
+            "Sub-topic",
+            [
+                "All",
+                "Why API Costs Matter",
+                "What Drives Cost",
+                "Optimization Strategies",
+                "Estimate Token Cost",
+                "Final Note"
+            ]
+        )
 
-        Startups must be **smart and efficient** when building with LLMs, balancing quality with cost.
-        """)
+    # --- Conditional Rendering of Sections ---
+    if cost_subtopic in ("All", "Why API Costs Matter"):
+        with expander_section("Why API Costs Matter for Startups"):
+            st.write("""
+            Using language models like GPT-4 can get expensive — especially when handling lots of requests, long prompts, or frequent usage.
 
-    with expander_section("What Drives API Cost?"):
-        st.markdown("""
-        - **Token usage** – You pay per word (input + output tokens).  
-        - **Model selection** – GPT-4 is powerful but much costlier than GPT-3.5.  
-        - **Request frequency** – More requests = more expense.  
-        - **Advanced features** – Streaming, tool use, and chaining can add overhead.  
-        """)
+            Startups must be **smart and efficient** when building with LLMs, balancing quality with cost.
+            """)
 
-    with expander_section("Optimization Strategies for Founders"):
-        st.markdown("""
-        1. **Shorten prompts**: Remove unnecessary words and boilerplate.  
-        2. **Cache outputs**: Reuse responses for repeated or similar queries.  
-        3. **Use cheaper models for simpler tasks**:  
-            - GPT-3.5 for summarization, formatting, and basic Q&A.  
-            - GPT-4 for critical reasoning and edge-case handling.  
-        4.**Batch your inputs**: Send multiple queries in a single call when possible.  
-        5.**Think like a product manager**:  
-            - Only use AI where it **adds value**.  
-            - Avoid using LLMs as your database or source of truth.  
-        """)
+    if cost_subtopic in ("All", "What Drives Cost"):
+        with expander_section("What Drives API Cost?"):
+            st.markdown("""
+            - **Token usage** – You pay per word (input + output tokens).  
+            - **Model selection** – GPT-4 is powerful but much costlier than GPT-3.5.  
+            - **Request frequency** – More requests = more expense.  
+            - **Advanced features** – Streaming, tool use, and chaining can add overhead.  
+            """)
 
-    with expander_section("Estimate Token Cost"):
-        tokens = st.slider("How many tokens per request?", min_value=100, max_value=2000, step=100, value=500)
-        requests = st.slider("How many requests per day?", min_value=1, max_value=5000, step=50, value=1000)
-        model = st.radio("Select model:", ["GPT-3.5 ($0.002 / 1K tokens)", "GPT-4 ($0.06 / 1K tokens)"])
+    if cost_subtopic in ("All", "Optimization Strategies"):
+        with expander_section("Optimization Strategies for Founders"):
+            st.markdown("""
+            1. **Shorten prompts**: Remove unnecessary words and boilerplate.  
+            2. **Cache outputs**: Reuse responses for repeated or similar queries.  
+            3. **Use cheaper models for simpler tasks**:  
+                - GPT-3.5 for summarization, formatting, and basic Q&A.  
+                - GPT-4 for critical reasoning and edge-case handling.  
+            4. **Batch your inputs**: Send multiple queries in a single call when possible.  
+            5. **Think like a product manager**:  
+                - Only use AI where it **adds value**.  
+                - Avoid using LLMs as your database or source of truth.  
+            """)
 
-        cost_per_1k = 0.002 if "3.5" in model else 0.06
-        daily_cost = (tokens * requests / 1000) * cost_per_1k
-        monthly_cost = daily_cost * 30
+    if cost_subtopic in ("All", "Estimate Token Cost"):
+        with expander_section("Estimate Token Cost"):
+            tokens = st.slider("How many tokens per request?", min_value=100, max_value=2000, step=100, value=500)
+            requests = st.slider("How many requests per day?", min_value=1, max_value=5000, step=50, value=1000)
+            model = st.radio("Select model:", ["GPT-3.5 ($0.002 / 1K tokens)", "GPT-4 ($0.06 / 1K tokens)"])
 
-        st.success(f"Estimated Monthly Cost: **${monthly_cost:,.2f}**")
+            cost_per_1k = 0.002 if "3.5" in model else 0.06
+            daily_cost = (tokens * requests / 1000) * cost_per_1k
+            monthly_cost = daily_cost * 30
 
-    with expander_section("Final Note"):
-        st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
+            st.success(f"Estimated Monthly Cost: **${monthly_cost:,.2f}**")
+
+    if cost_subtopic in ("All", "Final Note"):
+        with expander_section("Final Note"):
+            st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
 
 elif current_page == "Ethics & Bias":
     st.title("Ethics and Bias in Language Models")
     display_expand_collapse_controls(current_page)
 
-    with expander_section("Why Ethics and Fairness Matter"):
-        st.write("""
-        Language models are incredibly powerful — but they’re not perfect.
+    # --- Right-side Sub-topic Selector ---
+    col_left, col_right = st.columns([3, 1])
 
-        Since they are trained on vast amounts of internet data, they can reflect social and cultural biases. These biases can unintentionally affect your startup's messaging, hiring tools, or customer communication systems.
-
-        As a founder, you’re responsible for building inclusive and trustworthy experiences.
-        """)
-
-    with expander_section("Examples of Bias in AI"):
-        st.markdown("""
-        - A resume-screening assistant that favors male candidates based on historical hiring data.  
-        - A chatbot that assumes all engineers are men.  
-        - A product description generator that omits diverse customer personas.  
-        """)
-
-    with expander_section("Why Bias Happens in Language Models"):
-        st.write("""
-        Language models learn from patterns in public text data — books, websites, social media, forums. This means:
-        - They may repeat harmful stereotypes.  
-        - They often reflect dominant voices more than marginalized ones.  
-        - They don't understand fairness — they reproduce frequency patterns in data.  
-        """)
-
-    with expander_section("What Startup Founders Can Do"):
-        st.markdown("""
-        - Test outputs for different demographic or geographic user profiles.  
-        - Avoid using AI tools blindly in hiring, lending, or content moderation.  
-        - Review all AI-generated content before using it externally.  
-        - Add a disclaimer or human review step for sensitive outputs.  
-        - Be transparent with users when AI is involved in decisions.  
-        """)
-
-        st.markdown("**📋 Downloadable Bias Prevention Checklist:**")
-        checklist_content = (
-            "Bias Prevention Checklist:\n"
-            "- Test outputs for multiple user profiles\n"
-            "- Flag outputs with harmful stereotypes\n"
-            "- Apply manual review to sensitive use cases\n"
-            "- Maintain transparency in AI decision-making\n"
-            "- Regularly update prompts or models for fairness\n"
+    with col_left:
+        st.markdown("### Building Responsible AI for Startups")
+    with col_right:
+        ethics_subtopic = st.selectbox(
+            "Sub-topic",
+            [
+                "All",
+                "Why Ethics and Fairness Matter",
+                "Examples of Bias",
+                "Why Bias Happens",
+                "What Founders Can Do",
+                "Bias Detection Example",
+                "Bias Reflection Quiz",
+                "Ethical Review Template"
+            ]
         )
-        st.text(checklist_content)
-        st.download_button("📥 Download Checklist (TXT)", checklist_content, file_name="bias_checklist.txt")
-    
-    with expander_section("Live Example: Can You Detect the Bias?"):
-        example_prompt = st.selectbox("Choose a prompt", [
-            "Write a job ad for a software engineer",
-            "Describe a CEO of a tech startup",
-            "Introduce a nurse character in a story"
-        ])
-        
-        biased_outputs = {
-            "Write a job ad for a software engineer": "We're looking for a strong, young male developer to join our elite dev team.",
-            "Describe a CEO of a tech startup": "He is a brilliant visionary leading a disruptive fintech company.",
-            "Introduce a nurse character in a story": "She is a caring young woman who loves to help others."
-        }
 
-        st.warning(f"⚠️ Model Output: “{biased_outputs[example_prompt]}”")
-        st.markdown("🤔 **Reflection:** Are assumptions being made? Who is being stereotyped or excluded?")
+    # --- Conditional Sections ---
+    if ethics_subtopic in ("All", "Why Ethics and Fairness Matter"):
+        with expander_section("Why Ethics and Fairness Matter"):
+            st.write("""
+            Language models are incredibly powerful — but they’re not perfect.
 
-    with expander_section("Try This"):
-        bias_prompt = st.radio("Which of these might reflect bias?", [
-            "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'", 
-            "Summarize a product spec for a software tool", 
-            "Generate a welcome message for a task management app"
-        ])
-        if bias_prompt == "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'":
-            st.success("✅ Correct. This assumes the doctor's gender, which may reflect bias.")
-        else:
-            st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
+            Since they are trained on vast amounts of internet data, they can reflect social and cultural biases. These biases can unintentionally affect your startup's messaging, hiring tools, or customer communication systems.
 
-    with expander_section("🧾 Ethical Review Template (For Startups)"):
-        ethical_template = (
-            "## Ethical AI Feature Review Template\n\n"
-            "**Feature Name:**\n"
-            "[Enter here]\n\n"
-            "**Purpose of AI Usage:**\n"
-            "[Summarize briefly]\n\n"
-            "**Potential Ethical Risks:**\n"
-            "[e.g., bias, misinformation, exclusion]\n\n"
-            "**Bias Testing Completed?** Yes / No\n"
-            "**Human Review Process?** Yes / No\n"
-            "**Disclosure to Users?** Yes / No\n\n"
-            "**Final Risk Assessment:** Low / Medium / High"
-        )
-        st.markdown(ethical_template.replace("##", "###"))  # Format as Streamlit Markdown
-        st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
+            As a founder, you’re responsible for building inclusive and trustworthy experiences.
+            """)
+
+    if ethics_subtopic in ("All", "Examples of Bias"):
+        with expander_section("Examples of Bias in AI"):
+            st.markdown("""
+            - A resume-screening assistant that favors male candidates based on historical hiring data.  
+            - A chatbot that assumes all engineers are men.  
+            - A product description generator that omits diverse customer personas.  
+            """)
+
+    if ethics_subtopic in ("All", "Why Bias Happens"):
+        with expander_section("Why Bias Happens in Language Models"):
+            st.write("""
+            Language models learn from patterns in public text data — books, websites, social media, forums. This means:
+            - They may repeat harmful stereotypes.  
+            - They often reflect dominant voices more than marginalized ones.  
+            - They don't understand fairness — they reproduce frequency patterns in data.  
+            """)
+
+    if ethics_subtopic in ("All", "What Founders Can Do"):
+        with expander_section("What Startup Founders Can Do"):
+            st.markdown("""
+            - Test outputs for different demographic or geographic user profiles.  
+            - Avoid using AI tools blindly in hiring, lending, or content moderation.  
+            - Review all AI-generated content before using it externally.  
+            - Add a disclaimer or human review step for sensitive outputs.  
+            - Be transparent with users when AI is involved in decisions.  
+            """)
+            st.markdown("**📋 Downloadable Bias Prevention Checklist:**")
+            checklist_content = (
+                "Bias Prevention Checklist:\n"
+                "- Test outputs for multiple user profiles\n"
+                "- Flag outputs with harmful stereotypes\n"
+                "- Apply manual review to sensitive use cases\n"
+                "- Maintain transparency in AI decision-making\n"
+                "- Regularly update prompts or models for fairness\n"
+            )
+            st.text(checklist_content)
+            st.download_button("📥 Download Checklist (TXT)", checklist_content, file_name="bias_checklist.txt")
+
+    if ethics_subtopic in ("All", "Bias Detection Example"):
+        with expander_section("Live Example: Can You Detect the Bias?"):
+            example_prompt = st.selectbox("Choose a prompt", [
+                "Write a job ad for a software engineer",
+                "Describe a CEO of a tech startup",
+                "Introduce a nurse character in a story"
+            ])
+
+            biased_outputs = {
+                "Write a job ad for a software engineer": "We're looking for a strong, young male developer to join our elite dev team.",
+                "Describe a CEO of a tech startup": "He is a brilliant visionary leading a disruptive fintech company.",
+                "Introduce a nurse character in a story": "She is a caring young woman who loves to help others."
+            }
+
+            st.warning(f"⚠️ Model Output: “{biased_outputs[example_prompt]}”")
+            st.markdown("🤔 **Reflection:** Are assumptions being made? Who is being stereotyped or excluded?")
+
+    if ethics_subtopic in ("All", "Bias Reflection Quiz"):
+        with expander_section("Try This"):
+            bias_prompt = st.radio("Which of these might reflect bias?", [
+                "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'", 
+                "Summarize a product spec for a software tool", 
+                "Generate a welcome message for a task management app"
+            ])
+            if bias_prompt == "Write a bio for a doctor: 'Dr. Smith is a brilliant young man...'":
+                st.success("✅ Correct. This assumes the doctor's gender, which may reflect bias.")
+            else:
+                st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
+
+    if ethics_subtopic in ("All", "Ethical Review Template"):
+        with expander_section("🧾 Ethical Review Template (For Startups)"):
+            ethical_template = (
+                "## Ethical AI Feature Review Template\n\n"
+                "**Feature Name:**\n"
+                "[Enter here]\n\n"
+                "**Purpose of AI Usage:**\n"
+                "[Summarize briefly]\n\n"
+                "**Potential Ethical Risks:**\n"
+                "[e.g., bias, misinformation, exclusion]\n\n"
+                "**Bias Testing Completed?** Yes / No\n"
+                "**Human Review Process?** Yes / No\n"
+                "**Disclosure to Users?** Yes / No\n\n"
+                "**Final Risk Assessment:** Low / Medium / High"
+            )
+            st.markdown(ethical_template.replace("##", "###"))
+            st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
 
     st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
 
