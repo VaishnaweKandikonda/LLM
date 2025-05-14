@@ -843,32 +843,6 @@ elif current_page == "Feedback":
             df.index = df.index + 1  # Show index starting from 1
             st.dataframe(df, use_container_width=True)
 
-# --- About This Guide ---
-with st.expander("📘 About This Guide", expanded=False):
-    st.markdown("""
-    Welcome to the **LLM Guide for Startups** — a practical companion for founders, developers, and product teams building with AI.
-
-    ✅ Designed for non-technical and technical teams  
-    ✅ Covers everything from prompt design to ethical deployment  
-    ✅ Model-agnostic insights — updated with the latest LLM trends  
-
-    _Built to empower lean teams with smart, safe, and scalable AI adoption._
-    """)
-
-# --- Ethics Commitment ---
-with st.expander("🛡️ Our AI Ethics Commitment", expanded=False):
-    st.markdown("""
-    We believe that **responsible AI** is not optional — it's essential for trust and success.  
-    Our commitment includes:
-
-    - 🔍 **Transparency** in how AI content is generated and used  
-    - ⚖️ **Fairness & Inclusion** — avoiding biased, harmful, or exclusionary outputs  
-    - 👩‍💼 **Human-in-the-loop** for all critical decisions  
-    - 🔐 **Data privacy and safety-first mindset**
-
-    _LLMs are powerful — but your judgment, values, and context matter more._
-    """)
-
 # --- Compact Unified Footer ---
 st.markdown("---")
 st.markdown("""
