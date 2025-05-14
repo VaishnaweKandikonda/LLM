@@ -18,11 +18,12 @@ if os.path.exists("WebAppstyling.css"):
 # --- Hugging Face API Key ---
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
-# --- Session State ---
+# --- Load Feedback from CSV (Cached for performance) ---
 @st.cache_data(ttl=3600)
 def load_feedback(path="feedback.csv"):
     return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
 
+# --- Store new feedback entry ---
 def store_feedback(entry, path="feedback.csv"):
     new_entry_df = pd.DataFrame([entry])
     if os.path.exists(path):
@@ -30,17 +31,19 @@ def store_feedback(entry, path="feedback.csv"):
         new_entry_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
     new_entry_df.to_csv(path, index=False)
 
+# --- Email Validation Utility ---
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email)
 
+# --- Session State Initialization ---
 if 'feedback_entries' not in st.session_state:
     st.session_state['feedback_entries'] = load_feedback()
 
 if 'current_page_index' not in st.session_state:
-    st.session_state['current_page_index'] = 0
+    st.session_state['current_page_index'] = 0  # Used for navigation, optional
 
 if 'global_expansion_state' not in st.session_state:
-    st.session_state['global_expansion_state'] = None
+    st.session_state['global_expansion_state'] = None  # Controls expand/collapse
 
 # --- Utility Functions ---
 def expander_section(title):
@@ -1055,12 +1058,17 @@ elif current_page == "Feedback":
                 }
                 store_feedback(entry)
                 st.success(f"✅ Thank you, {name.strip()}! Your feedback has been recorded.")
-                st.rerun()  # ensures updated data shows below
+                
+                # Refresh entries in session state
+                st.session_state['feedback_entries'] = load_feedback()
 
-    # --- Show Submitted Feedback ---
-    feedback_data = load_feedback()
-    if feedback_data:
-        df = pd.DataFrame(feedback_data)
+    # --- Load Feedback into Session If Not Present ---
+    if 'feedback_entries' not in st.session_state:
+        st.session_state['feedback_entries'] = load_feedback()
+
+    # --- Show Feedback ---
+    if st.session_state['feedback_entries']:
+        df = pd.DataFrame(st.session_state['feedback_entries'])
         df.index += 1
         df.index.name = "No."
         st.markdown("### 📋 All Submitted Feedback")
@@ -1075,8 +1083,8 @@ elif current_page == "Feedback":
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
         confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
 
-        if feedback_data:
-            export_df = pd.DataFrame(feedback_data)
+        if st.session_state['feedback_entries']:
+            export_df = pd.DataFrame(st.session_state['feedback_entries'])
             csv_data = export_df.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
 
@@ -1085,6 +1093,7 @@ elif current_page == "Feedback":
                 try:
                     if os.path.exists("feedback.csv"):
                         os.remove("feedback.csv")
+                    st.session_state['feedback_entries'] = []
                     st.success("✅ All feedback has been permanently deleted.")
                     st.rerun()
                 except Exception as e:
