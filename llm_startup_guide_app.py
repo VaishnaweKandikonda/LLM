@@ -26,21 +26,6 @@ FEEDBACK_PATH = "/mnt/data/feedback.csv"
 def load_feedback(path=FEEDBACK_PATH):
     return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
 
-# --- Store Feedback ---
-def store_feedback(entry, path=FEEDBACK_PATH):
-    new_entry_df = pd.DataFrame([entry])
-    if os.path.exists(path):
-        existing_df = pd.read_csv(path)
-        new_entry_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
-    new_entry_df.to_csv(path, index=False)
-# --- Email Validation Utility ---
-def is_valid_email(email):
-    return re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email)
-
-# --- Session State Initialization ---
-if 'feedback_entries' not in st.session_state:
-    st.session_state['feedback_entries'] = load_feedback()
-
 if 'current_page_index' not in st.session_state:
     st.session_state['current_page_index'] = 0  # Used for navigation, optional
 
@@ -69,7 +54,7 @@ def display_expand_collapse_controls(current_page: str):
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
 
-def store_feedback(entry, path="feedback.csv"):
+def store_feedback(entry, path=FEEDBACK_PATH):
     new_entry_df = pd.DataFrame([entry])
     if os.path.exists(path):
         existing_df = pd.read_csv(path)
