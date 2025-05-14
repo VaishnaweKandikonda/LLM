@@ -124,7 +124,7 @@ with st.sidebar:
 # --- Home Page ---
 if current_page == "Home":
     st.markdown("<h1 style='text-align:center;'>Smart Startups. Smart AI.</h1>", unsafe_allow_html=True)
-    display_expand_collapse_controls()
+    display_expand_collapse_controls(current_page)
 
     home_sections = {
         "Introduction to Large Language Models": (
@@ -162,7 +162,7 @@ if current_page == "Home":
 # --- Prompt Engineering Page ---
 elif current_page == "Prompt Engineering":
     st.title("Prompt Like a Pro")
-    display_expand_collapse_controls()
+    display_expand_collapse_controls(current_page)
 
     st.markdown("### Choose a sub-topic to explore:")
     subtopic = st.selectbox(
@@ -274,7 +274,7 @@ elif current_page == "Prompt Engineering":
 
 elif current_page == "Temperature & Sampling":
     st.title("Temperature & Sampling")
-    display_expand_collapse_controls()
+    display_expand_collapse_controls(current_page)
 
     with expander_section("What is Temperature in Language Models?"):
         st.write("""
@@ -336,7 +336,7 @@ elif current_page == "Temperature & Sampling":
 
 elif current_page == "Hallucinations":
     st.title("Hallucinations in Language Models")
-    display_expand_collapse_controls()
+    display_expand_collapse_controls(current_page)
 
     # Intro explanation
     with expander_section("What Are Hallucinations?"):
@@ -387,7 +387,7 @@ elif current_page == "Hallucinations":
 
 elif current_page == "API Cost Optimization":
     st.title("API Cost Optimization")
-    display_expand_collapse_controls()
+    display_expand_collapse_controls(current_page)
 
     with expander_section("Why API Costs Matter for Startups"):
         st.write("""
@@ -528,7 +528,7 @@ elif current_page == "Ethics & Bias":
 
 elif current_page == "FAQs":
     st.title("Frequently Asked Questions")
-    display_expand_collapse_controls()
+    display_expand_collapse_controls(current_page)
 
     st.header("LLMs for Startup Founders")
     st.markdown("Below are some common questions about using language models like ChatGPT in startup settings:")
@@ -558,8 +558,6 @@ elif current_page == "FAQs":
 
 elif current_page == "Feedback":
     st.header("We Value Your Feedback")
-    display_expand_collapse_controls()
-
     st.markdown("Please share your thoughts on this guide.")
 
     name = st.text_input("Your name *")
