@@ -18,6 +18,9 @@ if os.path.exists("WebAppstyling.css"):
 # --- Hugging Face API Key ---
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
+# Load admin passphrase
+ADMIN_PASSPHRASE = st.secrets["ADMIN_PASSPHRASE"]
+
 # --- File Path for Feedback ---
 FEEDBACK_PATH = "feedback.csv"
 
