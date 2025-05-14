@@ -1027,10 +1027,10 @@ st.markdown("""---""")
 st.markdown("""
 <div style='font-size: 16px; line-height: 1.6;'>
     <strong>LLM Guide for Startups</strong> — Practical insights for using language models responsibly and efficiently in startup settings.<br><br>
-    Built with ❤️ by:<br>
+    Built with by:<br>
     • <strong>Vaishnavi Kandikonda</strong> (24216940) — <a href="mailto:vaishnavi.kandikonda@ucdconnect.com">vaishnavi.kandikonda@ucdconnect.com</a><br>
     • <strong>Shivani Singh</strong> (24234516) — <a href="mailto:shivani.singh@ucdconnect.ie">shivani.singh@ucdconnect.ie</a><br>
-    • <strong>Kushal Pratap Singh</strong> (24205476) — <a href="mailto:singhkushal.pratap@ucdconnect.ie">singhkushal.pratap@ucdconnect.ie</a><br>
+    • <strong>Kushal Pratap Singh</strong> (24205476) — <a href="mailto:kushal.singh@ucdconnect.ie">kushal.singh@ucdconnect.ie</a><br>
 </div>
 """, unsafe_allow_html=True)
 
