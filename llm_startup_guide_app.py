@@ -1020,9 +1020,6 @@ elif current_page == "Feedback":
 
     st.markdown("### 🧾 Feedback Form")
 
-    # Always reload feedback from CSV to persist across sessions
-    st.session_state['feedback_entries'] = load_feedback()
-
     # --- Input Form ---
     with st.form("feedback_form"):
         col1, col2 = st.columns(2)
@@ -1037,7 +1034,6 @@ elif current_page == "Feedback":
                                   ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
         attachment = st.file_uploader("📎 Optional File Upload", type=["png", "jpg", "pdf", "txt", "docx"])
 
-        # Validation logic
         required_filled = bool(name.strip())
         email_valid = True if not email.strip() else re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email.strip())
 
@@ -1059,13 +1055,13 @@ elif current_page == "Feedback":
                 }
                 store_feedback(entry)
                 st.success(f"✅ Thank you, {name.strip()}! Your feedback has been recorded.")
-                st.rerun()  # reloads data
+                st.rerun()  # ensures updated data shows below
 
     # --- Show Submitted Feedback ---
-    all_feedback = load_feedback()
-    if all_feedback:
-        df = pd.DataFrame(all_feedback)
-        df.index = df.index + 1
+    feedback_data = load_feedback()
+    if feedback_data:
+        df = pd.DataFrame(feedback_data)
+        df.index += 1
         df.index.name = "No."
         st.markdown("### 📋 All Submitted Feedback")
         st.dataframe(df, use_container_width=True)
@@ -1079,8 +1075,8 @@ elif current_page == "Feedback":
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
         confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
 
-        if all_feedback:
-            export_df = pd.DataFrame(all_feedback)
+        if feedback_data:
+            export_df = pd.DataFrame(feedback_data)
             csv_data = export_df.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
 
@@ -1095,6 +1091,7 @@ elif current_page == "Feedback":
                     st.error(f"❌ Error while deleting: {str(e)}")
             else:
                 st.error("🔒 Invalid passphrase or confirmation not checked.")
+
 
 # --- Compact Unified Footer ---
 st.markdown("""---""")
