@@ -854,4 +854,4 @@ Built with by:
 
 """)
 st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}** • Built with Streamlit 
-& Guided by principles of **transparency**, **fairness**, and **human-centered AI**.)
+& Guided by principles of **transparency**, **fairness**, and **human-centered AI**.")
