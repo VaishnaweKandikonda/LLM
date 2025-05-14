@@ -53,7 +53,7 @@ def display_expand_collapse_controls(current_page: str):
             </div>
         """, unsafe_allow_html=True)
 
-        expand_action = st.experimental_get_query_params().get("expand_action", [None])[0]
+        expand_action = st.query_params.get("expand_action", None)
         if expand_action == "expand":
             st.session_state['global_expansion_state'] = True
         elif expand_action == "collapse":
@@ -433,7 +433,7 @@ elif current_page == "API Cost Optimization":
 
 elif current_page == "Ethics & Bias":
     st.title("Ethics and Bias in Language Models")
-    display_expand_collapse_controls()
+    display_expand_collapse_controls(current_page)
 
     with expander_section("Why Ethics and Fairness Matter"):
         st.write("""
