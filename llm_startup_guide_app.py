@@ -18,20 +18,21 @@ if os.path.exists("WebAppstyling.css"):
 # --- Hugging Face API Key ---
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
-# --- Load Feedback from CSV (Cached for performance) ---
+# --- File Path for Feedback ---
+FEEDBACK_PATH = "/mnt/data/feedback.csv"
+
+# --- Load Feedback ---
 @st.cache_data(ttl=3600)
-@st.cache_data(ttl=3600)
-def load_feedback(path="/mnt/data/feedback.csv"):
+def load_feedback(path=FEEDBACK_PATH):
     return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
 
-# --- Store new feedback entry ---
-def store_feedback(entry, path="/mnt/data/feedback.csv"):
+# --- Store Feedback ---
+def store_feedback(entry, path=FEEDBACK_PATH):
     new_entry_df = pd.DataFrame([entry])
     if os.path.exists(path):
         existing_df = pd.read_csv(path)
         new_entry_df = pd.concat([existing_df, new_entry_df], ignore_index=True)
     new_entry_df.to_csv(path, index=False)
-
 # --- Email Validation Utility ---
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$", email)
@@ -1083,30 +1084,30 @@ elif current_page == "Feedback":
         st.info("No feedback submitted yet. Be the first to contribute!")
 
 
-    # --- Admin Controls ---
-    with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
-        st.markdown("Export or delete all feedback entries below.")
+    # # --- Admin Controls ---
+    # with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
+    #     st.markdown("Export or delete all feedback entries below.")
 
-        admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
-        confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
+    #     admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
+    #     confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
 
-        if st.session_state['feedback_entries']:
-            export_df = pd.DataFrame(st.session_state['feedback_entries'])
-            csv_data = export_df.to_csv(index=False).encode("utf-8")
-            st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
+    #     if st.session_state['feedback_entries']:
+    #         export_df = pd.DataFrame(st.session_state['feedback_entries'])
+    #         csv_data = export_df.to_csv(index=False).encode("utf-8")
+    #         st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
 
-        if st.button("🗑️ Clear All Feedback"):
-            if admin_key == "delete123" and confirm_clear:
-                try:
-                    if os.path.exists("feedback.csv"):
-                        os.remove("feedback.csv")
-                    st.session_state['feedback_entries'] = []
-                    st.success("✅ All feedback has been permanently deleted.")
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Error while deleting: {str(e)}")
-            else:
-                st.error("🔒 Invalid passphrase or confirmation not checked.")
+    #     if st.button("🗑️ Clear All Feedback"):
+    #         if admin_key == "delete123" and confirm_clear:
+    #             try:
+    #                 if os.path.exists("feedback.csv"):
+    #                     os.remove("feedback.csv")
+    #                 st.session_state['feedback_entries'] = []
+    #                 st.success("✅ All feedback has been permanently deleted.")
+    #                 st.rerun()
+    #             except Exception as e:
+    #                 st.error(f"❌ Error while deleting: {str(e)}")
+    #         else:
+    #             st.error("🔒 Invalid passphrase or confirmation not checked.")
 
 
 # --- Compact Unified Footer ---
