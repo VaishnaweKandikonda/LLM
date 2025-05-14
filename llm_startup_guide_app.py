@@ -37,16 +37,19 @@ def load_feedback(path=FEEDBACK_PATH):
 if 'current_page_index' not in st.session_state:
     st.session_state['current_page_index'] = 0  # Used for navigation, optional
 
-if 'global_expansion_state' not in st.session_state:
-    st.session_state['global_expansion_state'] = None  # Controls expand/collapse
+# Reset global expansion state after it's used once
+if st.session_state.get("global_expansion_state") is not None:
+    st.session_state["global_expansion_state"] = None
 
 # --- Utility Functions ---
 def expander_section(title):
     key = f"expander_{title}"
-    if key not in st.session_state:
-        st.session_state[key] = False  # Default to collapsed
-
-    return st.expander(title, expanded=st.session_state[key])
+    
+    # Apply global state only on first load after a toggle
+    if st.session_state.get("global_expansion_state") is not None:
+        st.session_state[key] = st.session_state["global_expansion_state"]
+    
+    return st.expander(title, expanded=st.session_state.get(key, False))
 
 def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
@@ -58,15 +61,11 @@ def display_expand_collapse_controls(current_page: str):
         col1, col2, col3 = st.columns([9, 0.5, 0.5])
         with col2:
             if st.button("➕", help="Expand All"):
-                # Set all expanders on this page to True
-                for key in st.session_state.keys():
-                    if key.startswith("expander_"):
-                        st.session_state[key] = True
+                st.session_state["global_expansion_state"] = True
+                st.rerun()
         with col3:
             if st.button("➖", help="Collapse All"):
-                for key in st.session_state.keys():
-                    if key.startswith("expander_"):
-                        st.session_state[key] = False
+                st.session_state["global_expansion_state"] = False
                 st.rerun()
 
 def is_valid_email(email):
