@@ -1082,7 +1082,6 @@ elif current_page == "Feedback":
     else:
         st.info("No feedback submitted yet. Be the first to contribute!")
 
-
     # --- Admin Controls ---
     with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
         st.markdown("Export or delete all feedback entries below.")
@@ -1090,30 +1089,28 @@ elif current_page == "Feedback":
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
         confirm_clear = st.checkbox("☑️ I confirm this action is irreversible.")
     
-        # Export feedback if exists
         if st.session_state.get('feedback_entries'):
             export_df = pd.DataFrame(st.session_state['feedback_entries'])
             csv_data = export_df.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Download Feedback CSV", csv_data, file_name="feedback_backup.csv", mime="text/csv")
     
-        # Clear feedback file and session
         if st.button("🗑️ Clear All Feedback"):
-            if admin_key == "delete123" and confirm_clear:
+            if admin_key_input == ADMIN_PASSPHRASE and confirm_clear:
                 try:
-                    # Overwrite the file with empty headers instead of deleting
-                    empty_df = pd.DataFrame(columns=["Name", "Email", "Rating", "Feedback", "Suggested topic", "Attachment name"])
-                    empty_df.to_csv(FEEDBACK_PATH, index=False)
+                    # Delete the file from disk if it exists
+                    if os.path.exists(FEEDBACK_PATH):
+                        os.remove(FEEDBACK_PATH)
     
-                    # Reset session state
+                    # Clear session state
                     st.session_state['feedback_entries'] = []
     
-                    st.success("✅ All feedback has been cleared.")
+                    st.success("✅ All feedback has been permanently deleted from disk and memory.")
                     st.rerun()
+    
                 except Exception as e:
-                    st.error(f"❌ Error while clearing feedback: {str(e)}")
+                    st.error(f"❌ Error while deleting: {str(e)}")
             else:
                 st.error("🔒 Invalid passphrase or confirmation not checked.")
-
 
 
 # --- Compact Unified Footer ---
