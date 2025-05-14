@@ -1074,7 +1074,9 @@ elif current_page == "Feedback":
         admin_key = st.text_input("🔐 Admin Passphrase", type="password", placeholder="Enter passphrase")
         confirm_clear = st.checkbox("I understand this action is irreversible")
 
-        if st.button("🗑️ Clear All Feedback") and admin_key == "delete123" and confirm_clear:
+        clear_clicked = st.button("🗑️ Clear All Feedback", key="clear_feedback_btn")
+
+        if clear_clicked and admin_key == "delete123" and confirm_clear:
             try:
                 st.session_state['feedback_entries'] = []
                 if os.path.exists("feedback.csv"):
@@ -1082,8 +1084,9 @@ elif current_page == "Feedback":
                 st.success("✅ All feedback records have been successfully deleted.")
             except Exception as e:
                 st.error(f"❌ Failed to delete feedback records: {str(e)}")
-        elif st.button("🗑️ Clear All Feedback"):
+        elif clear_clicked:
             st.error("🔒 Please enter a valid admin passphrase and confirm deletion.")
+
 
 # --- Compact Unified Footer ---
 st.markdown("""---""")
