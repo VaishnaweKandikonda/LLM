@@ -252,7 +252,7 @@ elif current_page == "Prompt Engineering":
     st.title("Prompt Like a Pro")
     display_expand_collapse_controls(current_page)
 
-    col_left, col_right = st.columns([3, 1])  # Wider content on left, selector on right
+    col_left, col_right = st.columns([3, 1])
 
     with col_left:
         st.markdown("### Prompt Engineering Insights")
