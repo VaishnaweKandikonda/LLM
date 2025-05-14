@@ -19,7 +19,7 @@ if os.path.exists("WebAppstyling.css"):
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
 # --- Session State ---
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_feedback(path="feedback.csv"):
     return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
 
@@ -43,13 +43,28 @@ def display_expand_collapse_controls():
         "API Cost Optimization", "Ethics & Bias"
     ]
     if page_titles[st.session_state['current_page_index']] in visible_on_pages:
-        col1, col2, col3 = st.columns([7, 1, 1])
-        with col2:
-            if st.button("➕ Expand All", help="Expand all sections"):
-                st.session_state['global_expansion_state'] = True
-        with col3:
-            if st.button("➖ Collapse All", help="Collapse all sections"):
-                st.session_state['global_expansion_state'] = False
+         st.markdown(
+        """
+        <style>
+        .exp-control-buttons {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+        </style>
+        """, unsafe_allow_html=True
+    )
+    
+    st.markdown('<div class="exp-control-buttons">', unsafe_allow_html=True)
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("➕ Expand All", help="Expand all sections"):
+            st.session_state['global_expansion_state'] = True
+    with col2:
+        if st.button("➖ Collapse All", help="Collapse all sections"):
+            st.session_state['global_expansion_state'] = False
+    st.markdown('</div>', unsafe_allow_html=True)
 
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
