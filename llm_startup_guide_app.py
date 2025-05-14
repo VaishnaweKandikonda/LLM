@@ -157,12 +157,17 @@ elif current_page == "Prompt Engineering":
     st.title("Prompt Like a Pro")
     display_expand_collapse_controls(current_page)
 
-    st.markdown("### Choose a sub-topic to explore:")
-    subtopic = st.selectbox(
-        "Select a topic:",
-        ["All", "What is a Prompt?", "Best Practices", "Vague vs. Clear Examples",
-         "Try it Yourself", "Prompt Use Cases", "Prompt Generator", "Prompt Checklist", "Quiz"]
-    )
+    col_left, col_right = st.columns([3, 1])  # Wider content on left, selector on right
+    
+    with col_left:
+        st.markdown("### Prompt Engineering Insights")
+    
+    with col_right:
+        subtopic = st.selectbox(
+            "Sub-topic",
+            ["All", "What is a Prompt?", "Best Practices", "Vague vs. Clear Examples",
+             "Try it Yourself", "Prompt Use Cases", "Prompt Generator", "Prompt Checklist", "Quiz"]
+        )
 
     if subtopic in ("All", "What is a Prompt?"):
         with expander_section("What is a Prompt?"):
