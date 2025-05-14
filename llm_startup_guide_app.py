@@ -40,7 +40,7 @@ def expander_section(title):
 def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
-        "API Cost Optimization", "Ethics & Bias"
+        "API Cost Optimization", "Ethics & Bias","Startup Use Case Matcher"
     ]
 
     if current_page in visible_on_pages:
@@ -100,7 +100,7 @@ def get_llm_response(prompt):
 page_titles = [
     "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
     "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary",
-    "Interactive Use Cases", "Download Toolkit", "Feedback"
+    "Interactive Use Cases","Startup Use Case Matcher", "Download Toolkit", "Feedback"
 ]
 
 with st.sidebar:
@@ -720,6 +720,27 @@ elif current_page == "Interactive Use Cases":
             st.success(response)
         else:
             st.error(error or "Something went wrong.")
+            
+elif current_page == "Startup Use Case Matcher":
+    st.title("🔍 Startup Use Case Matcher")
+    st.markdown("Get personalized LLM use cases based on your startup type and needs.")
+
+    industry = st.selectbox("What’s your industry?", ["FinTech", "EdTech", "HealthTech", "E-Commerce", "SaaS"])
+    goal = st.selectbox("What’s your goal?", ["Customer Support", "Content Generation", "Market Research", "Internal Automation"])
+    team_size = st.selectbox("Your team size?", ["1–5", "6–20", "21–50", "50+"])
+
+    if st.button("Suggest Use Cases"):
+        st.markdown("### Recommended Use Cases:")
+
+        if goal == "Customer Support":
+            st.success("🤖 Build an FAQ bot using LLMs to reduce support load by 40%.")
+        if goal == "Content Generation":
+            st.info("📝 Use LLMs to generate social media content, blogs, and emails.")
+        if goal == "Market Research":
+            st.warning("📊 Summarize industry trends using public data + GPT.")
+        if goal == "Internal Automation":
+            st.success("📂 Use AI to write scripts, meeting summaries, or task updates.")
+
 
 elif current_page == "Download Toolkit":
     st.title("📦 LLM Starter Toolkit")
