@@ -203,8 +203,7 @@ if current_page == "Home":
         "- Get inspired by practical applications for startups\n"
         "- Start small and scale smart with LLMs"
     )
-}
-    
+    }
     # --- Render Sections Based on Selection ---
     for title, content in home_sections.items():
         if home_subtopic == "All" or home_subtopic == title:
