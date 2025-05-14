@@ -852,6 +852,6 @@ Built with by:
 - **Shivani Singh** (24234516) — [shivani.singh@ucdconnect.ie](mailto:shivani.singh@ucdconnect.ie)
 - **Kushal Pratap Singh** (24205476) — [singhkushal.pratap@ucdconnect.ie](mailto:singhkushal.pratap@ucdconnect.ie)
 
-Guided by principles of **transparency**, **fairness**, and **human-centered AI**.  
 """)
-st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}** • Built with Streamlit 💡")
+st.caption(f"© 2025 LLM Startup Guide • Last updated **{datetime.now().strftime('%Y-%m-%d')}** • Built with Streamlit 
+& Guided by principles of **transparency**, **fairness**, and **human-centered AI**.)
