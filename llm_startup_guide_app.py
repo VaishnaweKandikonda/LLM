@@ -37,34 +37,62 @@ def expander_section(title):
     expanded = st.session_state['global_expansion_state'] if st.session_state['global_expansion_state'] is not None else False
     return st.expander(title, expanded=expanded)
 
-def display_expand_collapse_controls():
+ddef display_expand_collapse_controls():
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
         "API Cost Optimization", "Ethics & Bias"
     ]
-    if page_titles[st.session_state['current_page_index']] in visible_on_pages:
-         st.markdown(
-        """
-        <style>
-        .exp-control-buttons {
-            position: absolute;
-            top: 1rem;
-            right: 2rem;
-            z-index: 9999;
-        }
-        </style>
-        """, unsafe_allow_html=True
-    )
+
+    current_page = page_titles[st.session_state['current_page_index']]
     
-    st.markdown('<div class="exp-control-buttons">', unsafe_allow_html=True)
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("➕ Expand All", help="Expand all sections"):
-            st.session_state['global_expansion_state'] = True
-    with col2:
-        if st.button("➖ Collapse All", help="Collapse all sections"):
-            st.session_state['global_expansion_state'] = False
-    st.markdown('</div>', unsafe_allow_html=True)
+    if current_page in visible_on_pages:
+        # CSS for positioning buttons in top-right corner
+        st.markdown("""
+            <style>
+            .exp-control-buttons {
+                position: fixed;
+                top: 1.2rem;
+                right: 1.5rem;
+                z-index: 1000;
+                display: flex;
+                gap: 0.5rem;
+                font-size: 1.5rem;
+            }
+
+            .exp-control-buttons button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.5rem;
+                padding: 0.25rem 0.5rem;
+                border-radius: 5px;
+                transition: background 0.2s ease;
+            }
+
+            .exp-control-buttons button:hover {
+                background: #f0f0f0;
+            }
+
+            @media (max-width: 768px) {
+                .exp-control-buttons {
+                    top: 0.8rem;
+                    right: 1rem;
+                    font-size: 1.2rem;
+                }
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+        # Actual buttons
+        st.markdown('<div class="exp-control-buttons">', unsafe_allow_html=True)
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("➕", key="expand_all", help="Expand all sections"):
+                st.session_state['global_expansion_state'] = True
+        with col2:
+            if st.button("➖", key="collapse_all", help="Collapse all sections"):
+                st.session_state['global_expansion_state'] = False
+        st.markdown('</div>', unsafe_allow_html=True)
 
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
