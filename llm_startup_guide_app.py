@@ -14,7 +14,7 @@ st.set_page_config(page_title="LLM Guide for Startups", layout="wide")
 if os.path.exists("WebAppstyling.css"):
     with open("WebAppstyling.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
+        
 # --- Hugging Face API Key ---
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
@@ -37,62 +37,27 @@ def expander_section(title):
     expanded = st.session_state['global_expansion_state'] if st.session_state['global_expansion_state'] is not None else False
     return st.expander(title, expanded=expanded)
 
-def display_expand_collapse_controls():
+def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
         "API Cost Optimization", "Ethics & Bias"
     ]
 
-    current_page = page_titles[st.session_state['current_page_index']]
-    
     if current_page in visible_on_pages:
-        # CSS for positioning buttons in top-right corner
         st.markdown("""
-            <style>
-            .exp-control-buttons {
-                position: fixed;
-                top: 1.2rem;
-                right: 1.5rem;
-                z-index: 1000;
-                display: flex;
-                gap: 0.5rem;
-                font-size: 1.5rem;
-            }
-
-            .exp-control-buttons button {
-                background: none;
-                border: none;
-                cursor: pointer;
-                font-size: 1.5rem;
-                padding: 0.25rem 0.5rem;
-                border-radius: 5px;
-                transition: background 0.2s ease;
-            }
-
-            .exp-control-buttons button:hover {
-                background: #f0f0f0;
-            }
-
-            @media (max-width: 768px) {
-                .exp-control-buttons {
-                    top: 0.8rem;
-                    right: 1rem;
-                    font-size: 1.2rem;
-                }
-            }
-            </style>
+            <div class="exp-control-buttons">
+                <form action="" method="post">
+                    <button name="expand_action" value="expand">➕</button>
+                    <button name="expand_action" value="collapse">➖</button>
+                </form>
+            </div>
         """, unsafe_allow_html=True)
 
-        # Actual buttons
-        st.markdown('<div class="exp-control-buttons">', unsafe_allow_html=True)
-        col1, col2 = st.columns([1, 1])
-        with col1:
-            if st.button("➕", key="expand_all", help="Expand all sections"):
-                st.session_state['global_expansion_state'] = True
-        with col2:
-            if st.button("➖", key="collapse_all", help="Collapse all sections"):
-                st.session_state['global_expansion_state'] = False
-        st.markdown('</div>', unsafe_allow_html=True)
+        expand_action = st.experimental_get_query_params().get("expand_action", [None])[0]
+        if expand_action == "expand":
+            st.session_state['global_expansion_state'] = True
+        elif expand_action == "collapse":
+            st.session_state['global_expansion_state'] = False
 
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
