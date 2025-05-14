@@ -20,11 +20,12 @@ HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
 # --- Load Feedback from CSV (Cached for performance) ---
 @st.cache_data(ttl=3600)
-def load_feedback(path="feedback.csv"):
+@st.cache_data(ttl=3600)
+def load_feedback(path="/mnt/data/feedback.csv"):
     return pd.read_csv(path).to_dict("records") if os.path.exists(path) else []
 
 # --- Store new feedback entry ---
-def store_feedback(entry, path="feedback.csv"):
+def store_feedback(entry, path="/mnt/data/feedback.csv"):
     new_entry_df = pd.DataFrame([entry])
     if os.path.exists(path):
         existing_df = pd.read_csv(path)
@@ -1015,25 +1016,25 @@ elif current_page == "Download Toolkit":
         st.success("Thanks for your input! We'll use it to improve the toolkit.")
         
 elif current_page == "Feedback":
-    st.title("📣 Share Your Experience")
+    st.title(" Share Your Experience")
     st.markdown("""
         Your feedback helps us improve the **LLM Guide for Startups**.  
         Let us know what you found useful and what you'd like to see next.
     """)
 
-    st.markdown("### 🧾 Feedback Form")
+    st.markdown("### Feedback Form")
 
     # --- Input Form ---
     with st.form("feedback_form"):
         col1, col2 = st.columns(2)
         with col1:
-            name = st.text_input("👤 Full Name *", placeholder="Enter your full name")
+            name = st.text_input("Full Name *", placeholder="Enter your full name")
         with col2:
-            email = st.text_input("📧 Email Address (optional)", placeholder="e.g. alex@startup.ie")
+            email = st.text_input("Email Address (optional)", placeholder="e.g. alex@startup.ie")
 
-        rating = st.slider("⭐ How helpful was this guide?", 1, 5, 3)
-        feedback = st.text_area("💬 Your Comments (optional)", placeholder="What worked well? What could be improved?")
-        suggestion = st.selectbox("🧠 What topics should we cover next?", 
+        rating = st.slider(" How helpful was this guide?", 1, 5, 3)
+        feedback = st.text_area("Your Comments (optional)", placeholder="What worked well? What could be improved?")
+        suggestion = st.selectbox("What topics should we cover next?", 
                                   ["None", "LLM APIs", "Customer Support", "Tool Comparisons", "No-code Prototyping"])
         attachment = st.file_uploader("📎 Optional File Upload", type=["png", "jpg", "pdf", "txt", "docx"])
 
@@ -1044,9 +1045,9 @@ elif current_page == "Feedback":
 
         if submitted:
             if not required_filled:
-                st.warning("⚠️ Please enter your name to submit the form.")
+                st.warning("Please enter your name to submit the form.")
             elif not email_valid:
-                st.error("❌ Invalid email format. Please check and try again.")
+                st.error("Invalid email format. Please check and try again.")
             else:
                 entry = {
                     "Name": name.strip(),
@@ -1057,7 +1058,7 @@ elif current_page == "Feedback":
                     "Attachment name": attachment.name if attachment else None
                 }
                 store_feedback(entry)
-                st.success(f"✅ Thank you, {name.strip()}! Your feedback has been recorded.")
+                st.success(f"✅ Thank you, {name.strip()}! We truly appreciate your insights and will use your feedback to make this guide even better.")
                 
                 # Refresh entries in session state
                 st.session_state['feedback_entries'] = load_feedback()
@@ -1069,12 +1070,18 @@ elif current_page == "Feedback":
     # --- Show Feedback ---
     if st.session_state['feedback_entries']:
         df = pd.DataFrame(st.session_state['feedback_entries'])
+    
+        # Filter out admin entries and blanks
+        df = df[df["Name"].str.strip().str.lower() != "admin"]
+        df = df[df["Name"].str.strip() != ""]
+    
         df.index += 1
         df.index.name = "No."
-        st.markdown("### 📋 All Submitted Feedback")
+        st.markdown("### All Submitted Feedback")
         st.dataframe(df, use_container_width=True)
     else:
         st.info("No feedback submitted yet. Be the first to contribute!")
+
 
     # --- Admin Controls ---
     with st.expander("🛠️ Admin Controls: Manage Feedback Records"):
