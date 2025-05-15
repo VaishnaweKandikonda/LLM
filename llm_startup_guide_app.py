@@ -927,10 +927,6 @@ elif current_page == "Ethics & Bias":
                     st.write(f"**Final Risk Assessment:** {risk_level}")
     
             st.caption("Note: This form is not stored. Copy your review for team documentation or export manually.")
-    
-            st.markdown(ethical_template.replace("##", "###"))
-            st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
-
         st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
     reset_expansion_state()
     
