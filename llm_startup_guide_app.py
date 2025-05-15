@@ -105,7 +105,55 @@ with st.sidebar:
         ],
         menu_icon="cast"
     )
+with st.sidebar:
+    st.markdown("### 🔍 Quick ")
+    _query = st.text_input(" topics", placeholder="e.g. hallucinations, prompt types")
+    
+def keyword_matches(query, text):
+    return query and query.lower() in text.lower()
 
+all_sections = {
+    "Home": list(home_sections.keys()),
+    "Prompt Engineering": [
+        "What is Prompt and Prompt Engineering?",
+        "Types of Prompts",
+        "Vague vs. Clear Prompt Examples",
+        "Prompt Engineering Best Practices",
+        "Common Pitfalls to Avoid",
+        "Prompt Engineering vs Prompt Tuning",
+        "Prompt Engineering Use Cases for Startups",
+        "Learn More: Prompt Engineering Resources",
+        "Test Your Knowledge"
+    ],
+    "Temperature & Sampling": [
+        "What is Temperature in Language Models?",
+        "What Is Sampling in LLMs?",
+        "Adjust the Temperature and See the Difference",
+        "Match Temperature to a Task",
+        "Temperature Summary Table",
+        "Common Misconceptions",
+        "Final Takeaway: Use Temperature & Sampling Like Controls"
+    ],
+    "Hallucinations": [
+        "What Are Hallucinations?",
+        "Example: Product Fact Gone Wrong",
+        "Why Do LLMs Hallucinate?",
+        "How to Minimize Hallucinations",
+        "Quick Check: Can You Spot the Hallucination?"
+    ]
+}
+
+if _query:
+    st.markdown("### 🔎  Results")
+    matches_found = False
+    for page, titles in all_sections.items():
+        for title in titles:
+            if keyword_matches(_query, title):
+                matches_found = True
+                st.markdown(f"- 🔗 **{title}** (_in {page}_)")
+
+    if not matches_found:
+        st.info("No matches found. Try another keyword.")
 # --- Home Page ---
 if current_page == "Home":
     st.markdown("<h1 style='text-align:center;'>Smart Startups. Smart AI.</h1>", unsafe_allow_html=True)
@@ -158,7 +206,7 @@ if current_page == "Home":
         "- For example, “Startup” might become “Start” and “up.”\n"
         "- Most AI tools charge based on the number of tokens processed.\n\n"
         "**Key takeaway:**\n"
-        "- LLMs aren’t search engines — they don’t know facts.\n"
+        "- LLMs aren’t  engines — they don’t know facts.\n"
         "- They generate likely-sounding responses. Always verify important info!"
     ),
 
@@ -168,7 +216,7 @@ if current_page == "Home":
         "- Write product descriptions, blog posts, and marketing emails\n"
         "- Build chatbots and interactive assistants quickly\n"
         "- Speed up MVP development with code generation and idea testing\n"
-        "- Save time on repetitive tasks and research"
+        "- Save time on repetitive tasks and re"
     ),
 
     "Best Practices & Ethics": (
@@ -219,7 +267,7 @@ if current_page == "Home":
 
                     # Quiz
                     st.markdown("#### Quiz: How Well Do You Understand LLMs?")
-                    q1 = st.radio("True or False: LLMs search the internet to answer questions.",
+                    q1 = st.radio("True or False: LLMs  the internet to answer questions.",
                                   ["-- Select --", "True", "False"], key="llm_q1")
                     if q1 == "False":
                         st.success("Correct! LLMs generate responses from prior training, not live web access.")
@@ -563,7 +611,7 @@ elif current_page == "Hallucinations":
 
             - **Citation Hallucinations**  
               The model invents fake sources, URLs, or references.  
-              _Example: Linking to a nonexistent research paper._
+              _Example: Linking to a nonexistent re paper._
 
             - **Logical Hallucinations**  
               The output contains contradictions or flawed reasoning.  
@@ -940,8 +988,8 @@ elif current_page == "FAQs":
     with expander_section("What is a large language model (LLM)?"):
         st.write("A large language model (LLM) is an AI system trained to generate and understand human-like text. It can help you write, summarize, explain, and automate content in your startup workflows.")
 
-    with expander_section("Is ChatGPT the same as a search engine?"):
-        st.write("No. ChatGPT doesn’t search the internet live. It generates responses based on patterns learned from training data. It doesn’t verify facts, so double-check anything important.")
+    with expander_section("Is ChatGPT the same as a  engine?"):
+        st.write("No. ChatGPT doesn’t  the internet live. It generates responses based on patterns learned from training data. It doesn’t verify facts, so double-check anything important.")
 
     with expander_section("Why does it sometimes say things that are wrong?"):
         st.write("This is called a hallucination. The model doesn’t know what’s true — it just predicts what sounds right. Always review AI-generated content before using it externally.")
