@@ -2,6 +2,31 @@ h1 {
     text-align: center;
     font-size: 2.8em;
     color: #333;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 2.2em;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+h3 {
+    font-size: 1.6em;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+}
+
+body, p, .markdown-text-container, .stMarkdown {
+    font-size: 1.05em;
+    line-height: 1.65;
+    color: #333;
+}
+
+ul, ol {
+    margin-left: 1.5rem;
+    font-size: 1.05em;
 }
 
 .custom-box {
@@ -21,6 +46,8 @@ h1 {
 .stButton > button {
     transition: all 0.3s ease-in-out;
     border-radius: 10px;
+    font-size: 1em;
+    padding: 0.4rem 1rem;
 }
 
 .stButton > button:hover {
@@ -64,4 +91,13 @@ h1 {
         right: 1rem;
         font-size: 1.2rem;
     }
+}
+
+.stTextInput input, .stSelectbox div[data-baseweb="select"], .stSlider {
+    font-size: 1em;
+}
+
+/* Dataframes */
+.css-1d391kg {
+    font-size: 0.95em;
 }

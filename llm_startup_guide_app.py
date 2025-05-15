@@ -11,9 +11,12 @@ import requests
 st.set_page_config(page_title="LLM Guide for Startups", layout="wide")
 
 # --- Load CSS ---
-if os.path.exists("WebAppstyling.css"):
-    with open("WebAppstyling.css") as f:
+css_path = "WebAppstyling_Enhanced.css"  # Use enhanced version
+if os.path.exists(css_path):
+    with open(css_path) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+else:
+    st.warning("CSS file not found. Styling will be minimal.")
         
 # --- Hugging Face API Key ---
 HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
@@ -44,29 +47,37 @@ if st.session_state.get("global_expansion_state") is not None:
 # --- Utility Functions ---
 def expander_section(title):
     key = f"expander_{title}"
-    
-    # Apply global state only on first load after a toggle
+
+    # Set initial state if not already present
+    if key not in st.session_state:
+        st.session_state[key] = False
+
+    # Respect global toggle once, then reset it
     if st.session_state.get("global_expansion_state") is not None:
         st.session_state[key] = st.session_state["global_expansion_state"]
-    
-    return st.expander(title, expanded=st.session_state.get(key, False))
+
+    return st.expander(title, expanded=st.session_state[key])
+
 
 def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
         "API Cost Optimization", "Ethics & Bias", "Startup Use Case Matcher", "FAQs", "Glossary"
     ]
-    
+
     if current_page in visible_on_pages:
         col1, col2, col3 = st.columns([9, 0.5, 0.5])
+
         with col2:
             if st.button("➕", help="Expand All"):
                 st.session_state["global_expansion_state"] = True
                 st.rerun()
+
         with col3:
             if st.button("➖", help="Collapse All"):
                 st.session_state["global_expansion_state"] = False
                 st.rerun()
+
 
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
@@ -270,6 +281,9 @@ if current_page == "Home":
                     # Optional Video
                     st.markdown("#### Optional Explainer Video")
                     st.video("https://www.youtube.com/embed/t4kyRyKyOpo")  # Replace with your team's video if applicable
+                    
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
 
 # --- Prompt Engineering Page ---
 elif current_page == "Prompt Engineering":
@@ -287,15 +301,14 @@ elif current_page == "Prompt Engineering":
                 "All",
                 "Introduction to Prompt Engineering",
                 "Types of Prompts",
-                "Prompt Best Practices",
                 "Vague vs. Clear Examples",
-                "Startup Use Cases",
+                "Prompt Best Practices",
                 "Common Pitfalls",
                 "Prompt Engineering vs Prompt Tuning",
-                "Prompt Learning Resources",
-                "Quiz",
-                "Prompt Generator",
+                "Startup Use Cases",
+                "Prompt Learning Resources"
                 "Try it Yourself"
+                "Quiz",
             ]
         )
 
@@ -339,6 +352,16 @@ elif current_page == "Prompt Engineering":
             - **Instructional:** Direct commands like “Summarize this email in 3 lines.”
             - **Conversational:** Framed as a dialogue, e.g., “Hi! Can you help me explain this concept to a 10-year-old?”
             """)
+    if subtopic in ("All", "Vague vs. Clear Examples"):
+        with expander_section("Vague vs. Clear Prompt Examples"):
+            col1, col2 = st.columns(2)
+            with col1:
+                st.error("Vague Prompt")
+                st.markdown("- Describe our app\n- Write something about our new feature")
+            with col2:
+                st.success(" Clear Prompt")
+                st.markdown("- Write a 3-sentence product description...\n- Write a 2-sentence announcement...")
+
             
     if subtopic in ("All", "Prompt Best Practices"):
         with expander_section("Prompt Engineering Best Practices"):
@@ -356,28 +379,7 @@ elif current_page == "Prompt Engineering":
                 _Example Prompt:_  
                 > "You are a SaaS marketer. Write a 2-sentence announcement for our AI onboarding tool, in a friendly tone."
                 ''')
-            
-    if subtopic in ("All", "Vague vs. Clear Examples"):
-        with expander_section("Vague vs. Clear Prompt Examples"):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.error("Vague Prompt")
-                st.markdown("- Describe our app\n- Write something about our new feature")
-            with col2:
-                st.success(" Clear Prompt")
-                st.markdown("- Write a 3-sentence product description...\n- Write a 2-sentence announcement...")
-    
-    if subtopic in ("All", "Startup Use Cases"):
-        with expander_section("Prompt Engineering Use Cases for Startups"):
-            st.markdown("""
-            Prompt engineering can unlock huge value across startup functions:
-
-            -  **Marketing:** Social media posts, taglines, blog intros
-            -  **Customer Support:** Smart autoresponders, refund replies
-            -  **Product & Dev:** Auto-generate feature descriptions, bug summaries
-            -  **Branding:** Name generation, slogan ideas, elevator pitches
-            """)
-            
+                      
     if subtopic in ("All", "Common Pitfalls"):
         with expander_section("Common Pitfalls to Avoid"):
             st.markdown("""
@@ -401,6 +403,18 @@ elif current_page == "Prompt Engineering":
 
             _ Prompt Engineering is ideal for startups needing quick results without deep ML expertise._
             """)
+            
+    if subtopic in ("All", "Startup Use Cases"):
+        with expander_section("Prompt Engineering Use Cases for Startups"):
+            st.markdown("""
+            Prompt engineering can unlock huge value across startup functions:
+
+            -  **Marketing:** Social media posts, taglines, blog intros
+            -  **Customer Support:** Smart autoresponders, refund replies
+            -  **Product & Dev:** Auto-generate feature descriptions, bug summaries
+            -  **Branding:** Name generation, slogan ideas, elevator pitches
+            """)
+  
 
     if subtopic in ("All", "Prompt Learning Resources"):
         with expander_section("Learn More: Prompt Engineering Resources"):
@@ -412,6 +426,19 @@ elif current_page == "Prompt Engineering":
             -  [FlowGPT – Community Prompt Library](https://flowgpt.com/)
             -  [Full Guide to Prompt Engineering](https://www.promptingguide.ai/)
             """)
+            
+    if subtopic in ("All", "Try it Yourself"):
+        with expander_section("Try it Yourself"):
+            st.markdown("Write a real prompt you'd like to test. We'll generate a response using FLAN-T5.")
+            user_prompt = st.text_area("Enter your business prompt:")
+            if st.button("Run Prompt") and user_prompt:
+                with st.spinner("Generating response..."):
+                    response, error = get_llm_response(user_prompt)
+
+                if response:
+                    st.success(response)
+                else:
+                    st.error(error)
 
     if subtopic in ("All", "Quiz"):
         with expander_section("Test Your Knowledge"):
@@ -449,30 +476,9 @@ elif current_page == "Prompt Engineering":
                     st.success("Correct!")
                 else:
                     st.error("Incorrect.")
-
-    if subtopic in ("All", "Prompt Generator"):
-        with expander_section("Prompt Generator"):
-            samples = [
-                "Write a product update email for a budgeting app.",
-                "Draft a refund message that is professional.",
-                "Create an onboarding message for beta users.",
-                "Write an app store description for a sleep tracking app."
-            ]
-            if st.button("Give me a random prompt"):
-                st.write(random.choice(samples))
-            
-    if subtopic in ("All", "Try it Yourself"):
-        with expander_section("Try it Yourself"):
-            st.markdown("Write a real prompt you'd like to test. We'll generate a response using FLAN-T5.")
-            user_prompt = st.text_area("Enter your business prompt:")
-            if st.button("Run Prompt") and user_prompt:
-                with st.spinner("Generating response..."):
-                    response, error = get_llm_response(user_prompt)
-
-                if response:
-                    st.success(response)
-                else:
-                    st.error(error)
+    
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
 
 elif current_page == "Temperature & Sampling":
     st.title("Temperature & Sampling")
@@ -487,8 +493,8 @@ elif current_page == "Temperature & Sampling":
         subtopic = st.selectbox(
             "Sub-topic",
             [
-                "All", "What is Temperature?", "Adjust the Temperature", "Summary Table",
-                "What is Sampling?", "Match Temp to Task", "Common Misconceptions", "Final Takeaway"
+                "All", "What is Temperature?","What is Sampling?", "Adjust the Temperature",
+                 "Match Temp to Task", "Summary Table", "Common Misconceptions", "Final Takeaway"
             ]
         )
     if subtopic in ("All", "What is Temperature?"):
@@ -504,7 +510,18 @@ elif current_page == "Temperature & Sampling":
              Think of temperature as the AI’s **risk-taking slider**.
             """)
             st.info("Tip: For investor summaries or product specs → use low temp. For brainstorming ideas or marketing slogans → use high temp.")
+    
+    if subtopic in ("All", "What is Sampling?"):
+        with expander_section("What Is Sampling in LLMs?"):
+            st.write("""
+            **Sampling** is how the model decides **which word to say next**. It picks from a range of likely options, not just the top one.
 
+            Two techniques:
+            - **Top-k sampling**: From top k most likely next words
+            - **Top-p sampling (nucleus sampling)**: From smallest group of words with probability above p
+
+            This helps avoid repetition and create variation — useful for startups generating product copy, blog posts, or email variations.
+            """)
     if subtopic in ("All", "Adjust the Temperature"):
         with expander_section("Adjust the Temperature and See the Difference"):
             temp = st.slider("Choose a temperature value", 0.1, 1.0, step=0.1, value=0.7)
@@ -517,6 +534,17 @@ elif current_page == "Temperature & Sampling":
             else:
                 st.warning("High Temperature (Creative & Risky)")
                 st.markdown("> Money? Managed. Chaos? Cancelled. Our app is your freedom button.")
+    
+    if subtopic in ("All", "Match Temp to Task"):
+            with expander_section("Match Temperature to a Task"):
+                st.markdown("""
+                | Task                             | Best Temperature | Why                              |
+                |----------------------------------|------------------|----------------------------------|
+                | Legal docs or product specs      | 0.1 – 0.2        | Needs precision and consistency  |
+                | Customer service replies         | 0.3 – 0.5        | Polite, friendly, on-brand       |
+                | Blog intros or product stories   | 0.5 – 0.7        | Natural, slightly creative       |
+                | Instagram ad or slogan ideas     | 0.8 – 1.0        | Bold, punchy, unexpected         |
+                """)
 
     if subtopic in ("All", "Summary Table"):
         with expander_section("Temperature Summary Table"):
@@ -526,29 +554,6 @@ elif current_page == "Temperature & Sampling":
             | 0.1 – 0.3   | Safe, focused       | Legal disclaimers, investor reports |
             | 0.4 – 0.7   | Balanced, natural   | Product copy, customer FAQs         |
             | 0.8 – 1.0   | Creative, surprising| Marketing, brainstorming, social    |
-            """)
-
-    if subtopic in ("All", "What is Sampling?"):
-        with expander_section("What Is Sampling in LLMs?"):
-            st.write("""
-            **Sampling** is how the model decides **which word to say next**. It picks from a range of likely options, not just the top one.
-
-            Two techniques:
-            - **Top-k sampling**: From top k most likely next words
-            - **Top-p sampling (nucleus sampling)**: From smallest group of words with probability above p
-
-            This helps avoid repetition and create variation — useful for startups generating product copy, blog posts, or email variations.
-            """)
-
-    if subtopic in ("All", "Match Temp to Task"):
-        with expander_section("Match Temperature to a Task"):
-            st.markdown("""
-            | Task                             | Best Temperature | Why                              |
-            |----------------------------------|------------------|----------------------------------|
-            | Legal docs or product specs      | 0.1 – 0.2        | Needs precision and consistency  |
-            | Customer service replies         | 0.3 – 0.5        | Polite, friendly, on-brand       |
-            | Blog intros or product stories   | 0.5 – 0.7        | Natural, slightly creative       |
-            | Instagram ad or slogan ideas     | 0.8 – 1.0        | Bold, punchy, unexpected         |
             """)
 
     if subtopic in ("All", "Common Misconceptions"):
@@ -573,6 +578,8 @@ elif current_page == "Temperature & Sampling":
             """)
 
     st.markdown("Adjusting temperature = fine-tuning your **startup's voice**: From steady and formal to bold and creative.")
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
     
 elif current_page == "Hallucinations":
     st.title("Hallucinations in Language Models")
@@ -604,6 +611,21 @@ elif current_page == "Hallucinations":
 
             Even though the response may sound fluent and factual, the model may be **making things up** — especially when it lacks context or isn’t grounded in verified data.
             """)
+            st.markdown("""
+            A deeper look at hallucinations reveals several types:
+
+            - **Factual Hallucinations**  
+              The model provides incorrect facts (e.g., wrong dates, names, or events).  
+              _Example: “Stripe was founded in 2015.”_
+
+            - **Citation Hallucinations**  
+              The model invents fake sources, URLs, or references.  
+              _Example: Linking to a nonexistent research paper._
+
+            - **Logical Hallucinations**  
+              The output contains contradictions or flawed reasoning.  
+              _Example: “All startups fail, which is why every founder becomes successful.”_
+            """)
 
     if halluc_subtopic in ("All", "Startup Example"):
         with expander_section("Example: Product Fact Gone Wrong"):
@@ -614,19 +636,39 @@ elif current_page == "Hallucinations":
 
     if halluc_subtopic in ("All", "Why It Happens"):
         with expander_section("Why Do LLMs Hallucinate?"):
-            st.write("""
-            - LLMs generate language based on **patterns in training data**, not real-time internet access.
-            - They don’t “know” facts — they **predict** the next likely word based on the prompt.
-            - When uncertain, they may fabricate names, dates, citations, or product details.
+            st.write("Language models sometimes produce information that sounds correct but isn't. Here's why:")
+            st.markdown("""
+            ### 🤔 Reasons Behind Hallucinations
+
+            - **LLMs generate language based on patterns in training data, not real-time internet access.**  
+              They are trained on massive datasets (books, articles, web content), but they can’t browse the internet or fetch live data. They rely solely on what they’ve seen before.
+
+            - **They don’t “know” facts — they predict the next likely word.**  
+              These models are not fact-checkers. They generate plausible-sounding sequences of words based on statistical patterns in their training data.
+
+            - **When uncertain, they may fabricate names, dates, citations, or product details.**  
+              If a prompt asks for something obscure or ambiguous, the model may guess — producing **fictional yet confident-sounding answers**.
             """)
 
     if halluc_subtopic in ("All", "How to Minimize"):
         with expander_section("How to Minimize Hallucinations"):
             st.markdown("""
-            - **Be specific with prompts**: Provide enough context.  
-            - **Use retrieval-based methods (like RAG)** for factual accuracy.  
-            - **Manually review** outputs before publishing externally.  
-            - Ask the model to **cite sources** or say “I’m not sure” when unsure.  
+            LLMs are powerful tools, but they can generate **confident-sounding yet incorrect information**. Here’s how to reduce the risk of hallucinations, especially in high-stakes contexts like startup communications, investor decks, or product content.
+
+            ### ✅ Recommended Practices
+
+            - **Be specific with prompts:**  
+              Avoid vague instructions. Instead, give clear, detailed prompts that provide enough context to steer the model's response.
+
+            - **Use retrieval-based methods (like RAG):**  
+              Retrieval-Augmented Generation combines LLMs with live or static knowledge sources (e.g., documents, databases). This grounds outputs in verified facts.
+
+            - **Manually review before publishing externally:**  
+              Always treat LLM responses as **first drafts**. For public-facing or critical content, conduct a human review step.
+
+            - **Encourage uncertainty when appropriate:**  
+              Ask the model to **cite sources** or include phrases like *“I’m not sure”* when unsure.  
+              _Example prompt: “If unsure, say ‘I’m not sure’ rather than guessing.”_
             """)
 
     if halluc_subtopic in ("All", "Spot the Hallucination (Quiz)"):
@@ -643,6 +685,8 @@ elif current_page == "Hallucinations":
                     st.error("Not quite — both other statements are factual.")
 
     st.markdown("Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
 
 elif current_page == "API Cost Optimization":
     st.title("API Cost Optimization")
@@ -658,6 +702,7 @@ elif current_page == "API Cost Optimization":
             "Sub-topic",
             [
                 "All",
+                "What Is API Cost?",
                 "Why API Costs Matter",
                 "What Drives Cost",
                 "Optimization Strategies",
@@ -667,6 +712,34 @@ elif current_page == "API Cost Optimization":
         )
 
     # --- Conditional Rendering of Sections ---
+    if cost_subtopic in ("All", "What Is API Cost?"):
+        with expander_section("What Is API Cost?"):
+            st.write("""
+            When you use a language model like GPT-3.5 or GPT-4 through an API, you’re charged based on how many tokens you send and receive.
+
+            A **token** is typically 3–4 characters or about 1 word. You are billed for both the prompt you send and the response the model generates.
+
+            Different models have different pricing structures:
+
+            - **GPT-3.5**: around $0.002 per 1,000 tokens
+            - **GPT-4**: around $0.06–$0.12 per 1,000 tokens (input and output priced separately)
+
+            ### Example Calculation
+
+            If you send 500 tokens and get back 500 tokens using GPT-4:
+
+            - Total = 1,000 tokens
+            - At $0.06 per 1,000 tokens → $0.06 per interaction
+
+            If you make 1,000 such API calls in a day:
+
+            - 1,000 × $0.06 = **$60/day**
+            - Monthly = **$1,800/month**
+
+            ### Why It Matters
+
+            For startups running customer chatbots, automating content, or summarizing emails — this cost can add up fast. Understanding how tokens work helps you plan your usage more strategically.
+            """)
     if cost_subtopic in ("All", "Why API Costs Matter"):
         with expander_section("Why API Costs Matter for Startups"):
             st.write("""
@@ -710,10 +783,10 @@ elif current_page == "API Cost Optimization":
 
             st.success(f"Estimated Monthly Cost: **${monthly_cost:,.2f}**")
 
-    if cost_subtopic in ("All", "Final Note"):
-        with expander_section("Final Note"):
-            st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
-
+    st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
+        
 elif current_page == "Ethics & Bias":
     st.title("Ethics and Bias in Language Models")
     display_expand_collapse_controls(current_page)
@@ -725,17 +798,18 @@ elif current_page == "Ethics & Bias":
         st.markdown("### Building Responsible AI for Startups")
     with col_right:
         ethics_subtopic = st.selectbox(
-            "Sub-topic",
-            [
-                "All",
-                "Why Ethics and Fairness Matter",
-                "Examples of Bias",
-                "Why Bias Happens",
-                "What Founders Can Do",
-                "Bias Detection Example",
-                "Bias Reflection Quiz",
-                "Ethical Review Template"
-            ]
+        "Sub-topic",
+        [
+            "All",
+            "Why Ethics and Fairness Matter",
+            "Types of Bias",
+            "Examples of Bias",
+            "Why Bias Happens",
+            "What Founders Can Do",
+            "Bias Detection Example",
+            "Bias Reflection Quiz",
+            "Ethical Review Template"
+        ]
         )
 
     # --- Conditional Sections ---
@@ -748,6 +822,44 @@ elif current_page == "Ethics & Bias":
 
             As a founder, you’re responsible for building inclusive and trustworthy experiences.
             """)
+            
+    if ethics_subtopic in ("All", "Types of Bias"):
+        with expander_section("Types of Bias in AI"):
+            st.markdown("AI systems can unintentionally reflect and reinforce societal biases present in the data they are trained on. Below are key types of bias that LLMs may exhibit:")
+
+            st.markdown("#### 🧑‍🤝‍🧑 Gender Bias")
+            st.write("""
+            Assigning roles or characteristics based on traditional gender stereotypes.  
+            _Example: Associating “nurse” predominantly with women and “engineer” with men._
+            """)
+
+            st.markdown("#### 🧑🏾 Racial Bias")
+            st.write("""
+            Producing different outcomes or assumptions based on race.  
+            _Example: Facial recognition systems misidentifying individuals from certain racial backgrounds more frequently._
+            """)
+
+            st.markdown("#### 🌍 Cultural Bias")
+            st.write("""
+            Favoring dominant cultural norms, values, or perspectives, which can marginalize others.  
+            _Example: AI-generated advice assuming Western holidays or customs by default._
+            """)
+
+            st.markdown("#### 🎂 Age Bias")
+            st.write("""
+            Making assumptions about a person’s capabilities or interests based on age.  
+            _Example: Assuming older adults are unfamiliar with technology or younger users lack business acumen._
+            """)
+
+            st.markdown("#### 🗣️ Language Bias")
+            st.write("""
+            Preferring specific dialects, grammar, or phrasing — often standard or formal English — while devaluing regional accents, slang, or non-native usage.  
+            _Example: Penalizing informal tone or regional expressions in AI content moderation._
+            """)
+
+            st.markdown("---")
+            st.info("Bias can be subtle or overt. Always test AI outputs across different user personas to catch unintended bias.")
+
 
     if ethics_subtopic in ("All", "Examples of Bias"):
         with expander_section("Examples of Bias in AI"):
@@ -786,7 +898,8 @@ elif current_page == "Ethics & Bias":
             )
             st.text(checklist_content)
             st.download_button("📥 Download Checklist (TXT)", checklist_content, file_name="bias_checklist.txt")
-
+            
+            
     if ethics_subtopic in ("All", "Bias Detection Example"):
         with expander_section("Live Example: Can You Detect the Bias?"):
             example_prompt = st.selectbox("Choose a prompt", [
@@ -817,26 +930,72 @@ elif current_page == "Ethics & Bias":
             else:
                 st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
 
-    if ethics_subtopic in ("All", "Ethical Review Template"):
-        with expander_section("🧾 Ethical Review Template (For Startups)"):
-            ethical_template = (
-                "## Ethical AI Feature Review Template\n\n"
-                "**Feature Name:**\n"
-                "[Enter here]\n\n"
-                "**Purpose of AI Usage:**\n"
-                "[Summarize briefly]\n\n"
-                "**Potential Ethical Risks:**\n"
-                "[e.g., bias, misinformation, exclusion]\n\n"
-                "**Bias Testing Completed?** Yes / No\n"
-                "**Human Review Process?** Yes / No\n"
-                "**Disclosure to Users?** Yes / No\n\n"
-                "**Final Risk Assessment:** Low / Medium / High"
-            )
-            st.markdown(ethical_template.replace("##", "###"))
-            st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
+if ethics_subtopic in ("All", "Ethical Review Template"):
+    with expander_section("🧾 Ethical Review Template (For Startups)"):
+        st.markdown("### What Is This Template?")
+        st.write("""
+        This is a structured form to help startup teams evaluate whether an AI-powered feature is being designed and used ethically and responsibly.
+        It’s useful for catching potential risks early — like bias, misinformation, or lack of transparency.
+        """)
+
+        st.markdown("### When Should You Use It?")
+        st.markdown("""
+        - When building any new feature that involves LLMs or AI-generated content  
+        - Before launching customer-facing AI functionality  
+        - During internal QA or product review meetings  
+        """)
+
+        st.markdown("### How to Use It")
+        st.write("""
+        Complete the form below as a team (product, design, engineering).  
+        Save or export the answers as part of your product documentation or AI governance records.
+        """)
+        
+        st.markdown("### Why It’s Useful for Startups")
+        st.write("""
+            - Helps meet ethical and legal expectations early in your product lifecycle
+            - Builds trust with your users and investors
+            - Prevents future reputational or legal risk
+            - Encourages intentional, responsible design decisions
+            """)
+
+        with st.form("embedded_ethical_review_form"):
+            st.subheader("🔍 Ethical Review Form")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                feature_name = st.text_input("Feature Name")
+                bias_tested = st.radio("Bias Testing Completed?", ["Yes", "No"])
+                human_review = st.radio("Human Review Process in Place?", ["Yes", "No"])
+            with col2:
+                risk_level = st.selectbox("Final Risk Assessment", ["Low", "Medium", "High"])
+                disclosure = st.radio("Disclosure to Users?", ["Yes", "No"])
+
+            purpose = st.text_area("Purpose of AI Usage")
+            risks = st.text_area("Potential Ethical Risks (e.g., bias, exclusion, hallucination)")
+
+            submitted = st.form_submit_button("Submit Review")
+
+            if submitted:
+                st.success("✅ Review submitted. Please copy or document your answers for records.")
+                st.markdown("### 📄 Review Summary")
+                st.write(f"**Feature Name:** {feature_name}")
+                st.write(f"**Purpose:** {purpose}")
+                st.write(f"**Potential Risks:** {risks}")
+                st.write(f"**Bias Testing Completed:** {bias_tested}")
+                st.write(f"**Human Review In Place:** {human_review}")
+                st.write(f"**Disclosure to Users:** {disclosure}")
+                st.write(f"**Final Risk Assessment:** {risk_level}")
+
+        st.caption("Note: This form is not stored. Copy your review for team documentation or export manually.")
+
+        st.markdown(ethical_template.replace("##", "###"))
+        st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
 
     st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
-
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
+    
 elif current_page == "FAQs":
     st.title("Frequently Asked Questions")
     display_expand_collapse_controls(current_page)
@@ -865,7 +1024,10 @@ elif current_page == "FAQs":
     with expander_section("How do I avoid biased or exclusionary outputs?"):
         st.write("Test prompts using diverse scenarios. Be mindful of wording that assumes gender, age, or culture. Use a review process before publishing AI-generated content.")
 
-    st.markdown("Have more questions? Use the **Feedback** section to suggest more topics.")
+    st.markdown("Have more questions? Use the **Add a feedback on the site to help us expand this section.")
+    
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
 
 elif current_page == "Glossary":
     st.title("Glossary")
@@ -905,6 +1067,8 @@ elif current_page == "Glossary":
     for term, definition in glossary.items():
         with expander_section(f"**{term}**"):
             st.markdown(f"{definition}")
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
 
 elif current_page == "Interactive Use Cases":
     st.title("🚀 Interactive Use Cases")
@@ -938,6 +1102,8 @@ elif current_page == "Interactive Use Cases":
             st.success(response)
         else:
             st.error(error or "Something went wrong.")
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
             
 elif current_page == "Startup Use Case Matcher":
     st.title(" Startup Use Case Matcher")
@@ -1018,11 +1184,6 @@ elif current_page == "Download Toolkit":
             )
     else:
         st.error("Toolkit not found. Please upload or generate it first.")
-
-    st.markdown("### Help us improve!")
-    feedback = st.text_area("Which tools were most helpful or what would you like to see added?")
-    if st.button("Submit Toolkit Feedback"):
-        st.success("Thanks for your input! We'll use it to improve the toolkit.")
         
 elif current_page == "Feedback":
     st.title(" Share Your Experience")
