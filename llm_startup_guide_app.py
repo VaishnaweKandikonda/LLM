@@ -144,7 +144,7 @@ with st.sidebar:
         options=page_titles,
         icons=[
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
-            "question-circle", "book", "tools", "chat-dots", "emoji-smile","cloud-download" ,"envelope"
+            "question-circle", "book","cloud-download" ,"envelope"
         ],
         menu_icon="cast"
     )
