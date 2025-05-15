@@ -11,7 +11,7 @@ import requests
 st.set_page_config(page_title="LLM Guide for Startups", layout="wide")
 
 # --- Load CSS ---
-css_path = "WebAppstyling_Enhanced.css"  # Use enhanced version
+css_path = "WebAppstyling.css"  # Use enhanced version
 if os.path.exists(css_path):
     with open(css_path) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
