@@ -40,9 +40,9 @@ def load_feedback(path=FEEDBACK_PATH):
 if 'current_page_index' not in st.session_state:
     st.session_state['current_page_index'] = 0  # Used for navigation, optional
 
-# Reset global expansion state after it's used once
-if st.session_state.get("global_expansion_state") is not None:
-    st.session_state["global_expansion_state"] = None
+# # Reset global expansion state after it's used once
+# if st.session_state.get("global_expansion_state") is not None:
+#     st.session_state["global_expansion_state"] = None
 
 # --- Utility Functions ---
 def expander_section(title):
@@ -57,7 +57,6 @@ def expander_section(title):
         st.session_state[key] = st.session_state["global_expansion_state"]
 
     return st.expander(title, expanded=st.session_state[key])
-
 
 def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
@@ -78,7 +77,10 @@ def display_expand_collapse_controls(current_page: str):
                 st.session_state["global_expansion_state"] = False
                 st.rerun()
 
-
+def reset_expansion_state():
+    if "global_expansion_state" in st.session_state:
+        del st.session_state["global_expansion_state"]
+        
 def is_valid_email(email):
     return re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email)
 
@@ -282,8 +284,7 @@ if current_page == "Home":
                     st.markdown("#### Optional Explainer Video")
                     st.video("https://www.youtube.com/embed/t4kyRyKyOpo")  # Replace with your team's video if applicable
                     
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
+    reset_expansion_state()
 
 # --- Prompt Engineering Page ---
 elif current_page == "Prompt Engineering":
@@ -477,8 +478,7 @@ elif current_page == "Prompt Engineering":
                 else:
                     st.error("Incorrect.")
     
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
+    reset_expansion_state()
 
 elif current_page == "Temperature & Sampling":
     st.title("Temperature & Sampling")
@@ -685,8 +685,7 @@ elif current_page == "Hallucinations":
                     st.error("Not quite — both other statements are factual.")
 
     st.markdown("Always treat LLM outputs as **first drafts**, not final answers — especially for investor communications, PR, or technical content.")
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
+    reset_expansion_state()
 
 elif current_page == "API Cost Optimization":
     st.title("API Cost Optimization")
@@ -784,9 +783,8 @@ elif current_page == "API Cost Optimization":
             st.success(f"Estimated Monthly Cost: **${monthly_cost:,.2f}**")
 
     st.markdown("Use logs and dashboards to track usage and refine prompts. Optimizing your AI usage = extending your runway.")
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
-        
+    reset_expansion_state()
+    
 elif current_page == "Ethics & Bias":
     st.title("Ethics and Bias in Language Models")
     display_expand_collapse_controls(current_page)
@@ -859,7 +857,6 @@ elif current_page == "Ethics & Bias":
 
             st.markdown("---")
             st.info("Bias can be subtle or overt. Always test AI outputs across different user personas to catch unintended bias.")
-
 
     if ethics_subtopic in ("All", "Examples of Bias"):
         with expander_section("Examples of Bias in AI"):
@@ -992,8 +989,7 @@ elif current_page == "Ethics & Bias":
             st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
 
         st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
-        if "global_expansion_state" in st.session_state:
-            del st.session_state["global_expansion_state"]
+    reset_expansion_state()
     
 elif current_page == "FAQs":
     st.title("Frequently Asked Questions")
@@ -1024,9 +1020,7 @@ elif current_page == "FAQs":
         st.write("Test prompts using diverse scenarios. Be mindful of wording that assumes gender, age, or culture. Use a review process before publishing AI-generated content.")
 
     st.markdown("Have more questions? Use the **Add a feedback on the site to help us expand this section.")
-    
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
+    reset_expansion_state()
 
 elif current_page == "Glossary":
     st.title("Glossary")
@@ -1066,8 +1060,7 @@ elif current_page == "Glossary":
     for term, definition in glossary.items():
         with expander_section(f"**{term}**"):
             st.markdown(f"{definition}")
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
+    reset_expansion_state()
 
 elif current_page == "Interactive Use Cases":
     st.title("🚀 Interactive Use Cases")
@@ -1101,8 +1094,7 @@ elif current_page == "Interactive Use Cases":
             st.success(response)
         else:
             st.error(error or "Something went wrong.")
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
+    reset_expansion_state()
             
 elif current_page == "Startup Use Case Matcher":
     st.title(" Startup Use Case Matcher")
