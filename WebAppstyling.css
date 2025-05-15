@@ -101,3 +101,25 @@ ul, ol {
 .css-1d391kg {
     font-size: 0.95em;
 }
+.floating-buttons {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.floating-buttons button {
+    padding: 6px 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+    .floating-buttons {
+        top: auto;
+        bottom: 20px;
+        right: 10px;
+        flex-direction: row;
+    }
+}
