@@ -135,7 +135,7 @@ def get_llm_response(prompt):
 page_titles = [
     "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
     "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary",
-    "Interactive Use Cases","Startup Use Case Matcher","Model Comparison","Download Toolkit", "Feedback"
+    "Download Toolkit", "Feedback"
 ]
 
 with st.sidebar:
@@ -1061,84 +1061,6 @@ elif current_page == "Glossary":
         with expander_section(f"**{term}**"):
             st.markdown(f"{definition}")
     reset_expansion_state()
-
-elif current_page == "Interactive Use Cases":
-    st.title("🚀 Interactive Use Cases")
-
-    # --- Use Case Templates ---
-    use_cases = {
-        "Cold Email Generator": "Write a cold email to pitch {product} to {audience}. Use a {tone} tone.",
-        "Startup Pitch Generator": "Create a one-minute pitch for a {industry} startup called {product}. Use a persuasive tone.",
-        "Market Research Summary": "Summarize the latest trends in the {industry} sector for investors."
-    }
-
-    st.subheader("Select a Use Case")
-    use_case = st.selectbox("Choose a scenario", list(use_cases.keys()))
-    template = use_cases[use_case]
-
-    st.markdown("### Customize your prompt:")
-    product = st.text_input("Product/Startup Name", "SmartSaaS AI")
-    audience = st.text_input("Target Audience", "startup founders")
-    tone = st.selectbox("Tone", ["Professional", "Persuasive", "Casual"])
-    industry = st.text_input("Industry", "AI SaaS")
-
-    prompt = template.format(product=product, audience=audience, tone=tone, industry=industry)
-    st.code(prompt, language="text")
-
-    st.subheader("Generated Output")
-    if st.button("Run with AI"):
-        with st.spinner("Generating response..."):
-            response, error = get_llm_response(prompt)
-
-        if response:
-            st.success(response)
-        else:
-            st.error(error or "Something went wrong.")
-    reset_expansion_state()
-            
-elif current_page == "Startup Use Case Matcher":
-    st.title(" Startup Use Case Matcher")
-    st.markdown("Get personalized LLM use cases based on your startup type and needs.")
-
-    industry = st.selectbox("What’s your industry?", ["FinTech", "EdTech", "HealthTech", "E-Commerce", "SaaS"])
-    goal = st.selectbox("What’s your goal?", ["Customer Support", "Content Generation", "Market Research", "Internal Automation"])
-    team_size = st.selectbox("Your team size?", ["1–5", "6–20", "21–50", "50+"])
-
-    if st.button("Suggest Use Cases"):
-        st.markdown("### Recommended Use Cases:")
-
-        if goal == "Customer Support":
-            st.success("Build an FAQ bot using LLMs to reduce support load by 40%.")
-        if goal == "Content Generation":
-            st.info(" Use LLMs to generate social media content, blogs, and emails.")
-        if goal == "Market Research":
-            st.warning(" Summarize industry trends using public data + GPT.")
-        if goal == "Internal Automation":
-            st.success(" Use AI to write scripts, meeting summaries, or task updates.")
-            
-elif current_page == "Model Comparison":
-    st.title(" Try Prompts on Multiple Models")
-    st.markdown("See how the same prompt performs across different open-source models.")
-
-    prompt = st.text_area("Enter a prompt to test:", "Write a short welcome email for a new user.")
-
-    if st.button("Compare Outputs"):
-        with st.spinner("Generating responses..."):
-            models = {
-                "FLAN-T5": "google/flan-t5-small",
-                "Mistral 7B": "mistralai/Mistral-7B-Instruct-v0.1"
-            }
-
-            for label, model_id in models.items():
-                st.markdown(f"**{label} Response:**")
-                headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
-                payload = {"inputs": prompt, "parameters": {"temperature": 0.7, "max_new_tokens": 200}}
-                response = requests.post(f"https://api-inference.huggingface.co/models/{model_id}", headers=headers, json=payload)
-                if response.status_code == 200:
-                    output = response.json()
-                    st.success(output[0]['generated_text'])
-                else:
-                    st.error(f"{label} failed: {response.text}")
 
 elif current_page == "Download Toolkit":
     st.title("📦 LLM Starter Toolkit")
