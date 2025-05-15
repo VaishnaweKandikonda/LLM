@@ -74,16 +74,15 @@ def display_expand_collapse_controls(current_page: str):
             </form>
         </div>
         """, unsafe_allow_html=True)
+        
+    if st.button("➕ Expand All", key="expand_all_button"):
+        st.session_state["global_expansion_state"] = True
+        st.rerun()
+    
+    if st.button("➖ Collapse All", key="collapse_all_button"):
+        st.session_state["global_expansion_state"] = False
+        st.rerun()
 
-        if st.session_state.get("expand_button_clicked"):
-            st.session_state["global_expansion_state"] = True
-            st.session_state["expand_button_clicked"] = False
-            st.rerun()
-
-        if st.session_state.get("collapse_button_clicked"):
-            st.session_state["global_expansion_state"] = False
-            st.session_state["collapse_button_clicked"] = False
-            st.rerun()
 
 def reset_expansion_state():
     if "global_expansion_state" in st.session_state:
