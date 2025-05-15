@@ -301,9 +301,16 @@ if current_page == "Home":
                     | Translate languages                 | Know current events                |
                     """)
 
-                    # Optional Video
-                    st.markdown("#### Optional Explainer Video")
-                    st.video("https://www.youtube.com/embed/t4kyRyKyOpo")  # Replace with your team's video if applicable
+        st.session_state["read_sections"].add(title)
+    
+    total_sections = sum(len(s) for s in all_sections.values())
+    read_sections = len(st.session_state["read_sections"])
+    progress = int((read_sections / total_sections) * 100)
+
+    st.markdown("### Your Reading Progress")
+    st.progress(progress)
+    st.caption(f"You’ve completed **{read_sections} of {total_sections}** sections ({progress}%)")
+
     with expander_section(title):
     st.markdown(content)
     st.session_state["read_sections"].add(title)
