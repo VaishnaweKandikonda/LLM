@@ -4,7 +4,6 @@ from datetime import datetime
 import pandas as pd
 import re
 import os
-import random
 import requests
 
 # --- App Config ---
@@ -17,9 +16,6 @@ if os.path.exists(css_path):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 else:
     st.warning("CSS file not found. Styling will be minimal.")
-        
-# --- Hugging Face API Key ---
-HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
 
 # --- File Path for Feedback ---
 FEEDBACK_PATH = "feedback.csv"
@@ -40,10 +36,6 @@ def load_feedback(path=FEEDBACK_PATH):
 if 'current_page_index' not in st.session_state:
     st.session_state['current_page_index'] = 0  # Used for navigation, optional
 
-# # Reset global expansion state after it's used once
-# if st.session_state.get("global_expansion_state") is not None:
-#     st.session_state["global_expansion_state"] = None
-
 # --- Utility Functions ---
 def expander_section(title):
     key = f"expander_{title}"
@@ -61,7 +53,7 @@ def expander_section(title):
 def display_expand_collapse_controls(current_page: str):
     visible_on_pages = [
         "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
-        "API Cost Optimization", "Ethics & Bias", "Startup Use Case Matcher", "FAQs", "Glossary"
+        "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary"
     ]
 
     if current_page in visible_on_pages:
@@ -97,45 +89,10 @@ def store_feedback(entry, path=FEEDBACK_PATH):
     except Exception as e:
         st.error(f"Error saving feedback: {str(e)}")
 
-def get_llm_response(prompt):
-    HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
-    try:
-        headers = {
-            "Authorization": f"Bearer {HUGGINGFACE_API_KEY}"
-        }
-
-        payload = {
-            "inputs": prompt,
-            "parameters": {
-                "temperature": 0.7,
-                "max_new_tokens": 200
-            }
-        }
-
-        response = requests.post(
-            "https://api-inference.huggingface.co/models/google/flan-t5-small",
-            headers=headers,
-            json=payload
-        )
-
-        if response.status_code == 200:
-            result = response.json()
-            # flan-t5 returns a list of dicts with 'generated_text'
-            if isinstance(result, list) and len(result) > 0:
-                return result[0].get("generated_text", "No output generated."), None
-            else:
-                return str(result), None
-        else:
-            return None, f"HF API Error {response.status_code}: {response.text}"
-
-    except Exception as e:
-        return None, f"Exception: {str(e)}"
-
 # --- Sidebar Navigation ---
 page_titles = [
     "Home", "Prompt Engineering", "Temperature & Sampling", "Hallucinations",
-    "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary",
-    "Download Toolkit", "Feedback"
+    "API Cost Optimization", "Ethics & Bias", "FAQs", "Glossary", "Feedback"
 ]
 
 with st.sidebar:
@@ -144,7 +101,7 @@ with st.sidebar:
         options=page_titles,
         icons=[
             "house", "pencil", "sliders", "exclamation-circle", "cash-coin", "shield-check",
-            "question-circle", "book","cloud-download" ,"envelope"
+            "question-circle", "book","envelope"
         ],
         menu_icon="cast"
     )
@@ -308,7 +265,6 @@ elif current_page == "Prompt Engineering":
                 "Prompt Engineering vs Prompt Tuning",
                 "Startup Use Cases",
                 "Prompt Learning Resources"
-                "Try it Yourself"
                 "Quiz",
             ]
         )
@@ -427,19 +383,6 @@ elif current_page == "Prompt Engineering":
             -  [FlowGPT – Community Prompt Library](https://flowgpt.com/)
             -  [Full Guide to Prompt Engineering](https://www.promptingguide.ai/)
             """)
-            
-    if subtopic in ("All", "Try it Yourself"):
-        with expander_section("Try it Yourself"):
-            st.markdown("Write a real prompt you'd like to test. We'll generate a response using FLAN-T5.")
-            user_prompt = st.text_area("Enter your business prompt:")
-            if st.button("Run Prompt") and user_prompt:
-                with st.spinner("Generating response..."):
-                    response, error = get_llm_response(user_prompt)
-
-                if response:
-                    st.success(response)
-                else:
-                    st.error(error)
 
     if subtopic in ("All", "Quiz"):
         with expander_section("Test Your Knowledge"):
@@ -638,7 +581,7 @@ elif current_page == "Hallucinations":
         with expander_section("Why Do LLMs Hallucinate?"):
             st.write("Language models sometimes produce information that sounds correct but isn't. Here's why:")
             st.markdown("""
-            ### 🤔 Reasons Behind Hallucinations
+            ### Reasons Behind Hallucinations
 
             - **LLMs generate language based on patterns in training data, not real-time internet access.**  
               They are trained on massive datasets (books, articles, web content), but they can’t browse the internet or fetch live data. They rely solely on what they’ve seen before.
@@ -655,7 +598,7 @@ elif current_page == "Hallucinations":
             st.markdown("""
             LLMs are powerful tools, but they can generate **confident-sounding yet incorrect information**. Here’s how to reduce the risk of hallucinations, especially in high-stakes contexts like startup communications, investor decks, or product content.
 
-            ### ✅ Recommended Practices
+            ### Recommended Practices
 
             - **Be specific with prompts:**  
               Avoid vague instructions. Instead, give clear, detailed prompts that provide enough context to steer the model's response.
@@ -825,31 +768,31 @@ elif current_page == "Ethics & Bias":
         with expander_section("Types of Bias in AI"):
             st.markdown("AI systems can unintentionally reflect and reinforce societal biases present in the data they are trained on. Below are key types of bias that LLMs may exhibit:")
 
-            st.markdown("#### 🧑‍🤝‍🧑 Gender Bias")
+            st.markdown("#### Gender Bias")
             st.write("""
             Assigning roles or characteristics based on traditional gender stereotypes.  
             _Example: Associating “nurse” predominantly with women and “engineer” with men._
             """)
 
-            st.markdown("#### 🧑🏾 Racial Bias")
+            st.markdown("#### Racial Bias")
             st.write("""
             Producing different outcomes or assumptions based on race.  
             _Example: Facial recognition systems misidentifying individuals from certain racial backgrounds more frequently._
             """)
 
-            st.markdown("#### 🌍 Cultural Bias")
+            st.markdown("#### Cultural Bias")
             st.write("""
             Favoring dominant cultural norms, values, or perspectives, which can marginalize others.  
             _Example: AI-generated advice assuming Western holidays or customs by default._
             """)
 
-            st.markdown("#### 🎂 Age Bias")
+            st.markdown("#### Age Bias")
             st.write("""
             Making assumptions about a person’s capabilities or interests based on age.  
             _Example: Assuming older adults are unfamiliar with technology or younger users lack business acumen._
             """)
 
-            st.markdown("#### 🗣️ Language Bias")
+            st.markdown("#### Language Bias")
             st.write("""
             Preferring specific dialects, grammar, or phrasing — often standard or formal English — while devaluing regional accents, slang, or non-native usage.  
             _Example: Penalizing informal tone or regional expressions in AI content moderation._
@@ -927,7 +870,7 @@ elif current_page == "Ethics & Bias":
                 st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
 
     if ethics_subtopic in ("All", "Ethical Review Template"):
-        with expander_section("🧾 Ethical Review Template (For Startups)"):
+        with expander_section(" Ethical Review Template (For Startups)"):
             st.markdown("### What Is This Template?")
             st.write("""
             This is a structured form to help startup teams evaluate whether an AI-powered feature is being designed and used ethically and responsibly.
@@ -973,7 +916,7 @@ elif current_page == "Ethics & Bias":
                 submitted = st.form_submit_button("Submit Review")
     
                 if submitted:
-                    st.success("✅ Review submitted. Please copy or document your answers for records.")
+                    st.success("Review submitted. Please copy or document your answers for records.")
                     st.markdown("### 📄 Review Summary")
                     st.write(f"**Feature Name:** {feature_name}")
                     st.write(f"**Purpose:** {purpose}")
@@ -1061,42 +1004,6 @@ elif current_page == "Glossary":
         with expander_section(f"**{term}**"):
             st.markdown(f"{definition}")
     reset_expansion_state()
-
-elif current_page == "Download Toolkit":
-    st.title("📦 LLM Starter Toolkit")
-    st.markdown("### Select Your Startup Stage")
-    stage = st.radio("Pick your maturity stage:", ["MVP/Prototype", "Scaling", "Enterprise-ready"])
-    
-    if stage == "MVP/Prototype":
-        st.info(" Focus: Fast prototyping, free-tier tools, Notion templates.")
-    elif stage == "Scaling":
-        st.warning(" Focus: API cost optimization, batch automation, prompt consistency.")
-    elif stage == "Enterprise-ready":
-        st.success(" Focus: Governance, monitoring, privacy audits, SLA-compliant APIs.")
-
-    st.markdown("Download ready-made templates, cheat sheets, and code snippets to accelerate your LLM adoption.")
-
-    st.markdown("### Included:")
-    st.markdown("""
-    - **Prompt Engineering 101** – Quick-start PDF guide  
-    - **LLM Ethics Checklist** – Governance-friendly reference  
-    - **API Pricing Calculator** – Estimate costs in Excel  
-    - **Prompt Library Template** – Notion-ready template  
-    - **Cost Tracking Sheet** – Monitor LLM API usage  
-    - **Code Snippets** – Python examples for API calls  
-    """)
-
-    toolkit_path = "/mnt/data/LLM_Toolkit.zip"
-    if os.path.exists(toolkit_path):
-        with open(toolkit_path, "rb") as file:
-            st.download_button(
-                label="📥 Download Full Toolkit (.zip)",
-                data=file,
-                file_name="LLM_Toolkit.zip",
-                mime="application/zip"
-            )
-    else:
-        st.error("Toolkit not found. Please upload or generate it first.")
         
 elif current_page == "Feedback":
     st.title(" Share Your Experience")
