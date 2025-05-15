@@ -301,6 +301,8 @@ if current_page == "Home":
                     | Translate languages                 | Know current events                |
                     """)
 
+        with expander_section(title):
+        st.markdown(content)
         st.session_state["read_sections"].add(title)
     
     total_sections = sum(len(s) for s in all_sections.values())
@@ -310,10 +312,6 @@ if current_page == "Home":
     st.markdown("### Your Reading Progress")
     st.progress(progress)
     st.caption(f"You’ve completed **{read_sections} of {total_sections}** sections ({progress}%)")
-
-    with expander_section(title):
-    st.markdown(content)
-    st.session_state["read_sections"].add(title)
     
     reset_expansion_state()
 
