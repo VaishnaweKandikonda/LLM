@@ -798,8 +798,8 @@ elif current_page == "Ethics & Bias":
         st.markdown("### Building Responsible AI for Startups")
     with col_right:
         ethics_subtopic = st.selectbox(
-        "Sub-topic",
-        [
+            "Sub-topic",
+            [
             "All",
             "Why Ethics and Fairness Matter",
             "Types of Bias",
@@ -809,7 +809,7 @@ elif current_page == "Ethics & Bias":
             "Bias Detection Example",
             "Bias Reflection Quiz",
             "Ethical Review Template"
-        ]
+            ]
         )
 
     # --- Conditional Sections ---
