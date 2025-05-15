@@ -302,8 +302,8 @@ if current_page == "Home":
                     """)
 
         with expander_section(title):
-        st.markdown(content)
-        st.session_state["read_sections"].add(title)
+            st.markdown(content)
+            st.session_state["read_sections"].add(title)
     
     total_sections = sum(len(s) for s in all_sections.values())
     read_sections = len(st.session_state["read_sections"])
