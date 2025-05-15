@@ -899,7 +899,6 @@ elif current_page == "Ethics & Bias":
             st.text(checklist_content)
             st.download_button("📥 Download Checklist (TXT)", checklist_content, file_name="bias_checklist.txt")
             
-            
     if ethics_subtopic in ("All", "Bias Detection Example"):
         with expander_section("Live Example: Can You Detect the Bias?"):
             example_prompt = st.selectbox("Choose a prompt", [
@@ -930,71 +929,71 @@ elif current_page == "Ethics & Bias":
             else:
                 st.info("This seems neutral, but it's still good practice to evaluate outputs for hidden bias.")
 
-if ethics_subtopic in ("All", "Ethical Review Template"):
-    with expander_section("🧾 Ethical Review Template (For Startups)"):
-        st.markdown("### What Is This Template?")
-        st.write("""
-        This is a structured form to help startup teams evaluate whether an AI-powered feature is being designed and used ethically and responsibly.
-        It’s useful for catching potential risks early — like bias, misinformation, or lack of transparency.
-        """)
-
-        st.markdown("### When Should You Use It?")
-        st.markdown("""
-        - When building any new feature that involves LLMs or AI-generated content  
-        - Before launching customer-facing AI functionality  
-        - During internal QA or product review meetings  
-        """)
-
-        st.markdown("### How to Use It")
-        st.write("""
-        Complete the form below as a team (product, design, engineering).  
-        Save or export the answers as part of your product documentation or AI governance records.
-        """)
-        
-        st.markdown("### Why It’s Useful for Startups")
-        st.write("""
-            - Helps meet ethical and legal expectations early in your product lifecycle
-            - Builds trust with your users and investors
-            - Prevents future reputational or legal risk
-            - Encourages intentional, responsible design decisions
+    if ethics_subtopic in ("All", "Ethical Review Template"):
+        with expander_section("🧾 Ethical Review Template (For Startups)"):
+            st.markdown("### What Is This Template?")
+            st.write("""
+            This is a structured form to help startup teams evaluate whether an AI-powered feature is being designed and used ethically and responsibly.
+            It’s useful for catching potential risks early — like bias, misinformation, or lack of transparency.
             """)
+    
+            st.markdown("### When Should You Use It?")
+            st.markdown("""
+            - When building any new feature that involves LLMs or AI-generated content  
+            - Before launching customer-facing AI functionality  
+            - During internal QA or product review meetings  
+            """)
+    
+            st.markdown("### How to Use It")
+            st.write("""
+            Complete the form below as a team (product, design, engineering).  
+            Save or export the answers as part of your product documentation or AI governance records.
+            """)
+            
+            st.markdown("### Why It’s Useful for Startups")
+            st.write("""
+                - Helps meet ethical and legal expectations early in your product lifecycle
+                - Builds trust with your users and investors
+                - Prevents future reputational or legal risk
+                - Encourages intentional, responsible design decisions
+                """)
+    
+            with st.form("embedded_ethical_review_form"):
+                st.subheader("🔍 Ethical Review Form")
+    
+                col1, col2 = st.columns(2)
+                with col1:
+                    feature_name = st.text_input("Feature Name")
+                    bias_tested = st.radio("Bias Testing Completed?", ["Yes", "No"])
+                    human_review = st.radio("Human Review Process in Place?", ["Yes", "No"])
+                with col2:
+                    risk_level = st.selectbox("Final Risk Assessment", ["Low", "Medium", "High"])
+                    disclosure = st.radio("Disclosure to Users?", ["Yes", "No"])
+    
+                purpose = st.text_area("Purpose of AI Usage")
+                risks = st.text_area("Potential Ethical Risks (e.g., bias, exclusion, hallucination)")
+    
+                submitted = st.form_submit_button("Submit Review")
+    
+                if submitted:
+                    st.success("✅ Review submitted. Please copy or document your answers for records.")
+                    st.markdown("### 📄 Review Summary")
+                    st.write(f"**Feature Name:** {feature_name}")
+                    st.write(f"**Purpose:** {purpose}")
+                    st.write(f"**Potential Risks:** {risks}")
+                    st.write(f"**Bias Testing Completed:** {bias_tested}")
+                    st.write(f"**Human Review In Place:** {human_review}")
+                    st.write(f"**Disclosure to Users:** {disclosure}")
+                    st.write(f"**Final Risk Assessment:** {risk_level}")
+    
+            st.caption("Note: This form is not stored. Copy your review for team documentation or export manually.")
+    
+            st.markdown(ethical_template.replace("##", "###"))
+            st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
 
-        with st.form("embedded_ethical_review_form"):
-            st.subheader("🔍 Ethical Review Form")
-
-            col1, col2 = st.columns(2)
-            with col1:
-                feature_name = st.text_input("Feature Name")
-                bias_tested = st.radio("Bias Testing Completed?", ["Yes", "No"])
-                human_review = st.radio("Human Review Process in Place?", ["Yes", "No"])
-            with col2:
-                risk_level = st.selectbox("Final Risk Assessment", ["Low", "Medium", "High"])
-                disclosure = st.radio("Disclosure to Users?", ["Yes", "No"])
-
-            purpose = st.text_area("Purpose of AI Usage")
-            risks = st.text_area("Potential Ethical Risks (e.g., bias, exclusion, hallucination)")
-
-            submitted = st.form_submit_button("Submit Review")
-
-            if submitted:
-                st.success("✅ Review submitted. Please copy or document your answers for records.")
-                st.markdown("### 📄 Review Summary")
-                st.write(f"**Feature Name:** {feature_name}")
-                st.write(f"**Purpose:** {purpose}")
-                st.write(f"**Potential Risks:** {risks}")
-                st.write(f"**Bias Testing Completed:** {bias_tested}")
-                st.write(f"**Human Review In Place:** {human_review}")
-                st.write(f"**Disclosure to Users:** {disclosure}")
-                st.write(f"**Final Risk Assessment:** {risk_level}")
-
-        st.caption("Note: This form is not stored. Copy your review for team documentation or export manually.")
-
-        st.markdown(ethical_template.replace("##", "###"))
-        st.download_button("📥 Download Ethical Review Template (MD)", ethical_template, file_name="ethical_review_template.md")
-
-    st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
-    if "global_expansion_state" in st.session_state:
-        del st.session_state["global_expansion_state"]
+        st.markdown("Fairness in AI isn't just about compliance — it's about creating a startup culture users can trust.")
+        if "global_expansion_state" in st.session_state:
+            del st.session_state["global_expansion_state"]
     
 elif current_page == "FAQs":
     st.title("Frequently Asked Questions")
