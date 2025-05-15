@@ -16,6 +16,10 @@ if os.path.exists(css_path):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 else:
     st.warning("CSS file not found. Styling will be minimal.")
+    
+if "read_sections" not in st.session_state:
+    st.session_state["read_sections"] = set()
+    
 
 # --- File Path for Feedback ---
 FEEDBACK_PATH = "feedback.csv"
@@ -35,6 +39,11 @@ def load_feedback(path=FEEDBACK_PATH):
 
 if 'current_page_index' not in st.session_state:
     st.session_state['current_page_index'] = 0  # Used for navigation, optional
+    
+if st.form_submit_button("expand"):
+    st.session_state["expand_button_clicked"] = True
+if st.form_submit_button("collapse"):
+    st.session_state["collapse_button_clicked"] = True
 
 # --- Utility Functions ---
 def expander_section(title):
@@ -57,17 +66,24 @@ def display_expand_collapse_controls(current_page: str):
     ]
 
     if current_page in visible_on_pages:
-        col1, col2, col3 = st.columns([9, 0.5, 0.5])
+        st.markdown("""
+        <div class='floating-buttons'>
+            <form action="" method="post">
+                <button name="expand" type="submit">➕ Expand All</button>
+                <button name="collapse" type="submit">➖ Collapse All</button>
+            </form>
+        </div>
+        """, unsafe_allow_html=True)
 
-        with col2:
-            if st.button("➕", help="Expand All"):
-                st.session_state["global_expansion_state"] = True
-                st.rerun()
+        if st.session_state.get("expand_button_clicked"):
+            st.session_state["global_expansion_state"] = True
+            st.session_state["expand_button_clicked"] = False
+            st.rerun()
 
-        with col3:
-            if st.button("➖", help="Collapse All"):
-                st.session_state["global_expansion_state"] = False
-                st.rerun()
+        if st.session_state.get("collapse_button_clicked"):
+            st.session_state["global_expansion_state"] = False
+            st.session_state["collapse_button_clicked"] = False
+            st.rerun()
 
 def reset_expansion_state():
     if "global_expansion_state" in st.session_state:
@@ -288,7 +304,10 @@ if current_page == "Home":
                     # Optional Video
                     st.markdown("#### Optional Explainer Video")
                     st.video("https://www.youtube.com/embed/t4kyRyKyOpo")  # Replace with your team's video if applicable
-                    
+    with expander_section(title):
+    st.markdown(content)
+    st.session_state["read_sections"].add(title)
+    
     reset_expansion_state()
 
 # --- Prompt Engineering Page ---
